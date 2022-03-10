@@ -13,12 +13,16 @@ create table Users (
 
 create table Projects (
     id integer primary key
-    -- insert remaining schema here
+    name varchar(128) unique not null,
+    type varchar(128) not null,
+    server varchar(128) not null
 );
 
 create table Servers (
     id integer primary key
-    -- insert remaining schema here
+    name varchar(128) unique not null,
+    type varchar(128) not null,
+    project varchar(128) not null
 );
 
 -- Insert data into tables
