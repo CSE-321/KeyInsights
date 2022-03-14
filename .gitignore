@@ -31,7 +31,7 @@ frontend/node_modules
 # environment variables
 *.env
 
-# MacOS generated files #
+# MacOS generated files
 .DS_Store
 .DS_Store?
 ._*
