@@ -30,3 +30,6 @@ frontend/node_modules
 
 # environment variables
 *.env
+
+# Mac Environment
+.DS_Store
