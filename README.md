@@ -1,14 +1,15 @@
 # KeyInsights
 
+
 Branch naming conventions
 Branch  | Usage
 ------------- | -------------
-Be | Used for backend work
-Fe | Used for frontend work
-feature | Used for adding a new feature to the website(`/feature/Fe/membersPage`)
-wip | Used for works in progress/incomplete(`wip/Fe/loginAuthForm`)
-bug | Used for bug fixes(`bug/Be/issue12345`)
-junk | used for experimentation(`junk/Fe/experiment`)
+feature | Used for adding a new feature to the website(`/feature/membersPage`)
+wip | Used for works in progress/incomplete(`wip/loginAuthForm`)
+bug | Used for bug fixes(`bug/issue12345`)
+junk | used for experimentation(`junk/experiment`)
+
+Optional: Add the jira ticket to link your code to jira
 
 4. Clone the Project
 5. Create your Branch (`git checkout -b feature/AmazingFeature`) 
