@@ -1,3 +1,5 @@
+
+/* Sets the nav bar to the top and style*/
 .navbar {
     display: flex;
     justify-content: space-between;
@@ -8,6 +10,7 @@
     margin-top: 0.5rem;
 }
 
+/* Nav bar logo positionting */
 .branding {
     margin-top: 0.8rem;
 }
@@ -26,9 +29,9 @@
 
 .navbar-links li {
     list-style: none;
-    
 }
 
+/* Default navbar text style */
 .navbar-links li a {
     text-decoration: none;
     color: black;
@@ -37,10 +40,12 @@
     font-weight: bold;
 }
 
+/* Changes color of navbar links on hover */
 .navbar-links li a:hover {
     color: #5603AD;
 }
 
+/* Displays the menu bar on mobile devices */
 .toggle-button {
     position: absolute;
     top: 0.75rem;
@@ -59,6 +64,7 @@
     border-radius: 10px;
 }
 
+/* Responsiveness for mobile  devices*/
 @media (max-width: 500px) {
     .toggle-button {
         display: flex;

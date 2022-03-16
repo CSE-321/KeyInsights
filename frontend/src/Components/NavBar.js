@@ -1,4 +1,4 @@
-import React, { Component, useRef, useState}from "react";
+import React, { Component, useRef, useState, useEffect}from 'react';
 import css from '../CSS/NavBar.css';
 
 
@@ -19,6 +19,8 @@ const NavBar = ({isUserSignedIn}) => {
     function toggleMenu() {
         setDropdown(!dropdown);
     }
+
+
 
     
 
