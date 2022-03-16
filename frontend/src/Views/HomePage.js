@@ -1,15 +1,11 @@
-import React from "react";
-
+import React from 'react';
+import BodyHeader from '../Components/BodyHeader';
 const HomePage = () => {
 
     return(
-        <>
-            <div>
-            <h1> Hello world </h1>
-            <p1> Here is the home page</p1>
-            </div>
-            
-        </>
+       <>
+              <BodyHeader title={"Home"} subtext={"Welcome home, lets get you started"}/>
+       </>
     );
     
     
