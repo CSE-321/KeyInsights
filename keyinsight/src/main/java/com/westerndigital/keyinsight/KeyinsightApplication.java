@@ -51,3 +51,7 @@ public class KeyinsightApplication {
 	}
 
 }
+
+// https://www.baeldung.com/jira-rest-api
+// https://javadoc.io/doc/com.atlassian.jira/jira-rest-java-client-api/latest/overview-summary.html
+// https://javadoc.io/static/com.atlassian.jira/jira-rest-java-client-api/5.0.4/overview-summary.html
