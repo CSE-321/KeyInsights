@@ -1,16 +1,22 @@
 import React , { useState, useEffect} from 'react';
 import '../CSS/BodyHeader.css';
 
+import Dropdown from './Dropdown';
 
-const BodyHeader = ({title, subtext}) => {
+
+const BodyHeader = ({title, subtext, showServer}) => {
 
         const [headerTitle, setHeaderTitle] = React.useState(title);
         const [headerSubtext, setHeaderSubtext] = React.useState(subtext);
+        const [isServerComponentActive, setisServerComponentActive] = React.useState(showServer);
 
         React.useEffect(() => {
             setHeaderTitle(title);
             setHeaderSubtext(subtext);
-        }, [headerTitle, headerSubtext]);
+            setisServerComponentActive(showServer);
+        }, [headerTitle, headerSubtext, showServer]);
+
+        const servers = ["STM", "STM2", "STM3"];
 
         return(
             <>
@@ -19,6 +25,9 @@ const BodyHeader = ({title, subtext}) => {
                         <h1 className='header-text'> {headerTitle} </h1>
                         <p className='header-text'> {headerSubtext} </p>
                     </div>
+                   
+                        <Dropdown serverList={servers} />
+                    
                 </div>
             </>
         );
