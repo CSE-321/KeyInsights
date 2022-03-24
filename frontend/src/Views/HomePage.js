@@ -43,7 +43,7 @@ const HomePage = () => {
         <div
           id="graph-logo"
           className="flex flex-col h-52 w-screen bg-primary-purple sm:h-96 sm:w-1/2"></div>
-        <div className="flex flex-col ml-5 mt-5">
+        <div className="flex flex-col ml-5 mt-5 ">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="102.385"
@@ -69,7 +69,7 @@ const HomePage = () => {
             KeyInsights
           </h1>
         </div>
-        <div className="flex flex-col justify-center gap-5 text-center bg-opacity-0 sm:w-1/2">
+        <div className="flex flex-col justify-center gap-5 mt-5 text-center bg-opacity-0 sm:mt-0 sm:w-1/2">
           <div className="flex flex-row align-middle justify-center">
             <h1 className="text-3xl font-bold sm:w-full">
               Discover your
