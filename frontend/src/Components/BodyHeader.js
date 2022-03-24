@@ -20,7 +20,9 @@ const BodyHeader = ({ title, subtext, showServer }) => {
     <>
       <div className="body-header">
         <div id="header-description">
-          <h1 className="header-text"> {headerTitle} </h1>
+          <h1 className="header-text text-2xl sm:text-3xl md:text-4xl">
+            {headerTitle}
+          </h1>
           <p className="header-text"> {headerSubtext} </p>
         </div>
       </div>
