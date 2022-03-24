@@ -28,6 +28,10 @@ const HomePage = () => {
     color: 'white',
     border: 'none',
     borderRadius: '15px',
+    shadowColor: 'black',
+    shadowOffset: { width: -2, height: 4 },
+    shadowOpacity: 1,
+    shadowRadius: 2,
   };
   return (
     <>
