@@ -57,8 +57,7 @@ const HomePage = () => {
             </g>
           </svg>
           <h1 className="text-2xl font-extrabold text-primary-purple">
-            {' '}
-            KeyInsights{' '}
+            KeyInsights
           </h1>
         </div>
         <div className="flex flex-col justify-center gap-5 text-center bg-opacity-0 sm:w-1/2">
@@ -69,9 +68,13 @@ const HomePage = () => {
               <span className="text-primary-purple"> Insights</span> now
             </h1>
           </div>
-          <button className="w-1/3 h-10 self-center" style={buttonStyle}>
-            Get Started
-          </button>
+          <a href="/projects">
+            <button
+              className="w-1/3 h-10 self-center shadow-lg"
+              style={buttonStyle}>
+              Get Started
+            </button>
+          </a>
         </div>
       </div>
     </>
