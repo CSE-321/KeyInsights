@@ -3,6 +3,11 @@ import BodyHeader from '../Components/BodyHeader';
 import Lottie from 'lottie-web';
 import GraphData from '../Assets/home_page_graph.json';
 
+/**
+ * HomePage component is the main page of the application. It contains the
+ * header and an animated graph. It links to the projects page.
+ * @returns {JSX}
+ */
 const HomePage = () => {
   const [isLottieAnimationLoaded, setisLottieAnimationLoaded] =
     React.useState(false);

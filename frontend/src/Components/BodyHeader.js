@@ -2,6 +2,15 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import '../CSS/BodyHeader.css';
 //import Dropdown from './Dropdown';
+
+/**
+ * The body header component is used to display the header of the body. It contains the title,
+ * subtitle, and drop down option.The bar is mobile responsive.
+ * @param {string} title
+ * @param {string} subtext
+ * @param {bool} showServer
+ * @returns {JSX} black bar with title and subtext
+ */
 const BodyHeader = ({ title, subtext, showServer }) => {
   const [headerTitle, setHeaderTitle] = React.useState(title);
   const [headerSubtext, setHeaderSubtext] = React.useState(subtext);
