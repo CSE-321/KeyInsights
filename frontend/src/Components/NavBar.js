@@ -61,10 +61,10 @@ const NavBar = ({ isUserSignedIn }) => {
         style={{ display: dropdown ? 'none' : 'flex' }}>
         <ul>
           <li>
-            <a href="#"> Home </a>
+            <a href="/"> Home </a>
           </li>
           <li>
-            <a href="#"> Projects </a>
+            <a href="/projects"> Projects </a>
           </li>
           <li>
             <a href="#"> {isUserSignedIn ? signedInText : signedOutText} </a>

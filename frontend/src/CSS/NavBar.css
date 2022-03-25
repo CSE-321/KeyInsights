@@ -5,8 +5,9 @@
   align-items: center;
   background-color: white;
   color: black;
-  margin-left: 1rem;
+  padding-left: 2vw;
   margin-top: 0.5rem;
+  width: 100vw;
 }
 
 /* Nav bar logo positionting */
