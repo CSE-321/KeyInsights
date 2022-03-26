@@ -1,4 +1,7 @@
-import React, { Component, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { signoutUser } from '../Components/Auth/userSlice';
+import { useNavigate } from 'react-router';
 import PropTypes from 'prop-types';
 import css from '../CSS/NavBar.css';
 
@@ -9,16 +12,35 @@ import css from '../CSS/NavBar.css';
  * @param {bool} isUserSignedIn
  * @returns
  */
-const NavBar = ({ isUserSignedIn }) => {
+const NavBar = () => {
+  const isUserSignedIn = useSelector((state) => state.user.isUserSignedIn);
   const [dropdown, setDropdown] = useState(false);
-
-  var signedInText = 'Sign Out';
-  var signedOutText = 'Sign In';
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const signedInText = 'Sign Out';
+  const signedOutText = 'Sign In';
   const menuButtonRef = useRef(null);
 
   function toggleMenu() {
     setDropdown(!dropdown);
   }
+  const signout = () => {
+    let run = new Promise((resolve, reject) => {
+      if (isUserSignedIn) {
+        dispatch(signoutUser({}));
+        resolve('success');
+      } else {
+        reject(new Error('No user is signed in'));
+      }
+    });
+    run
+      .then(() => {
+        navigate('/');
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   return (
     <nav className="navbar">
@@ -64,10 +86,12 @@ const NavBar = ({ isUserSignedIn }) => {
             <a href="/"> Home </a>
           </li>
           <li>
-            <a href="/projects"> Projects </a>
+            <a href={isUserSignedIn ? '/projects' : '/'}>Projects</a>
           </li>
           <li>
-            <a href="#"> {isUserSignedIn ? signedInText : signedOutText} </a>
+            <a href="#" onClick={signout}>
+              {isUserSignedIn ? signedInText : signedOutText}
+            </a>
           </li>
         </ul>
       </div>

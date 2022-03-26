@@ -3,6 +3,7 @@ import './App.css';
 
 import NavBar from './Components/NavBar';
 import HomePage from './Views/HomePage';
+import ProjectsPage from './Views/ProjectsPage';
 import Footer from './Components/Footer';
 
 function App() {
@@ -14,7 +15,8 @@ function App() {
 
       <div className="PageBody">
         <Routes>
-          <Route path="/" element={<HomePage />} />
+          <Route exact path="/" element={<HomePage />} />
+          <Route exact path="/projects" element={<ProjectsPage />} />
         </Routes>
       </div>
       <Footer />
