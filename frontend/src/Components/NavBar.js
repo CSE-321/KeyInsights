@@ -1,8 +1,8 @@
-import React, { useRef, useState } from 'react';
+import React, { Fragment, useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { signoutUser } from '../Components/Auth/userSlice';
 import { useNavigate } from 'react-router';
-import PropTypes from 'prop-types';
+
 import css from '../CSS/NavBar.css';
 
 /**
@@ -15,15 +15,24 @@ import css from '../CSS/NavBar.css';
 const NavBar = () => {
   const isUserSignedIn = useSelector((state) => state.user.isUserSignedIn);
   const [dropdown, setDropdown] = useState(false);
+  const [isMobileDevice, setIsMobileDevice] = useState(
+    window.innerWidth <= 500 ? true : false,
+  );
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const signedInText = 'Sign Out';
   const signedOutText = 'Sign In';
   const menuButtonRef = useRef(null);
 
-  function toggleMenu() {
+  React.useEffect(() => {
+    setIsMobileDevice(window.innerWidth <= 500 ? true : false);
+  }, [window.innerWidth]);
+
+  const toggleMenu = () => {
+    console.log('toggle menu');
     setDropdown(!dropdown);
-  }
+  };
+
   const signout = () => {
     let run = new Promise((resolve, reject) => {
       if (isUserSignedIn) {
@@ -77,29 +86,48 @@ const NavBar = () => {
         <span className="bar"></span>
         <span className="bar"></span>
       </a>
-
-      <div
-        className="navbar-links"
-        style={{ display: dropdown ? 'none' : 'flex' }}>
-        <ul>
-          <li>
-            <a href="/"> Home </a>
-          </li>
-          <li>
-            <a href={isUserSignedIn ? '/projects' : '/'}>Projects</a>
-          </li>
-          <li>
-            <a href="#" onClick={signout}>
-              {isUserSignedIn ? signedInText : signedOutText}
-            </a>
-          </li>
-        </ul>
-      </div>
+      {isMobileDevice && (
+        <Fragment>
+          <div
+            className="navbar-links"
+            style={{ display: dropdown ? 'flex' : 'none' }}>
+            <ul>
+              <li>
+                <a href="/"> Home </a>
+              </li>
+              <li>
+                <a href={isUserSignedIn ? '/projects' : '/'}>Projects</a>
+              </li>
+              <li>
+                <a href="#" onClick={signout}>
+                  {isUserSignedIn ? signedInText : signedOutText}
+                </a>
+              </li>
+            </ul>
+          </div>
+        </Fragment>
+      )}
+      {!isMobileDevice && (
+        <Fragment>
+          <div className="navbar-links" style={{ display: 'flex' }}>
+            <ul>
+              <li>
+                <a href="/"> Home </a>
+              </li>
+              <li>
+                <a href={isUserSignedIn ? '/projects' : '/'}>Projects</a>
+              </li>
+              <li>
+                <a href="#" onClick={signout}>
+                  {isUserSignedIn ? signedInText : signedOutText}
+                </a>
+              </li>
+            </ul>
+          </div>
+        </Fragment>
+      )}
     </nav>
   );
 };
 
-NavBar.propTypes = {
-  isUserSignedIn: PropTypes.bool.isRequired,
-};
 export default NavBar;
