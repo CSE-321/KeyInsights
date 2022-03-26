@@ -14,14 +14,11 @@ import '../CSS/BodyHeader.css';
 const BodyHeader = ({ title, subtext, showServer }) => {
   const [headerTitle, setHeaderTitle] = React.useState(title);
   const [headerSubtext, setHeaderSubtext] = React.useState(subtext);
-  const [isServerComponentActive, setisServerComponentActive] =
-    React.useState(showServer);
 
   React.useEffect(() => {
     setHeaderTitle(title);
     setHeaderSubtext(subtext);
-    setisServerComponentActive(showServer);
-  }, [headerTitle, headerSubtext, showServer]);
+  }, [title, subtext]);
 
   const servers = ['STM', 'STM2', 'STM3'];
 
@@ -29,7 +26,9 @@ const BodyHeader = ({ title, subtext, showServer }) => {
     <>
       <div className="body-header">
         <div id="header-description">
-          <h1 className="header-text text-2xl sm:text-3xl md:text-4xl">
+          <h1
+            className="header-text text-2xl sm:text-3xl md:text-4xl"
+            key={headerTitle}>
             {headerTitle}
           </h1>
           <p className="header-text"> {headerSubtext} </p>
