@@ -70,7 +70,7 @@ public class KeyinsightApplication {
 		// This part of the code grabs information associated to that issue
 		// Currently, I have hard coded in the issue and only grabbing the summary
 		String issueKey = "B8X4-10277";
-		Issue issue = myJiraClient.getIssue(issueKey);
+		Issue issue = myJiraClient.getSingleIssue(issueKey);
 		System.out.println("Summary of the issue B8X4-10277: " + issue.getSummary());
 		// Eventually, I'll need to grab the issue keys I got before and pass them
 		// through as a parameter.
@@ -105,7 +105,7 @@ public class KeyinsightApplication {
 				.claim().getIssues();
 	}
 
-	private Issue getIssue(String issueKey) {
+	private Issue getSingleIssue(String issueKey) {
 		return restClient.getIssueClient().getIssue(issueKey).claim();
 	}
 
