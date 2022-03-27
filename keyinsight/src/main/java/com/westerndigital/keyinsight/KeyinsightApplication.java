@@ -68,12 +68,20 @@ public class KeyinsightApplication {
 		// through as a parameter.
 
 		// This part of the code grabs information associated to that issue
-		// Currently, I have hard coded in the issue.
+		// Currently, I have hard coded in the issue and only grabbing the summary
 		String issueKey = "B8X4-10277";
 		Issue issue = myJiraClient.getIssue(issueKey);
 		System.out.println("Summary of the issue B8X4-10277: " + issue.getSummary());
 		// Eventually, I'll need to grab the issue keys I got before and pass them
 		// through as a parameter.
+
+		// This part of the code grabs information about issueFields assoicated to that
+		// issue
+		Iterable<IssueField> allIssueFields = issue.getFields();
+		for (IssueField issueField : allIssueFields) {
+			System.out.println(issueField.getId() + " : " + issueField.getName());
+		}
+		// Found out that Story Points are customfield_10618 for this server
 
 		myJiraClient.restClient.close();
 	}
