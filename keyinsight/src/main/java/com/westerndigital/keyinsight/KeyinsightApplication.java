@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.net.URI;
 
 import com.atlassian.jira.rest.client.api.domain.BasicProject;
+import com.atlassian.jira.rest.client.api.domain.Issue;
 
 import io.github.cdimascio.dotenv.Dotenv;
 
@@ -28,10 +29,16 @@ public class KeyinsightApplication {
 
 	public static void main(String[] args) throws IOException {
 		// SpringApplication.run(KeyinsightApplication.class, args);
+
+		// This part of the code connects the basic user authication to the JIRA server
+		// using an .env file
 		Dotenv dotenv = Dotenv.load();
 		KeyinsightApplication myJiraClient = new KeyinsightApplication(dotenv.get("JIRA_USERNAME"),
 				dotenv.get("JIRA_PASSWORD"), dotenv.get("JIRA_URL"));
-		// System.out.println("Hi World");
+		//
+
+		// This part of the code grabs all projects that the user has access to from the
+		// JIRA Server
 		int projectCount = 0;
 		Iterable<BasicProject> allProjects = myJiraClient.getAllProject();
 		for (BasicProject project : allProjects) {
@@ -39,6 +46,25 @@ public class KeyinsightApplication {
 			projectCount += 1;
 		}
 		System.out.println("There were " + projectCount + " project(s)");
+		//
+
+		// This part of the code attempts to grabs all the issues associated with that
+		// project
+
+		// Currently, I have hard coded it to go with the single BX84 project on the
+		// server
+
+		int issueCount = 0;
+		Iterable<Issue> allIssues = myJiraClient.getAllIssues();
+		for (Issue issue : allIssues) {
+			System.out.println(
+					issue.getKey() + " " + issue.getIssueType().getName());
+			issueCount += 1;
+		}
+		System.out.println("There were " + issueCount + " issue(s) that I was able to pull");
+		// Eventually, I'll need to grab the project names I got before and pass it
+		// through as a parameter.
+
 		myJiraClient.restClient.close();
 	}
 
@@ -53,6 +79,12 @@ public class KeyinsightApplication {
 
 	private Iterable<BasicProject> getAllProject() {
 		return restClient.getProjectClient().getAllProjects().claim();
+	}
+
+	private Iterable<Issue> getAllIssues() {
+		return restClient.getSearchClient().searchJql(
+				"project = B8X4", -1, 0, null)
+				.claim().getIssues();
 	}
 
 }
