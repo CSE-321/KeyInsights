@@ -5,10 +5,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.atlassian.jira.rest.client.api.JiraRestClient;
 import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClientFactory;
-import com.atlassian.jira.rest.client.api.domain.Issue;
-
 import java.io.IOException;
 import java.net.URI;
+
 import io.github.cdimascio.dotenv.Dotenv;
 
 @SpringBootApplication
@@ -30,15 +29,8 @@ public class KeyinsightApplication {
 		Dotenv dotenv = Dotenv.load();
 		KeyinsightApplication myJiraClient = new KeyinsightApplication(dotenv.get("JIRA_USERNAME"),
 				dotenv.get("JIRA_PASSWORD"), dotenv.get("JIRA_URL"));
-		String issueKey = "B8X4-10277";
-		Issue issue = myJiraClient.getIssue(issueKey);
-		System.out.println(issue.getProject());
-
+		System.out.println("Hi World");
 		myJiraClient.restClient.close();
-	}
-
-	private Issue getIssue(String issueKey) {
-		return restClient.getIssueClient().getIssue(issueKey).claim();
 	}
 
 	private JiraRestClient getJiraRestClient() {
