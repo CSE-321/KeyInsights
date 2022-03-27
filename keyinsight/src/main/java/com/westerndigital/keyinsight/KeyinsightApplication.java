@@ -8,6 +8,8 @@ import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClientF
 import java.io.IOException;
 import java.net.URI;
 
+import com.atlassian.jira.rest.client.api.domain.BasicProject;
+
 import io.github.cdimascio.dotenv.Dotenv;
 
 @SpringBootApplication
@@ -29,7 +31,14 @@ public class KeyinsightApplication {
 		Dotenv dotenv = Dotenv.load();
 		KeyinsightApplication myJiraClient = new KeyinsightApplication(dotenv.get("JIRA_USERNAME"),
 				dotenv.get("JIRA_PASSWORD"), dotenv.get("JIRA_URL"));
-		System.out.println("Hi World");
+		// System.out.println("Hi World");
+		int projectCount = 0;
+		Iterable<BasicProject> allProjects = myJiraClient.getAllProject();
+		for (BasicProject project : allProjects) {
+			System.out.println(project.getName());
+			projectCount += 1;
+		}
+		System.out.println("There were " + projectCount + " project(s)");
 		myJiraClient.restClient.close();
 	}
 
@@ -40,6 +49,10 @@ public class KeyinsightApplication {
 
 	private URI getJiraUri() {
 		return URI.create(this.jiraUrl);
+	}
+
+	private Iterable<BasicProject> getAllProject() {
+		return restClient.getProjectClient().getAllProjects().claim();
 	}
 
 }
