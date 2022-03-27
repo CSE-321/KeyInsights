@@ -10,6 +10,7 @@ import java.net.URI;
 
 import com.atlassian.jira.rest.client.api.domain.BasicProject;
 import com.atlassian.jira.rest.client.api.domain.Issue;
+import com.atlassian.jira.rest.client.api.domain.IssueField;
 
 import io.github.cdimascio.dotenv.Dotenv;
 
@@ -39,13 +40,13 @@ public class KeyinsightApplication {
 
 		// This part of the code grabs all projects that the user has access to from the
 		// JIRA Server
-		int projectCount = 0;
-		Iterable<BasicProject> allProjects = myJiraClient.getAllProject();
-		for (BasicProject project : allProjects) {
-			System.out.println(project.getName());
-			projectCount += 1;
-		}
-		System.out.println("There were " + projectCount + " project(s)");
+		// int projectCount = 0;
+		// Iterable<BasicProject> allProjects = myJiraClient.getAllProject();
+		// for (BasicProject project : allProjects) {
+		// System.out.println(project.getName());
+		// projectCount += 1;
+		// }
+		// System.out.println("There were " + projectCount + " project(s)");
 		//
 
 		// This part of the code attempts to grabs all the issues associated with that
@@ -54,15 +55,24 @@ public class KeyinsightApplication {
 		// Currently, I have hard coded it to go with the single BX84 project on the
 		// server
 
-		int issueCount = 0;
-		Iterable<Issue> allIssues = myJiraClient.getAllIssues();
-		for (Issue issue : allIssues) {
-			System.out.println(
-					issue.getKey() + " " + issue.getIssueType().getName());
-			issueCount += 1;
-		}
-		System.out.println("There were " + issueCount + " issue(s) that I was able to pull");
-		// Eventually, I'll need to grab the project names I got before and pass it
+		// int issueCount = 0;
+		// Iterable<Issue> allIssues = myJiraClient.getAllIssues();
+		// for (Issue issue : allIssues) {
+		// System.out.println(
+		// issue.getKey() + " " + issue.getIssueType().getName());
+		// issueCount += 1;
+		// }
+		// System.out.println("There were " + issueCount + " issue(s) that I was able to
+		// pull");
+		// Eventually, I'll need to grab the project names I got before and pass them
+		// through as a parameter.
+
+		// This part of the code grabs information associated to that issue
+		// Currently, I have hard coded in the issue.
+		String issueKey = "B8X4-10277";
+		Issue issue = myJiraClient.getIssue(issueKey);
+		System.out.println("Summary of the issue B8X4-10277: " + issue.getSummary());
+		// Eventually, I'll need to grab the issue keys I got before and pass them
 		// through as a parameter.
 
 		myJiraClient.restClient.close();
@@ -85,6 +95,10 @@ public class KeyinsightApplication {
 		return restClient.getSearchClient().searchJql(
 				"project = B8X4", -1, 0, null)
 				.claim().getIssues();
+	}
+
+	private Issue getIssue(String issueKey) {
+		return restClient.getIssueClient().getIssue(issueKey).claim();
 	}
 
 }
