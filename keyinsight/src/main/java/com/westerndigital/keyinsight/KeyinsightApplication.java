@@ -3,6 +3,7 @@ package com.westerndigital.keyinsight;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import com.atlassian.httpclient.api.Request;
 import com.atlassian.jira.rest.client.api.JiraRestClient;
 import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClientFactory;
 import java.io.IOException;
@@ -47,7 +48,6 @@ public class KeyinsightApplication {
 		// projectCount += 1;
 		// }
 		// System.out.println("There were " + projectCount + " project(s)");
-		//
 
 		// This part of the code attempts to grabs all the issues associated with that
 		// project
@@ -58,8 +58,7 @@ public class KeyinsightApplication {
 		// int issueCount = 0;
 		// Iterable<Issue> allIssues = myJiraClient.getAllIssues();
 		// for (Issue issue : allIssues) {
-		// System.out.println(
-		// issue.getKey() + " " + issue.getIssueType().getName());
+		// System.out.println(issue.getKey() + " " + issue.getIssueType().getName());
 		// issueCount += 1;
 		// }
 		// System.out.println("There were " + issueCount + " issue(s) that I was able to
@@ -71,7 +70,7 @@ public class KeyinsightApplication {
 		// Currently, I have hard coded in the issue and only grabbing the summary
 		String issueKey = "B8X4-10277";
 		Issue issue = myJiraClient.getSingleIssue(issueKey);
-		System.out.println("Summary of the issue B8X4-10277: " + issue.getSummary());
+		// System.out.println("Summary of the issue B8X4-10277: " + issue.getSummary());
 		// Eventually, I'll need to grab the issue keys I got before and pass them
 		// through as a parameter.
 
@@ -114,3 +113,32 @@ public class KeyinsightApplication {
 // https://www.baeldung.com/jira-rest-api
 // https://javadoc.io/doc/com.atlassian.jira/jira-rest-java-client-api/latest/overview-summary.html
 // https://javadoc.io/static/com.atlassian.jira/jira-rest-java-client-api/5.0.4/overview-summary.html
+
+// KPI Request 1:
+// Project Status
+// overview Columns:
+// need Mike to help us get access to new features/bugs, otherwises can grab
+// everything else
+
+// Type(Functional Team) : use issue.getIssueType().getName() and can get all
+// the types in it
+// Total JIRA # & story Points : use the count feature in SQL and use
+// issue.getField(customfield_10618) for story points, some have none so will
+// need conditionals
+// Closed JIRA # & story Points : same concept but in the JQL query, will need
+// to have status is Closed
+// Not Started JIRA # & story Points : same concept but in the JQL query, will
+// need to have status is Waiting
+// WIP JIRA & # story Points : same concept but in the JQL query, will need to
+// have status is In Progress
+// % of new features : still looking have to ask mike for info
+// % of bugs : still looking have to ask mike for info
+// % of reopen tickets : we can use the status for reopen and percentage it to
+// the total jira?
+// % of critical Request : for this one, in the JQL we could use priority =
+// critical
+// % of critical requests not completed : for this one, in the JQL, could use
+// priority = critical and status not
+// closed (assumption closed means completed)
+// % of cancelled tickets : not sure how to figure it out
+// B8X4-9137 ANA-LV
