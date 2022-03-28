@@ -100,6 +100,7 @@ public class KeyinsightApplication {
 
 	private Iterable<Issue> getAllIssues() {
 		return restClient.getSearchClient().searchJql(
+				// String jql = String.format("project = %s", arg1)
 				"project = B8X4", -1, 0, null)
 				.claim().getIssues();
 	}
