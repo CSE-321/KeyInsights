@@ -68,19 +68,22 @@ public class KeyinsightApplication {
 
 		// This part of the code grabs information associated to that issue
 		// Currently, I have hard coded in the issue and only grabbing the summary
-		String issueKey = "B8X4-10277";
+		String issueKey = "B8X4-10275";
 		Issue issue = myJiraClient.getSingleIssue(issueKey);
-		// System.out.println("Summary of the issue B8X4-10277: " + issue.getSummary());
+		System.out.println("Issue Type B8X4-10277: " + issue.getResolution());
 		// Eventually, I'll need to grab the issue keys I got before and pass them
 		// through as a parameter.
 
 		// This part of the code grabs information about issueFields assoicated to that
 		// issue
-		Iterable<IssueField> allIssueFields = issue.getFields();
-		for (IssueField issueField : allIssueFields) {
-			System.out.println(issueField.getId() + " : " + issueField.getName());
-		}
-		// Found out that Story Points are customfield_10618 for this server
+		// Iterable<IssueField> allIssueFields = issue.getFields();
+		// for (IssueField issueField : allIssueFields) {
+		// System.out.println(issueField.getId() + " : " + issueField.getName());
+		// }
+		// Found out that Story Points are customfield_10618 for this server B8X4
+		// Found out that Second Type that has Bugs are customfield_12628 for this
+		// server B8X4
+		// found out that Cancelled Projects are under resolution so issue.getResolution
 
 		myJiraClient.restClient.close();
 	}
@@ -123,23 +126,35 @@ public class KeyinsightApplication {
 
 // Type(Functional Team) : use issue.getIssueType().getName() and can get all
 // the types in it
+
 // Total JIRA # & story Points : use the count feature in SQL and use
 // issue.getField(customfield_10618) for story points, some have none so will
 // need conditionals
+
 // Closed JIRA # & story Points : same concept but in the JQL query, will need
 // to have status is Closed
+
 // Not Started JIRA # & story Points : same concept but in the JQL query, will
 // need to have status is Waiting
+
 // WIP JIRA & # story Points : same concept but in the JQL query, will need to
 // have status is In Progress
+
 // % of new features : still looking have to ask mike for info
-// % of bugs : still looking have to ask mike for info
+
+// % of bugs : can use issue.getField(customfield_12628) for B8X4 server to get
+// issues that are bugs
+
 // % of reopen tickets : we can use the status for reopen and percentage it to
 // the total jira?
+
 // % of critical Request : for this one, in the JQL we could use priority =
 // critical
+
 // % of critical requests not completed : for this one, in the JQL, could use
 // priority = critical and status not
 // closed (assumption closed means completed)
-// % of cancelled tickets : not sure how to figure it out
-// B8X4-9137 ANA-LV
+
+// % of cancelled tickets : cancelled issues we can use
+// issue.getResolution().getName() and find issues with resolution Project
+// Cancelled
