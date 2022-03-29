@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.net.URI;
 
 import com.atlassian.jira.rest.client.api.domain.BasicProject;
+import com.atlassian.jira.rest.client.api.domain.Project;
 import com.atlassian.jira.rest.client.api.domain.Issue;
 import com.atlassian.jira.rest.client.api.domain.IssueField;
 
@@ -41,13 +42,16 @@ public class KeyinsightApplication {
 
 		// This part of the code grabs all projects that the user has access to from the
 		// JIRA Server
-		// int projectCount = 0;
-		// Iterable<BasicProject> allProjects = myJiraClient.getAllProject();
-		// for (BasicProject project : allProjects) {
-		// System.out.println(project.getName());
-		// projectCount += 1;
-		// }
-		// System.out.println("There were " + projectCount + " project(s)");
+		int projectCount = 0;
+		Iterable<BasicProject> allProjects = myJiraClient.getAllProject();
+		for (BasicProject project : allProjects) {
+			String projectUrl = project.getKey();
+			// System.out.println(project.getKey());
+			Project singleProject = myJiraClient.getProject(projectUrl);
+			System.out.println(singleProject.getLead().getDisplayName());
+			projectCount += 1;
+		}
+		System.out.println("There were " + projectCount + " project(s)");
 
 		// This part of the code attempts to grabs all the issues associated with that
 		// project
@@ -68,9 +72,9 @@ public class KeyinsightApplication {
 
 		// This part of the code grabs information associated to that issue
 		// Currently, I have hard coded in the issue and only grabbing the summary
-		String issueKey = "B8X4-10275";
-		Issue issue = myJiraClient.getSingleIssue(issueKey);
-		System.out.println("Issue Type B8X4-10277: " + issue.getResolution());
+		// String issueKey = "B8X4-10275";
+		// Issue issue = myJiraClient.getSingleIssue(issueKey);
+		// System.out.println("Issue Type B8X4-10277: " + issue.getResolution());
 		// Eventually, I'll need to grab the issue keys I got before and pass them
 		// through as a parameter.
 
@@ -90,15 +94,19 @@ public class KeyinsightApplication {
 
 	private JiraRestClient getJiraRestClient() {
 		return new AsynchronousJiraRestClientFactory()
-				.createWithBasicHttpAuthentication(getJiraUri(), this.username, this.password);
+				.createWithBasicHttpAuthentication(getUri(this.jiraUrl), this.username, this.password);
 	}
 
-	private URI getJiraUri() {
-		return URI.create(this.jiraUrl);
+	private URI getUri(String URL) {
+		return URI.create(URL);
 	}
 
 	private Iterable<BasicProject> getAllProject() {
 		return restClient.getProjectClient().getAllProjects().claim();
+	}
+
+	private Project getProject(String URL) {
+		return restClient.getProjectClient().getProject(URL).claim();
 	}
 
 	private Iterable<Issue> getAllIssues() {
