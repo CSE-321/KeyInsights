@@ -15,6 +15,7 @@ import java.util.HashMap;
 
 import com.atlassian.jira.rest.client.api.domain.BasicProject;
 import com.atlassian.jira.rest.client.api.domain.Project;
+import com.atlassian.jira.rest.client.api.domain.User;
 import com.atlassian.jira.rest.client.api.domain.Issue;
 import com.atlassian.jira.rest.client.api.domain.IssueField;
 
@@ -49,6 +50,7 @@ public class KeyinsightApplication {
 
 		ArrayList<String> projectName = new ArrayList<String>();
 		ArrayList<String> projectLeadName = new ArrayList<String>();
+		ArrayList<String> projectLeadAvatarUri = new ArrayList<String>();
 		ArrayList<String> issueName = new ArrayList<String>();
 		ArrayList<String> issueMainType = new ArrayList<String>();
 		ArrayList<String> issueFromProject = new ArrayList<String>();
@@ -74,7 +76,9 @@ public class KeyinsightApplication {
 			String projectUrl = project.getKey();
 			Project singleProject = myJiraClient.getProject(projectUrl);
 			projectName.add(singleProject.getName());
-			projectLeadName.add(singleProject.getLead().getDisplayName());
+			User projectLead = myJiraClient.getUser(singleProject.getLead().getName());
+			projectLeadName.add(projectLead.getDisplayName());
+			projectLeadAvatarUri.add(projectLead.getAvatarUri().toString());
 			String id = "10";
 			while (Integer.parseInt(id) != 1) {
 				Iterable<Issue> allIssues = myJiraClient.getAllIssues(singleProject.getName(), issueCount);
@@ -92,16 +96,21 @@ public class KeyinsightApplication {
 							fieldValues.put(issueField.getName(), issueField.getId());
 							System.out.println(issueField.getId() + " : " + issueField.getName());
 						}
+						// Found out that Story Points are customfield_10618 for this server B8X4
+						// Found out that Second Type that has Bugs are customfield_12628 for this
+						// server B8X4
 					}
 					System.out.println(issueCount);
 
-					String createDate = String.format("%d-%d-%d", issue.getCreationDate().getYear(),
+					String createDate = String.format("%d-%d-%d",
+							issue.getCreationDate().getYear(),
 							issue.getCreationDate().getMonthOfYear(),
 							issue.getCreationDate().getDayOfMonth());
 
 					issueCreateDate.add(createDate);
 
-					String createTime = String.format("%d:%d", issue.getCreationDate().getHourOfDay(),
+					String createTime = String.format("%d:%d",
+							issue.getCreationDate().getHourOfDay(),
 							issue.getCreationDate().getMinuteOfHour());
 
 					issueCreateTime.add(createTime);
@@ -122,13 +131,15 @@ public class KeyinsightApplication {
 						issueDueTime.add(dueTime);
 					}
 
-					String updatedDate = String.format("%d-%d-%d", issue.getUpdateDate().getYear(),
+					String updatedDate = String.format("%d-%d-%d",
+							issue.getUpdateDate().getYear(),
 							issue.getUpdateDate().getMonthOfYear(),
 							issue.getUpdateDate().getDayOfMonth());
 
 					issueUpdatedDate.add(updatedDate);
 
-					String updatedTime = String.format("%d:%d", issue.getUpdateDate().getHourOfDay(),
+					String updatedTime = String.format("%d:%d",
+							issue.getUpdateDate().getHourOfDay(),
 							issue.getUpdateDate().getMinuteOfHour());
 
 					issueUpdatedTime.add(updatedTime);
@@ -140,31 +151,33 @@ public class KeyinsightApplication {
 					}
 
 					if (issue.getField(fieldValues.get("Type")).getValue() == null) {
-						issueSecondaryType.add("-1");
+						issueSecondaryType.add("null");
 					} else if (issue.getField(fieldValues.get("Type")).getValue() != null) {
 						String secondaryTypeValueJsonString = issue.getField(fieldValues.get("Type")).getValue()
 								.toString();
 						ObjectMapper mapper = new ObjectMapper();
 						JsonNode node = mapper.readTree(secondaryTypeValueJsonString);
 						String SecondaryTypeValue = node.get("value").asText();
-						// https://stackoverflow.com/questions/5245840/how-to-convert-jsonstring-to-jsonobject-in-java
+						// https://
+						// stackoverflow.com/questions/5245840/how-to-convert-jsonstring-to-jsonobject-in-java
 						issueSecondaryType.add(SecondaryTypeValue);
 					}
 
+					// found out that Cancelled Projects are under resolution so issue.getResolution
 					if (issue.getResolution() == null) {
-						issueResolution.add("-1");
+						issueResolution.add("null");
 					} else if (issue.getResolution() != null) {
 						issueResolution.add(issue.getResolution().getName());
 					}
 
 					if (issue.getPriority() == null) {
-						issuePriority.add("-1");
+						issuePriority.add("null");
 					} else if (issue.getPriority() != null) {
 						issuePriority.add(issue.getPriority().getName());
 					}
 
 					if (issue.getAssignee() == null) {
-						issueAssignee.add("-1");
+						issueAssignee.add("null");
 					} else if (issue.getAssignee() != null) {
 						issueAssignee.add(issue.getAssignee().getDisplayName());
 					}
@@ -208,25 +221,6 @@ public class KeyinsightApplication {
 		System.out.println("The Issue Create Time were: " + issueCreateTime.get(0));
 		System.out.println("The Issue Assignee was: " + issueAssignee.get(0));
 
-		// This part of the code grabs information associated to that issue
-		// Currently, I have hard coded in the issue and only grabbing the summary
-		// String issueKey = "B8X4-10275";
-		// Issue issue = myJiraClient.getSingleIssue(issueKey);
-		// System.out.println("Issue Type B8X4-10277: " + issue.getResolution());
-		// Eventually, I'll need to grab the issue keys I got before and pass them
-		// through as a parameter.
-
-		// This part of the code grabs information about issueFields assoicated to that
-		// issue
-		// Iterable<IssueField> allIssueFields = issue.getFields();
-		// for (IssueField issueField : allIssueFields) {
-		// System.out.println(issueField.getId() + " : " + issueField.getName());
-		// }
-		// Found out that Story Points are customfield_10618 for this server B8X4
-		// Found out that Second Type that has Bugs are customfield_12628 for this
-		// server B8X4
-		// found out that Cancelled Projects are under resolution so issue.getResolution
-
 		myJiraClient.restClient.close();
 	}
 
@@ -256,6 +250,10 @@ public class KeyinsightApplication {
 
 	private Issue getSingleIssue(String issueKey) {
 		return restClient.getIssueClient().getIssue(issueKey).claim();
+	}
+
+	private User getUser(String userName) {
+		return restClient.getUserClient().getUser(userName).claim();
 	}
 
 }
