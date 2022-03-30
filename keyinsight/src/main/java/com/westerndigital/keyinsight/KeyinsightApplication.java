@@ -4,6 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.atlassian.jira.rest.client.api.JiraRestClient;
+import com.atlassian.jira.rest.client.api.RestClientException;
 import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClientFactory;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -40,188 +41,192 @@ public class KeyinsightApplication {
 
 		// This part of the code connects the basic user authication to the JIRA server
 		// using an .env file
-		Dotenv dotenv = Dotenv.load();
-		KeyinsightApplication myJiraClient = new KeyinsightApplication(dotenv.get("JIRA_USERNAME"),
-				dotenv.get("JIRA_PASSWORD"), dotenv.get("JIRA_URL"));
-		//
+		try {
+			Dotenv dotenv = Dotenv.load();
+			KeyinsightApplication myJiraClient = new KeyinsightApplication(dotenv.get("JIRA_USERNAME"),
+					dotenv.get("JIRA_PASSWORD"), dotenv.get("JIRA_URL"));
 
-		// This part of the code grabs all projects that the user has access to from the
-		// JIRA Server
+			// This part of the code grabs all projects that the user has access to from the
+			// JIRA Server
 
-		ArrayList<String> projectName = new ArrayList<String>();
-		ArrayList<String> projectLeadName = new ArrayList<String>();
-		ArrayList<String> projectLeadAvatarUri = new ArrayList<String>();
-		ArrayList<String> issueName = new ArrayList<String>();
-		ArrayList<String> issueMainType = new ArrayList<String>();
-		ArrayList<String> issueFromProject = new ArrayList<String>();
-		ArrayList<String> issueStoryPoints = new ArrayList<String>();
-		ArrayList<String> issueSecondaryType = new ArrayList<String>();
-		ArrayList<String> issuePriority = new ArrayList<String>();
-		ArrayList<String> issueResolution = new ArrayList<String>();
-		ArrayList<String> issueStatus = new ArrayList<String>();
-		ArrayList<String> issueCreateDate = new ArrayList<String>();
-		ArrayList<String> issueCreateTime = new ArrayList<String>();
-		ArrayList<String> issueDueDate = new ArrayList<String>();
-		ArrayList<String> issueDueTime = new ArrayList<String>();
-		ArrayList<String> issueUpdatedDate = new ArrayList<String>();
-		ArrayList<String> issueUpdatedTime = new ArrayList<String>();
-		ArrayList<String> issueAssignee = new ArrayList<String>();
+			ArrayList<String> projectName = new ArrayList<String>();
+			ArrayList<String> projectLeadName = new ArrayList<String>();
+			ArrayList<String> projectLeadAvatarUri = new ArrayList<String>();
+			ArrayList<String> issueName = new ArrayList<String>();
+			ArrayList<String> issueMainType = new ArrayList<String>();
+			ArrayList<String> issueFromProject = new ArrayList<String>();
+			ArrayList<String> issueStoryPoints = new ArrayList<String>();
+			ArrayList<String> issueSecondaryType = new ArrayList<String>();
+			ArrayList<String> issuePriority = new ArrayList<String>();
+			ArrayList<String> issueResolution = new ArrayList<String>();
+			ArrayList<String> issueStatus = new ArrayList<String>();
+			ArrayList<String> issueCreateDate = new ArrayList<String>();
+			ArrayList<String> issueCreateTime = new ArrayList<String>();
+			ArrayList<String> issueDueDate = new ArrayList<String>();
+			ArrayList<String> issueDueTime = new ArrayList<String>();
+			ArrayList<String> issueUpdatedDate = new ArrayList<String>();
+			ArrayList<String> issueUpdatedTime = new ArrayList<String>();
+			ArrayList<String> issueAssignee = new ArrayList<String>();
 
-		HashMap<String, String> fieldValues = new HashMap<String, String>();
+			HashMap<String, String> fieldValues = new HashMap<String, String>();
 
-		int projectCount = 0;
-		int issueCount = 0;
-		Iterable<BasicProject> allProjects = myJiraClient.getAllProject();
-		for (BasicProject project : allProjects) {
-			String projectUrl = project.getKey();
-			Project singleProject = myJiraClient.getProject(projectUrl);
-			projectName.add(singleProject.getName());
-			User projectLead = myJiraClient.getUser(singleProject.getLead().getName());
-			projectLeadName.add(projectLead.getDisplayName());
-			projectLeadAvatarUri.add(projectLead.getAvatarUri().toString());
-			String id = "10";
-			while (Integer.parseInt(id) != 1) {
-				Iterable<Issue> allIssues = myJiraClient.getAllIssues(singleProject.getName(), issueCount);
-				for (Issue issue : allIssues) {
-					id = issue.getKey();
-					id = id.substring(id.indexOf('-') + 1);
-					issueName.add(issue.getKey());
-					issueMainType.add(issue.getIssueType().getName());
-					issueFromProject.add(issue.getProject().getName());
-					issueStatus.add(issue.getStatus().getName());
+			int projectCount = 0;
+			int issueCount = 0;
+			Iterable<BasicProject> allProjects = myJiraClient.getAllProject();
+			for (BasicProject project : allProjects) {
+				String projectUrl = project.getKey();
+				Project singleProject = myJiraClient.getProject(projectUrl);
+				projectName.add(singleProject.getName());
+				User projectLead = myJiraClient.getUser(singleProject.getLead().getName());
+				projectLeadName.add(projectLead.getDisplayName());
+				projectLeadAvatarUri.add(projectLead.getAvatarUri().toString());
+				String id = "10";
+				while (Integer.parseInt(id) != 1) {
+					Iterable<Issue> allIssues = myJiraClient.getAllIssues(singleProject.getName(), issueCount);
+					for (Issue issue : allIssues) {
+						id = issue.getKey();
+						id = id.substring(id.indexOf('-') + 1);
+						issueName.add(issue.getKey());
+						issueMainType.add(issue.getIssueType().getName());
+						issueFromProject.add(issue.getProject().getName());
+						issueStatus.add(issue.getStatus().getName());
 
-					if (issueCount == 0) {
-						Iterable<IssueField> allIssueFields = issue.getFields();
-						for (IssueField issueField : allIssueFields) {
-							fieldValues.put(issueField.getName(), issueField.getId());
-							System.out.println(issueField.getId() + " : " + issueField.getName());
+						if (issueCount == 0) {
+							Iterable<IssueField> allIssueFields = issue.getFields();
+							for (IssueField issueField : allIssueFields) {
+								fieldValues.put(issueField.getName(), issueField.getId());
+								System.out.println(issueField.getId() + " : " + issueField.getName());
+							}
+							// Found out that Story Points are customfield_10618 for this server B8X4
+							// Found out that Second Type that has Bugs are customfield_12628 for this
+							// server B8X4
 						}
-						// Found out that Story Points are customfield_10618 for this server B8X4
-						// Found out that Second Type that has Bugs are customfield_12628 for this
-						// server B8X4
+						System.out.println(issueCount);
+
+						String createDate = String.format("%d-%d-%d",
+								issue.getCreationDate().getYear(),
+								issue.getCreationDate().getMonthOfYear(),
+								issue.getCreationDate().getDayOfMonth());
+
+						issueCreateDate.add(createDate);
+
+						String createTime = String.format("%d:%d",
+								issue.getCreationDate().getHourOfDay(),
+								issue.getCreationDate().getMinuteOfHour());
+
+						issueCreateTime.add(createTime);
+
+						if (issue.getDueDate() == null) {
+							issueDueDate.add("-1");
+							issueDueTime.add("-1");
+						} else if (issue.getDueDate() != null) {
+							String dueDate = String.format("%d-%d-%d", issue.getDueDate().getYear(),
+									issue.getDueDate().getMonthOfYear(),
+									issue.getDueDate().getDayOfMonth());
+
+							issueDueDate.add(dueDate);
+
+							String dueTime = String.format("%d:%d", issue.getDueDate().getHourOfDay(),
+									issue.getDueDate().getMinuteOfHour());
+
+							issueDueTime.add(dueTime);
+						}
+
+						String updatedDate = String.format("%d-%d-%d",
+								issue.getUpdateDate().getYear(),
+								issue.getUpdateDate().getMonthOfYear(),
+								issue.getUpdateDate().getDayOfMonth());
+
+						issueUpdatedDate.add(updatedDate);
+
+						String updatedTime = String.format("%d:%d",
+								issue.getUpdateDate().getHourOfDay(),
+								issue.getUpdateDate().getMinuteOfHour());
+
+						issueUpdatedTime.add(updatedTime);
+
+						if (issue.getField(fieldValues.get("Story Points")).getValue() == null) {
+							issueStoryPoints.add("-1");
+						} else if (issue.getField(fieldValues.get("Story Points")).getValue() != null) {
+							issueStoryPoints.add(issue.getField(fieldValues.get("Story Points")).getValue().toString());
+						}
+
+						if (issue.getField(fieldValues.get("Type")).getValue() == null) {
+							issueSecondaryType.add("null");
+						} else if (issue.getField(fieldValues.get("Type")).getValue() != null) {
+							String secondaryTypeValueJsonString = issue.getField(fieldValues.get("Type")).getValue()
+									.toString();
+							ObjectMapper mapper = new ObjectMapper();
+							JsonNode node = mapper.readTree(secondaryTypeValueJsonString);
+							String SecondaryTypeValue = node.get("value").asText();
+							// https://
+							// stackoverflow.com/questions/5245840/how-to-convert-jsonstring-to-jsonobject-in-java
+							issueSecondaryType.add(SecondaryTypeValue);
+						}
+
+						// found out that Cancelled Projects are under resolution so issue.getResolution
+						if (issue.getResolution() == null) {
+							issueResolution.add("null");
+						} else if (issue.getResolution() != null) {
+							issueResolution.add(issue.getResolution().getName());
+						}
+
+						if (issue.getPriority() == null) {
+							issuePriority.add("null");
+						} else if (issue.getPriority() != null) {
+							issuePriority.add(issue.getPriority().getName());
+						}
+
+						if (issue.getAssignee() == null) {
+							issueAssignee.add("null");
+						} else if (issue.getAssignee() != null) {
+							issueAssignee.add(issue.getAssignee().getDisplayName());
+						}
+						issueCount += 1;
 					}
-					System.out.println(issueCount);
-
-					String createDate = String.format("%d-%d-%d",
-							issue.getCreationDate().getYear(),
-							issue.getCreationDate().getMonthOfYear(),
-							issue.getCreationDate().getDayOfMonth());
-
-					issueCreateDate.add(createDate);
-
-					String createTime = String.format("%d:%d",
-							issue.getCreationDate().getHourOfDay(),
-							issue.getCreationDate().getMinuteOfHour());
-
-					issueCreateTime.add(createTime);
-
-					if (issue.getDueDate() == null) {
-						issueDueDate.add("-1");
-						issueDueTime.add("-1");
-					} else if (issue.getDueDate() != null) {
-						String dueDate = String.format("%d-%d-%d", issue.getDueDate().getYear(),
-								issue.getDueDate().getMonthOfYear(),
-								issue.getDueDate().getDayOfMonth());
-
-						issueDueDate.add(dueDate);
-
-						String dueTime = String.format("%d:%d", issue.getDueDate().getHourOfDay(),
-								issue.getDueDate().getMinuteOfHour());
-
-						issueDueTime.add(dueTime);
-					}
-
-					String updatedDate = String.format("%d-%d-%d",
-							issue.getUpdateDate().getYear(),
-							issue.getUpdateDate().getMonthOfYear(),
-							issue.getUpdateDate().getDayOfMonth());
-
-					issueUpdatedDate.add(updatedDate);
-
-					String updatedTime = String.format("%d:%d",
-							issue.getUpdateDate().getHourOfDay(),
-							issue.getUpdateDate().getMinuteOfHour());
-
-					issueUpdatedTime.add(updatedTime);
-
-					if (issue.getField(fieldValues.get("Story Points")).getValue() == null) {
-						issueStoryPoints.add("-1");
-					} else if (issue.getField(fieldValues.get("Story Points")).getValue() != null) {
-						issueStoryPoints.add(issue.getField(fieldValues.get("Story Points")).getValue().toString());
-					}
-
-					if (issue.getField(fieldValues.get("Type")).getValue() == null) {
-						issueSecondaryType.add("null");
-					} else if (issue.getField(fieldValues.get("Type")).getValue() != null) {
-						String secondaryTypeValueJsonString = issue.getField(fieldValues.get("Type")).getValue()
-								.toString();
-						ObjectMapper mapper = new ObjectMapper();
-						JsonNode node = mapper.readTree(secondaryTypeValueJsonString);
-						String SecondaryTypeValue = node.get("value").asText();
-						// https://
-						// stackoverflow.com/questions/5245840/how-to-convert-jsonstring-to-jsonobject-in-java
-						issueSecondaryType.add(SecondaryTypeValue);
-					}
-
-					// found out that Cancelled Projects are under resolution so issue.getResolution
-					if (issue.getResolution() == null) {
-						issueResolution.add("null");
-					} else if (issue.getResolution() != null) {
-						issueResolution.add(issue.getResolution().getName());
-					}
-
-					if (issue.getPriority() == null) {
-						issuePriority.add("null");
-					} else if (issue.getPriority() != null) {
-						issuePriority.add(issue.getPriority().getName());
-					}
-
-					if (issue.getAssignee() == null) {
-						issueAssignee.add("null");
-					} else if (issue.getAssignee() != null) {
-						issueAssignee.add(issue.getAssignee().getDisplayName());
-					}
-					issueCount += 1;
+					System.out.println("There were " + projectCount + " project(s)");
+					System.out.println("The Project Name(s) were: " + projectName.get(0));
+					System.out.println("The Project Lead(s) was; " + projectLeadName.get(0));
+					System.out.println("There were " + issueCount + " issue(s) that I was able to pull");
+					System.out.println("The Issue Name(s) were: " + issueName.get(0));
+					System.out.println("The Issue Project were: " + issueFromProject.get(0));
+					System.out.println("The Issue Main Type were: " + issueMainType.get(0));
+					System.out.println("The Issue Story Points were: " + issueStoryPoints.get(0));
+					System.out.println("The Issue Secondary Type were: " + issueSecondaryType.get(0));
+					System.out.println("The Issue Priority were: " + issuePriority.get(0));
+					System.out.println("The Issue Resolution were: " + issueResolution.get(0));
+					System.out.println("The Issue Status were: " + issueStatus.get(0));
+					System.out.println("The Issue Create Date were: " + issueCreateDate.get(0));
+					System.out.println("The Issue Create Time were: " + issueCreateTime.get(0));
+					System.out.println("The Issue Updated Date were: " + issueUpdatedDate.get(0));
+					System.out.println("The Issue Updated Time were: " + issueUpdatedTime.get(0));
+					System.out.println("The Issue Due Date were: " + issueDueDate.get(0));
+					System.out.println("The Issue Due Time were: " + issueDueTime.get(0));
+					System.out.println("The Issue Assignee was: " + issueAssignee.get(0));
 				}
-				System.out.println("There were " + projectCount + " project(s)");
-				System.out.println("The Project Name(s) were: " + projectName.get(0));
-				System.out.println("The Project Lead(s) was; " + projectLeadName.get(0));
-				System.out.println("There were " + issueCount + " issue(s) that I was able to pull");
-				System.out.println("The Issue Name(s) were: " + issueName.get(0));
-				System.out.println("The Issue Project were: " + issueFromProject.get(0));
-				System.out.println("The Issue Main Type were: " + issueMainType.get(0));
-				System.out.println("The Issue Story Points were: " + issueStoryPoints.get(0));
-				System.out.println("The Issue Secondary Type were: " + issueSecondaryType.get(0));
-				System.out.println("The Issue Priority were: " + issuePriority.get(0));
-				System.out.println("The Issue Resolution were: " + issueResolution.get(0));
-				System.out.println("The Issue Status were: " + issueStatus.get(0));
-				System.out.println("The Issue Create Date were: " + issueCreateDate.get(0));
-				System.out.println("The Issue Create Time were: " + issueCreateTime.get(0));
-				System.out.println("The Issue Updated Date were: " + issueUpdatedDate.get(0));
-				System.out.println("The Issue Updated Time were: " + issueUpdatedTime.get(0));
-				System.out.println("The Issue Due Date were: " + issueDueDate.get(0));
-				System.out.println("The Issue Due Time were: " + issueDueTime.get(0));
-				System.out.println("The Issue Assignee was: " + issueAssignee.get(0));
+				projectCount += 1;
 			}
-			projectCount += 1;
-		}
-		System.out.println("There were " + projectCount + " project(s)");
-		System.out.println("The Project Name(s) were: " + projectName.get(0));
-		System.out.println("The Project Lead(s) was; " + projectLeadName.get(0));
-		System.out.println("There were " + issueCount + " issue(s) that I was able to pull");
-		System.out.println("The Issue Name(s) were: " + issueName.get(0));
-		System.out.println("The Issue Project were: " + issueFromProject.get(0));
-		System.out.println("The Issue Main Type were: " + issueMainType.get(0));
-		System.out.println("The Issue Story Points were: " + issueStoryPoints.get(0));
-		System.out.println("The Issue Secondary Type were: " + issueSecondaryType.get(0));
-		System.out.println("The Issue Priority were: " + issuePriority.get(0));
-		System.out.println("The Issue Resolution were: " + issueResolution.get(0));
-		System.out.println("The Issue Status were: " + issueStatus.get(0));
-		System.out.println("The Issue Create Date were: " + issueCreateDate.get(0));
-		System.out.println("The Issue Create Time were: " + issueCreateTime.get(0));
-		System.out.println("The Issue Assignee was: " + issueAssignee.get(0));
+			System.out.println("There were " + projectCount + " project(s)");
+			System.out.println("The Project Name(s) were: " + projectName.get(0));
+			System.out.println("The Project Lead(s) was; " + projectLeadName.get(0));
+			System.out.println("There were " + issueCount + " issue(s) that I was able to pull");
+			System.out.println("The Issue Name(s) were: " + issueName.get(0));
+			System.out.println("The Issue Project were: " + issueFromProject.get(0));
+			System.out.println("The Issue Main Type were: " + issueMainType.get(0));
+			System.out.println("The Issue Story Points were: " + issueStoryPoints.get(0));
+			System.out.println("The Issue Secondary Type were: " + issueSecondaryType.get(0));
+			System.out.println("The Issue Priority were: " + issuePriority.get(0));
+			System.out.println("The Issue Resolution were: " + issueResolution.get(0));
+			System.out.println("The Issue Status were: " + issueStatus.get(0));
+			System.out.println("The Issue Create Date were: " + issueCreateDate.get(0));
+			System.out.println("The Issue Create Time were: " + issueCreateTime.get(0));
+			System.out.println("The Issue Assignee was: " + issueAssignee.get(0));
 
-		myJiraClient.restClient.close();
+			myJiraClient.restClient.close();
+		} catch (RestClientException e) {
+			System.out.println(e.getStatusCode());
+		}
+
 	}
 
 	private JiraRestClient getJiraRestClient() {
