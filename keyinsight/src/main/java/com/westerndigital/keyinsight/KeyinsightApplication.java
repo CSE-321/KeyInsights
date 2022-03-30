@@ -3,16 +3,18 @@ package com.westerndigital.keyinsight;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import com.atlassian.httpclient.api.Request;
 import com.atlassian.jira.rest.client.api.JiraRestClient;
 import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClientFactory;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.io.IOException;
 import java.net.URI;
+import java.util.ArrayList;
 
 import com.atlassian.jira.rest.client.api.domain.BasicProject;
 import com.atlassian.jira.rest.client.api.domain.Project;
 import com.atlassian.jira.rest.client.api.domain.Issue;
-import com.atlassian.jira.rest.client.api.domain.IssueField;
 
 import io.github.cdimascio.dotenv.Dotenv;
 
@@ -42,33 +44,82 @@ public class KeyinsightApplication {
 
 		// This part of the code grabs all projects that the user has access to from the
 		// JIRA Server
+
+		ArrayList<String> projectName = new ArrayList<String>();
+		ArrayList<String> projectLeadName = new ArrayList<String>();
+		ArrayList<String> issueName = new ArrayList<String>();
+		ArrayList<String> issueMainType = new ArrayList<String>();
+		ArrayList<String> issueFromProject = new ArrayList<String>();
+		ArrayList<String> issueStoryPoints = new ArrayList<String>();
+		ArrayList<String> issueSecondaryType = new ArrayList<String>();
+		ArrayList<String> issuePriority = new ArrayList<String>();
+		ArrayList<String> issueResolution = new ArrayList<String>();
+		ArrayList<String> issueStatus = new ArrayList<String>();
+
 		int projectCount = 0;
+		int issueCount = 0;
 		Iterable<BasicProject> allProjects = myJiraClient.getAllProject();
 		for (BasicProject project : allProjects) {
 			String projectUrl = project.getKey();
-			// System.out.println(project.getKey());
-			Project singleProject = myJiraClient.getProject(projectUrl);
-			System.out.println(singleProject.getLead().getDisplayName());
 			projectCount += 1;
+			Project singleProject = myJiraClient.getProject(projectUrl);
+			projectName.add(singleProject.getName());
+			projectLeadName.add(singleProject.getLead().getDisplayName());
+			String id = "10";
+			while (Integer.parseInt(id) != 1) {
+				Iterable<Issue> allIssues = myJiraClient.getAllIssues(singleProject.getName(), issueCount);
+				for (Issue issue : allIssues) {
+					id = issue.getKey();
+					id = id.substring(id.indexOf('-') + 1);
+					issueName.add(issue.getKey());
+					issueMainType.add(issue.getIssueType().getName());
+					issueFromProject.add(issue.getProject().getName());
+
+					if (issue.getField("customfield_10618").getValue() == null) {
+						issueStoryPoints.add("-1");
+					} else if (issue.getField("customfield_10618").getValue() != null) {
+						issueStoryPoints.add(issue.getField("customfield_10618").getValue().toString());
+					}
+
+					if (issue.getPriority() == null) {
+						issuePriority.add("-1");
+					} else if (issue.getPriority() != null) {
+						issuePriority.add(issue.getPriority().getName());
+					}
+
+					if (issue.getField("customfield_12628").getValue() == null) {
+						issueSecondaryType.add("-1");
+					} else if (issue.getField("customfield_12628").getValue() != null) {
+						String secondaryTypeValueJsonString = issue.getField("customfield_12628").getValue().toString();
+						ObjectMapper mapper = new ObjectMapper();
+						JsonNode node = mapper.readTree(secondaryTypeValueJsonString);
+						String SecondaryTypeValue = node.get("value").asText();
+						// https://stackoverflow.com/questions/5245840/how-to-convert-jsonstring-to-jsonobject-in-java
+						issueSecondaryType.add(SecondaryTypeValue);
+					}
+
+					if (issue.getResolution() == null) {
+						issueResolution.add("-1");
+					} else if (issue.getResolution() != null) {
+						issueResolution.add(issue.getResolution().getName());
+					}
+					issueStatus.add(issue.getStatus().getName());
+					issueCount += 1;
+				}
+			}
 		}
 		System.out.println("There were " + projectCount + " project(s)");
-
-		// This part of the code attempts to grabs all the issues associated with that
-		// project
-
-		// Currently, I have hard coded it to go with the single BX84 project on the
-		// server
-
-		// int issueCount = 0;
-		// Iterable<Issue> allIssues = myJiraClient.getAllIssues();
-		// for (Issue issue : allIssues) {
-		// System.out.println(issue.getKey() + " " + issue.getIssueType().getName());
-		// issueCount += 1;
-		// }
-		// System.out.println("There were " + issueCount + " issue(s) that I was able to
-		// pull");
-		// Eventually, I'll need to grab the project names I got before and pass them
-		// through as a parameter.
+		System.out.println("The Project Name(s) were: " + projectName.get(0));
+		System.out.println("The Project Lead(s) was; " + projectLeadName.get(0));
+		System.out.println("There were " + issueCount + " issue(s) that I was able to pull");
+		System.out.println("The Issue Name(s) were: " + issueName.get(0));
+		System.out.println("The Issue Project were: " + issueFromProject.get(0));
+		System.out.println("The Issue Main Type were: " + issueMainType.get(0));
+		System.out.println("The Issue Story Points were: " + issueStoryPoints.get(0));
+		System.out.println("The Issue Secondary Type were: " + issueSecondaryType.get(0));
+		System.out.println("The Issue Priority were: " + issuePriority.get(0));
+		System.out.println("The Issue Resolution were: " + issueResolution.get(0));
+		System.out.println("The Issue Status were: " + issueStatus.get(0));
 
 		// This part of the code grabs information associated to that issue
 		// Currently, I have hard coded in the issue and only grabbing the summary
@@ -105,14 +156,14 @@ public class KeyinsightApplication {
 		return restClient.getProjectClient().getAllProjects().claim();
 	}
 
-	private Project getProject(String URL) {
-		return restClient.getProjectClient().getProject(URL).claim();
+	private Project getProject(String key) {
+		return restClient.getProjectClient().getProject(key).claim();
 	}
 
-	private Iterable<Issue> getAllIssues() {
+	private Iterable<Issue> getAllIssues(String projectName, int currentLocation) {
+		String jql = String.format("project = %s", projectName);
 		return restClient.getSearchClient().searchJql(
-				// String jql = String.format("project = %s", arg1)
-				"project = B8X4", -1, 0, null)
+				jql, -1, currentLocation, null)
 				.claim().getIssues();
 	}
 
