@@ -11,10 +11,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.atlassian.jira.rest.client.api.domain.BasicProject;
 import com.atlassian.jira.rest.client.api.domain.Project;
 import com.atlassian.jira.rest.client.api.domain.Issue;
+import com.atlassian.jira.rest.client.api.domain.IssueField;
 
 import io.github.cdimascio.dotenv.Dotenv;
 
@@ -55,13 +57,21 @@ public class KeyinsightApplication {
 		ArrayList<String> issuePriority = new ArrayList<String>();
 		ArrayList<String> issueResolution = new ArrayList<String>();
 		ArrayList<String> issueStatus = new ArrayList<String>();
+		ArrayList<String> issueCreateDate = new ArrayList<String>();
+		ArrayList<String> issueCreateTime = new ArrayList<String>();
+		ArrayList<String> issueDueDate = new ArrayList<String>();
+		ArrayList<String> issueDueTime = new ArrayList<String>();
+		ArrayList<String> issueUpdatedDate = new ArrayList<String>();
+		ArrayList<String> issueUpdatedTime = new ArrayList<String>();
+		ArrayList<String> issueAssignee = new ArrayList<String>();
+
+		HashMap<String, String> fieldValues = new HashMap<String, String>();
 
 		int projectCount = 0;
 		int issueCount = 0;
 		Iterable<BasicProject> allProjects = myJiraClient.getAllProject();
 		for (BasicProject project : allProjects) {
 			String projectUrl = project.getKey();
-			projectCount += 1;
 			Project singleProject = myJiraClient.getProject(projectUrl);
 			projectName.add(singleProject.getName());
 			projectLeadName.add(singleProject.getLead().getDisplayName());
@@ -74,23 +84,66 @@ public class KeyinsightApplication {
 					issueName.add(issue.getKey());
 					issueMainType.add(issue.getIssueType().getName());
 					issueFromProject.add(issue.getProject().getName());
+					issueStatus.add(issue.getStatus().getName());
 
-					if (issue.getField("customfield_10618").getValue() == null) {
+					if (issueCount == 0) {
+						Iterable<IssueField> allIssueFields = issue.getFields();
+						for (IssueField issueField : allIssueFields) {
+							fieldValues.put(issueField.getName(), issueField.getId());
+							System.out.println(issueField.getId() + " : " + issueField.getName());
+						}
+					}
+					System.out.println(issueCount);
+
+					String createDate = String.format("%d-%d-%d", issue.getCreationDate().getYear(),
+							issue.getCreationDate().getMonthOfYear(),
+							issue.getCreationDate().getDayOfMonth());
+
+					issueCreateDate.add(createDate);
+
+					String createTime = String.format("%d:%d", issue.getCreationDate().getHourOfDay(),
+							issue.getCreationDate().getMinuteOfHour());
+
+					issueCreateTime.add(createTime);
+
+					if (issue.getDueDate() == null) {
+						issueDueDate.add("-1");
+						issueDueTime.add("-1");
+					} else if (issue.getDueDate() != null) {
+						String dueDate = String.format("%d-%d-%d", issue.getDueDate().getYear(),
+								issue.getDueDate().getMonthOfYear(),
+								issue.getDueDate().getDayOfMonth());
+
+						issueDueDate.add(dueDate);
+
+						String dueTime = String.format("%d:%d", issue.getDueDate().getHourOfDay(),
+								issue.getDueDate().getMinuteOfHour());
+
+						issueDueTime.add(dueTime);
+					}
+
+					String updatedDate = String.format("%d-%d-%d", issue.getUpdateDate().getYear(),
+							issue.getUpdateDate().getMonthOfYear(),
+							issue.getUpdateDate().getDayOfMonth());
+
+					issueUpdatedDate.add(updatedDate);
+
+					String updatedTime = String.format("%d:%d", issue.getUpdateDate().getHourOfDay(),
+							issue.getUpdateDate().getMinuteOfHour());
+
+					issueUpdatedTime.add(updatedTime);
+
+					if (issue.getField(fieldValues.get("Story Points")).getValue() == null) {
 						issueStoryPoints.add("-1");
-					} else if (issue.getField("customfield_10618").getValue() != null) {
-						issueStoryPoints.add(issue.getField("customfield_10618").getValue().toString());
+					} else if (issue.getField(fieldValues.get("Story Points")).getValue() != null) {
+						issueStoryPoints.add(issue.getField(fieldValues.get("Story Points")).getValue().toString());
 					}
 
-					if (issue.getPriority() == null) {
-						issuePriority.add("-1");
-					} else if (issue.getPriority() != null) {
-						issuePriority.add(issue.getPriority().getName());
-					}
-
-					if (issue.getField("customfield_12628").getValue() == null) {
+					if (issue.getField(fieldValues.get("Type")).getValue() == null) {
 						issueSecondaryType.add("-1");
-					} else if (issue.getField("customfield_12628").getValue() != null) {
-						String secondaryTypeValueJsonString = issue.getField("customfield_12628").getValue().toString();
+					} else if (issue.getField(fieldValues.get("Type")).getValue() != null) {
+						String secondaryTypeValueJsonString = issue.getField(fieldValues.get("Type")).getValue()
+								.toString();
 						ObjectMapper mapper = new ObjectMapper();
 						JsonNode node = mapper.readTree(secondaryTypeValueJsonString);
 						String SecondaryTypeValue = node.get("value").asText();
@@ -103,10 +156,41 @@ public class KeyinsightApplication {
 					} else if (issue.getResolution() != null) {
 						issueResolution.add(issue.getResolution().getName());
 					}
-					issueStatus.add(issue.getStatus().getName());
+
+					if (issue.getPriority() == null) {
+						issuePriority.add("-1");
+					} else if (issue.getPriority() != null) {
+						issuePriority.add(issue.getPriority().getName());
+					}
+
+					if (issue.getAssignee() == null) {
+						issueAssignee.add("-1");
+					} else if (issue.getAssignee() != null) {
+						issueAssignee.add(issue.getAssignee().getDisplayName());
+					}
 					issueCount += 1;
 				}
+				System.out.println("There were " + projectCount + " project(s)");
+				System.out.println("The Project Name(s) were: " + projectName.get(0));
+				System.out.println("The Project Lead(s) was; " + projectLeadName.get(0));
+				System.out.println("There were " + issueCount + " issue(s) that I was able to pull");
+				System.out.println("The Issue Name(s) were: " + issueName.get(0));
+				System.out.println("The Issue Project were: " + issueFromProject.get(0));
+				System.out.println("The Issue Main Type were: " + issueMainType.get(0));
+				System.out.println("The Issue Story Points were: " + issueStoryPoints.get(0));
+				System.out.println("The Issue Secondary Type were: " + issueSecondaryType.get(0));
+				System.out.println("The Issue Priority were: " + issuePriority.get(0));
+				System.out.println("The Issue Resolution were: " + issueResolution.get(0));
+				System.out.println("The Issue Status were: " + issueStatus.get(0));
+				System.out.println("The Issue Create Date were: " + issueCreateDate.get(0));
+				System.out.println("The Issue Create Time were: " + issueCreateTime.get(0));
+				System.out.println("The Issue Updated Date were: " + issueUpdatedDate.get(0));
+				System.out.println("The Issue Updated Time were: " + issueUpdatedTime.get(0));
+				System.out.println("The Issue Due Date were: " + issueDueDate.get(0));
+				System.out.println("The Issue Due Time were: " + issueDueTime.get(0));
+				System.out.println("The Issue Assignee was: " + issueAssignee.get(0));
 			}
+			projectCount += 1;
 		}
 		System.out.println("There were " + projectCount + " project(s)");
 		System.out.println("The Project Name(s) were: " + projectName.get(0));
@@ -120,6 +204,9 @@ public class KeyinsightApplication {
 		System.out.println("The Issue Priority were: " + issuePriority.get(0));
 		System.out.println("The Issue Resolution were: " + issueResolution.get(0));
 		System.out.println("The Issue Status were: " + issueStatus.get(0));
+		System.out.println("The Issue Create Date were: " + issueCreateDate.get(0));
+		System.out.println("The Issue Create Time were: " + issueCreateTime.get(0));
+		System.out.println("The Issue Assignee was: " + issueAssignee.get(0));
 
 		// This part of the code grabs information associated to that issue
 		// Currently, I have hard coded in the issue and only grabbing the summary
