@@ -46,7 +46,7 @@ const HomePage = () => {
         subtext={
           isUserSignedIn
             ? 'Get Started to see projects'
-            : 'Enter your credentials'
+            : 'Sign in with your Jira server account to get started'
         }
         showServer={false}></BodyHeader>
       <div className="flex flex-col items-center space-y-5 md:space-y-0 md:flex-row md:space-x-5">
