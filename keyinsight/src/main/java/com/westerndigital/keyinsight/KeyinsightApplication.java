@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
 import com.atlassian.jira.rest.client.api.domain.BasicProject;
 import com.atlassian.jira.rest.client.api.domain.Project;
@@ -42,6 +43,7 @@ public class KeyinsightApplication {
 		// This part of the code connects the basic user authication to the JIRA server
 		// using an .env file
 		try {
+			long start = System.nanoTime();
 			Dotenv dotenv = Dotenv.load();
 			KeyinsightApplication myJiraClient = new KeyinsightApplication(dotenv.get("JIRA_USERNAME"),
 					dotenv.get("JIRA_PASSWORD"), dotenv.get("JIRA_URL"));
@@ -55,7 +57,7 @@ public class KeyinsightApplication {
 			ArrayList<String> issueName = new ArrayList<String>();
 			ArrayList<String> issueMainType = new ArrayList<String>();
 			ArrayList<String> issueFromProject = new ArrayList<String>();
-			ArrayList<String> issueStoryPoints = new ArrayList<String>();
+			ArrayList<Float> issueStoryPoints = new ArrayList<Float>();
 			ArrayList<String> issueSecondaryType = new ArrayList<String>();
 			ArrayList<String> issuePriority = new ArrayList<String>();
 			ArrayList<String> issueResolution = new ArrayList<String>();
@@ -95,13 +97,13 @@ public class KeyinsightApplication {
 							Iterable<IssueField> allIssueFields = issue.getFields();
 							for (IssueField issueField : allIssueFields) {
 								fieldValues.put(issueField.getName(), issueField.getId());
-								System.out.println(issueField.getId() + " : " + issueField.getName());
+								// System.out.println(issueField.getId() + " : " + issueField.getName());
 							}
 							// Found out that Story Points are customfield_10618 for this server B8X4
 							// Found out that Second Type that has Bugs are customfield_12628 for this
 							// server B8X4
 						}
-						System.out.println(issueCount);
+						// System.out.println(issueCount);
 
 						String createDate = String.format("%d-%d-%d",
 								issue.getCreationDate().getYear(),
@@ -117,8 +119,8 @@ public class KeyinsightApplication {
 						issueCreateTime.add(createTime);
 
 						if (issue.getDueDate() == null) {
-							issueDueDate.add("-1");
-							issueDueTime.add("-1");
+							issueDueDate.add(null);
+							issueDueTime.add(null);
 						} else if (issue.getDueDate() != null) {
 							String dueDate = String.format("%d-%d-%d", issue.getDueDate().getYear(),
 									issue.getDueDate().getMonthOfYear(),
@@ -146,13 +148,15 @@ public class KeyinsightApplication {
 						issueUpdatedTime.add(updatedTime);
 
 						if (issue.getField(fieldValues.get("Story Points")).getValue() == null) {
-							issueStoryPoints.add("-1");
+							issueStoryPoints.add(null);
 						} else if (issue.getField(fieldValues.get("Story Points")).getValue() != null) {
-							issueStoryPoints.add(issue.getField(fieldValues.get("Story Points")).getValue().toString());
+							float storyPoints = Float
+									.parseFloat(issue.getField(fieldValues.get("Story Points")).getValue().toString());
+							issueStoryPoints.add(storyPoints);
 						}
 
 						if (issue.getField(fieldValues.get("Type")).getValue() == null) {
-							issueSecondaryType.add("null");
+							issueSecondaryType.add(null);
 						} else if (issue.getField(fieldValues.get("Type")).getValue() != null) {
 							String secondaryTypeValueJsonString = issue.getField(fieldValues.get("Type")).getValue()
 									.toString();
@@ -184,25 +188,30 @@ public class KeyinsightApplication {
 						}
 						issueCount += 1;
 					}
-					System.out.println("There were " + projectCount + " project(s)");
-					System.out.println("The Project Name(s) were: " + projectName.get(0));
-					System.out.println("The Project Lead(s) was; " + projectLeadName.get(0));
-					System.out.println("There were " + issueCount + " issue(s) that I was able to pull");
-					System.out.println("The Issue Name(s) were: " + issueName.get(0));
-					System.out.println("The Issue Project were: " + issueFromProject.get(0));
-					System.out.println("The Issue Main Type were: " + issueMainType.get(0));
-					System.out.println("The Issue Story Points were: " + issueStoryPoints.get(0));
-					System.out.println("The Issue Secondary Type were: " + issueSecondaryType.get(0));
-					System.out.println("The Issue Priority were: " + issuePriority.get(0));
-					System.out.println("The Issue Resolution were: " + issueResolution.get(0));
-					System.out.println("The Issue Status were: " + issueStatus.get(0));
-					System.out.println("The Issue Create Date were: " + issueCreateDate.get(0));
-					System.out.println("The Issue Create Time were: " + issueCreateTime.get(0));
-					System.out.println("The Issue Updated Date were: " + issueUpdatedDate.get(0));
-					System.out.println("The Issue Updated Time were: " + issueUpdatedTime.get(0));
-					System.out.println("The Issue Due Date were: " + issueDueDate.get(0));
-					System.out.println("The Issue Due Time were: " + issueDueTime.get(0));
-					System.out.println("The Issue Assignee was: " + issueAssignee.get(0));
+					// System.out.println("There were " + projectCount + " project(s)");
+					// System.out.println("The Project Name(s) were: " + projectName.get(0));
+					// System.out.println("The Project Lead(s) was; " + projectLeadName.get(0));
+					// System.out.println("There were " + issueCount + " issue(s) that I was able to
+					// pull");
+					// System.out.println("The Issue Name(s) were: " + issueName.get(0));
+					// System.out.println("The Issue Project were: " + issueFromProject.get(0));
+					// System.out.println("The Issue Main Type were: " + issueMainType.get(0));
+					// System.out.println("The Issue Story Points were: " +
+					// issueStoryPoints.get(0));
+					// System.out.println("The Issue Secondary Type were: " +
+					// issueSecondaryType.get(0));
+					// System.out.println("The Issue Priority were: " + issuePriority.get(0));
+					// System.out.println("The Issue Resolution were: " + issueResolution.get(0));
+					// System.out.println("The Issue Status were: " + issueStatus.get(0));
+					// System.out.println("The Issue Create Date were: " + issueCreateDate.get(0));
+					// System.out.println("The Issue Create Time were: " + issueCreateTime.get(0));
+					// System.out.println("The Issue Updated Date were: " +
+					// issueUpdatedDate.get(0));
+					// System.out.println("The Issue Updated Time were: " +
+					// issueUpdatedTime.get(0));
+					// System.out.println("The Issue Due Date were: " + issueDueDate.get(0));
+					// System.out.println("The Issue Due Time were: " + issueDueTime.get(0));
+					// System.out.println("The Issue Assignee was: " + issueAssignee.get(0));
 				}
 				projectCount += 1;
 			}
@@ -223,8 +232,13 @@ public class KeyinsightApplication {
 			System.out.println("The Issue Assignee was: " + issueAssignee.get(0));
 
 			myJiraClient.restClient.close();
+			long finish = System.nanoTime();
+			long timeElapsed = finish - start;
+			long convert = TimeUnit.MINUTES.convert(timeElapsed, TimeUnit.NANOSECONDS);
+			System.out.println("It took this program: " + convert + " minutes");
+
 		} catch (RestClientException e) {
-			System.out.println(e.getStatusCode());
+			System.out.println(e.getLocalizedMessage());
 		}
 
 	}
