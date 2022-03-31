@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import '../CSS/BodyHeader.css';
-//import Dropdown from './Dropdown';
+import Dropdown from './Dropdown';
 
 /**
  * The body header component is used to display the header of the body. It contains the title,
@@ -14,13 +14,14 @@ import '../CSS/BodyHeader.css';
 const BodyHeader = ({ title, subtext, showServer }) => {
   const [headerTitle, setHeaderTitle] = React.useState(title);
   const [headerSubtext, setHeaderSubtext] = React.useState(subtext);
+  const [showDropdown, setShowDropdown] = React.useState(false);
 
   React.useEffect(() => {
     setHeaderTitle(title);
     setHeaderSubtext(subtext);
-  }, [title, subtext]);
+  }, [title, subtext, showServer]);
 
-  const servers = ['STM', 'STM2', 'STM3'];
+  const servers = [];
 
   return (
     <>
@@ -33,6 +34,14 @@ const BodyHeader = ({ title, subtext, showServer }) => {
           </h1>
           <p className="header-text"> {headerSubtext} </p>
         </div>
+
+        {showServer && (
+          <Fragment>
+            <div className="w-10v h-10v">
+              <Dropdown />
+            </div>
+          </Fragment>
+        )}
       </div>
     </>
   );
