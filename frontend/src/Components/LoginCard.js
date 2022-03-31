@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
 import { signinUser } from './Auth/userSlice';
 import { signIn } from '../Util/Networking';
+import { setActiveServer } from './Auth/serverSlice';
 
 const LoginCard = () => {
   const dispatch = useDispatch();
@@ -27,6 +28,7 @@ const LoginCard = () => {
         setSignInRejected(false);
         setInvalidEmail(false);
         dispatch(signinUser(user));
+        dispatch(setActiveServer(user.server));
         navigate('/projects', { replace: true });
       })
       .catch((error) => {
@@ -42,7 +44,15 @@ const LoginCard = () => {
       <div id="LoginCard" className="w-full h-full bg-white drop-shadow-2xl">
         <div className="flex flex-col mx-5 py-5 space-y-5 sm:mx-10 md:mx-20 ">
           <h1 className="text-2xl font-bold sm:text-3xl"> Login</h1>
+          <form>
+            <h2 className="text-lg sm:text-xl"> Server Url </h2>
+            <input
+              className="w-full h-10 rounded-lg drop-shadow-md"
+              type="url"
+              placeholder="http://jira.yourserver.com:port"></input>
+          </form>
           <h2 className="text-lg sm:text-xl"> Email </h2>
+
           <form className="">
             {invalidEmail ? (
               <p className="text-rose-500"> Invalid email </p>
