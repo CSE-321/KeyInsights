@@ -4,6 +4,7 @@ import './App.css';
 import NavBar from './Components/NavBar';
 import HomePage from './Views/HomePage';
 import ProjectsPage from './Views/ProjectsPage';
+import ProjectInsightsPage from './Views/ProjectInsightsPage';
 import Footer from './Components/Footer';
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
         <Routes>
           <Route exact path="/" element={<HomePage />} />
           <Route exact path="/projects" element={<ProjectsPage />} />
+          <Route exact path="/projects/:id" element={<ProjectInsightsPage />} />
         </Routes>
       </div>
       <Footer />
