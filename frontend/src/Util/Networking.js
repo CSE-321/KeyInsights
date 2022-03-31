@@ -3,7 +3,7 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import { signinUser, signoutUser } from '../Components/Auth/userSlice';
 
-export function signIn(email, password) {
+export function signIn(username, password, serverURL) {
   //TODO: Replace mock data with actual data from the server (i.e. API call)
   const user = {
     id: '12345',
@@ -12,11 +12,19 @@ export function signIn(email, password) {
     role: 'admin',
   };
 
+  const reqBody = {
+    username: username,
+    password: password,
+    serverURL: serverURL,
+  };
+
+  // await fetch('/login', {});
+
   let mockPromise = new Promise((resolve, reject) => {
     setTimeout(() => {
       resolve(user);
       // reject(new Error('Error 500 - Internal Server Error'));
-      //reject(new Error('Error 401 - Unauthorized'));
+      // reject(new Error('Error 401 - Unauthorized'));
     }, 1000);
   });
 
