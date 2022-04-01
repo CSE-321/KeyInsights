@@ -1,4 +1,3 @@
-
 create table if not exists Users (
     user_id integer primary key,
     email varchar(128) not null
