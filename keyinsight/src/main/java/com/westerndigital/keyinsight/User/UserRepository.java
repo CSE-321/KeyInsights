@@ -1,6 +1,6 @@
-package com.westerndigital.keyinsight;
+package com.westerndigital.keyinsight.User;
 
-import com.westerndigital.keyinsight.User;
+import com.westerndigital.keyinsight.User.User;
 
 public interface UserRepository {
 

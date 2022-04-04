@@ -1,6 +1,6 @@
-package com.westerndigital.keyinsight;
+package com.westerndigital.keyinsight.User;
 
-import com.westerndigital.keyinsight.User;
+import com.westerndigital.keyinsight.User.User;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
