@@ -11,15 +11,16 @@ import Dropdown from './Dropdown';
  * @param {bool} showServer
  * @returns {JSX} black bar with title and subtext
  */
-const BodyHeader = ({ title, subtext, showServer }) => {
+const BodyHeader = ({ title, subtext, showButton }) => {
   const [headerTitle, setHeaderTitle] = React.useState(title);
   const [headerSubtext, setHeaderSubtext] = React.useState(subtext);
-  const [showDropdown, setShowDropdown] = React.useState(false);
+  const [isButtonActive, setIsButtonActive] = React.useState(false);
 
   React.useEffect(() => {
     setHeaderTitle(title);
     setHeaderSubtext(subtext);
-  }, [title, subtext, showServer]);
+    setIsButtonActive(showButton);
+  }, [title, subtext, showButton]);
 
   const servers = [];
 
@@ -35,12 +36,16 @@ const BodyHeader = ({ title, subtext, showServer }) => {
           <p className="header-text"> {headerSubtext} </p>
         </div>
 
-        {showServer && (
-          <Fragment>
-            <div className="w-10v h-10v">
-              <Dropdown />
-            </div>
-          </Fragment>
+        {isButtonActive && (
+          // <Fragment>
+          //   <div className="w-10v h-10v">
+          //     <Dropdown />
+          //   </div>
+          // </Fragment>
+          <button className="bg-primary-purple text-white h-1/4 w-1/12">
+            {' '}
+            Show Projects
+          </button>
         )}
       </div>
     </>
@@ -50,7 +55,7 @@ const BodyHeader = ({ title, subtext, showServer }) => {
 BodyHeader.propTypes = {
   title: PropTypes.string,
   subtext: PropTypes.string,
-  showServer: PropTypes.bool,
+  showButton: PropTypes.bool,
 };
 
 export default BodyHeader;

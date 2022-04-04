@@ -35,8 +35,7 @@ const ProjectsPage = () => {
       <BodyHeader
         title={headerTitle}
         subtext="Access your available project insights"
-        showServer={false}
-      />
+        showButton={true}></BodyHeader>
       <div className="flex flex-col mx-7 my-5">
         <p className="text-gray-600"> Home/Server/Projects</p>
         <div className="flex flex-col sm:grid sm:grid-flow-row gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
