@@ -8,6 +8,7 @@ import { setActiveServer } from './Auth/serverSlice';
 const LoginCard = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [serverURL, setServerURL] = useState('');
   const [emailText, setEmailText] = useState('');
   const [passwordText, setPasswordText] = useState('');
   const [invalidEmail, setInvalidEmail] = useState(false);
@@ -22,13 +23,20 @@ const LoginCard = () => {
       : setInvalidEmail(true);
   };
 
+  const server = {
+    id: '1',
+    name: 'Cloud-STM',
+    url: 'http://jira.cloud-stm.com:8080',
+    port: '8080',
+  };
+
   const onSubmit = () => {
-    signIn(emailText, passwordText)
+    signIn(emailText, passwordText, serverURL)
       .then((user) => {
         setSignInRejected(false);
         setInvalidEmail(false);
         dispatch(signinUser(user));
-        dispatch(setActiveServer(user.server));
+        dispatch(setActiveServer(server));
         navigate('/projects', { replace: true });
       })
       .catch((error) => {
@@ -49,7 +57,9 @@ const LoginCard = () => {
             <input
               className="w-full h-10 rounded-lg drop-shadow-md"
               type="url"
-              placeholder="http://jira.yourserver.com:port"></input>
+              placeholder="http://jira.yourserver.com:port"
+              value={serverURL}
+              onChange={(e) => setServerURL(e.target.value)}></input>
           </form>
           <h2 className="text-lg sm:text-xl"> Email </h2>
 
