@@ -1,4 +1,4 @@
-package com.westerndigital.keyinsight.Project;
+package com.westerndigital.keyinsight.Server;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -8,17 +8,16 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "Projects")
-public class Project {
-
+@Table(name = "Servers")
+public class Server {
+    
     @Id
     @SequenceGenerator(
-        name = "project_sequence",
-        sequenceName = "project_sequence",
+        name = "server_sequence",
+        sequenceName = "server_sequence",
         allocationSize = 1)
     @GeneratedValue(
-        generator = "project_sequence",
+        generator = "server_sequence",
         strategy = GenerationType.SEQUENCE)
     private Long id;
-
 }

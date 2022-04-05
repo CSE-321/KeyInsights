@@ -1,10 +1,14 @@
 package com.westerndigital.keyinsight.User;
 
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 
+@Entity
+@Table(name = "Users")
 public class User {
     
     // automatically generate an ID

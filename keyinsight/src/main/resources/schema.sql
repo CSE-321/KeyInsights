@@ -3,7 +3,7 @@ create table if not exists Users (
     email varchar(128) not null
 );
 
-create table if not exists Server (
+create table if not exists Servers (
     server_id varchar(64) primary key
 );
 

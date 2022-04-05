@@ -15,7 +15,7 @@ import javax.persistence.GenerationType;
 
 @ToString
 @Entity
-@Table
+@Table(name = "Issues")
 @Getter
 @Setter
 public class Issue {
