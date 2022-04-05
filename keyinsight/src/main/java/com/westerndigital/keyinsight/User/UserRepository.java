@@ -2,9 +2,7 @@ package com.westerndigital.keyinsight.User;
 
 import com.westerndigital.keyinsight.User.User;
 
-public interface UserRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
 
-    // get all users from the database
-    Iterable<User> getAll();
-    
+public interface UserRepository extends JpaRepository {
 }

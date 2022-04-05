@@ -29,6 +29,7 @@ create table if not exists Issues (
 create table if not exists NotificationSettings (
     setting_id int primary key,
     user_id int references User(user_id),
+    project_id varchar(10) references Projects(project_id),
     critical_ticket_notify_time int not null,
     unchanged_sprint_notify_time int not null,
     notify_unfinished_ticket boolean not null,
