@@ -23,19 +23,10 @@ import com.atlassian.jira.rest.client.api.domain.IssueField;
 
 import io.github.cdimascio.dotenv.Dotenv;
 
+import com.westerndigital.keyinsight.JiraRestJavaClient.JiraRestJavaClient;
+
 @SpringBootApplication
 public class KeyinsightApplication {
-	private String username;
-	private String password;
-	private String jiraUrl;
-	private JiraRestClient restClient;
-
-	private KeyinsightApplication(String username, String password, String jiraUrl) {
-		this.username = username;
-		this.password = password;
-		this.jiraUrl = jiraUrl;
-		this.restClient = getJiraRestClient();
-	}
 
 	public static void main(String[] args) throws IOException {
 		// SpringApplication.run(KeyinsightApplication.class, args);
@@ -45,7 +36,7 @@ public class KeyinsightApplication {
 		try {
 			long start = System.nanoTime();
 			Dotenv dotenv = Dotenv.load();
-			KeyinsightApplication myJiraClient = new KeyinsightApplication(dotenv.get("JIRA_USERNAME"),
+			JiraRestJavaClient myJiraClient = new JiraRestJavaClient(dotenv.get("JIRA_USERNAME"),
 					dotenv.get("JIRA_PASSWORD"), dotenv.get("JIRA_URL"));
 
 			// This part of the code grabs all projects that the user has access to from the
@@ -231,7 +222,7 @@ public class KeyinsightApplication {
 			System.out.println("The Issue Create Time were: " + issueCreateTime.get(0));
 			System.out.println("The Issue Assignee was: " + issueAssignee.get(0));
 
-			myJiraClient.restClient.close();
+			myJiraClient.getRestClient().close();
 			long finish = System.nanoTime();
 			long timeElapsed = finish - start;
 			long convert = TimeUnit.MINUTES.convert(timeElapsed, TimeUnit.NANOSECONDS);
@@ -241,38 +232,6 @@ public class KeyinsightApplication {
 			System.out.println(e.getLocalizedMessage());
 		}
 
-	}
-
-	private JiraRestClient getJiraRestClient() {
-		return new AsynchronousJiraRestClientFactory()
-				.createWithBasicHttpAuthentication(getUri(this.jiraUrl), this.username, this.password);
-	}
-
-	private URI getUri(String URL) {
-		return URI.create(URL);
-	}
-
-	private Iterable<BasicProject> getAllProject() {
-		return restClient.getProjectClient().getAllProjects().claim();
-	}
-
-	private Project getProject(String key) {
-		return restClient.getProjectClient().getProject(key).claim();
-	}
-
-	private Iterable<Issue> getAllIssues(String projectName, int currentLocation) {
-		String jql = String.format("project = %s", projectName);
-		return restClient.getSearchClient().searchJql(
-				jql, -1, currentLocation, null)
-				.claim().getIssues();
-	}
-
-	private Issue getSingleIssue(String issueKey) {
-		return restClient.getIssueClient().getIssue(issueKey).claim();
-	}
-
-	private User getUser(String userName) {
-		return restClient.getUserClient().getUser(userName).claim();
 	}
 
 }
