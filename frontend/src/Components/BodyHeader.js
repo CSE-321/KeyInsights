@@ -43,7 +43,6 @@ const BodyHeader = ({ title, subtext, showButton }) => {
           //   </div>
           // </Fragment>
           <button className="bg-primary-purple text-white h-1/4 w-1/12">
-            {' '}
             Show Projects
           </button>
         )}
