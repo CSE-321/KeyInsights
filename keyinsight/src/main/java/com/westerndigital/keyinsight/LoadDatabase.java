@@ -67,14 +67,12 @@ public class LoadDatabase implements CommandLineRunner {
         try {
             HashMap<String, String> fieldValues = new HashMap<String, String>();
             int issueCount = 0;
-            ArrayList<String> projectNameList = new ArrayList<String>();
             Iterable<BasicProject> allProjects = myJiraClient.getAllProject();
             for (BasicProject basicProject : allProjects) {
                 JiraProject project = new JiraProject();
                 String productUrl = basicProject.getKey();
                 Project singleProject = myJiraClient.getProject(productUrl);
                 String projectName = singleProject.getName();
-                projectNameList.add(projectName);
                 String productLeadName = singleProject.getLead().getName();
                 User projectLead = myJiraClient.getUser(productLeadName);
                 String projectLeadDisplayName = projectLead.getDisplayName();
