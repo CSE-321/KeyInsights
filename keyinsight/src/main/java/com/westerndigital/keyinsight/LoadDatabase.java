@@ -9,10 +9,14 @@ import com.westerndigital.keyinsight.NotificationSettings
     .NotificationSettingsRepository;
 import com.westerndigital.keyinsight.Project.ProjectRepository;
 import com.westerndigital.keyinsight.Server.ServerRepository;
+import com.westerndigital.keyinsight.User.User;
 import com.westerndigital.keyinsight.User.UserRepository;
 
 @Component
 public class LoadDatabase implements CommandLineRunner {
+
+    // @Autowired
+    private User user;
 
     // inject repositories
     @Autowired
@@ -37,5 +41,11 @@ public class LoadDatabase implements CommandLineRunner {
         projectRepository.deleteAll();
         issueRepository.deleteAll();
         notificationSettingsRepository.deleteAll();
+
+        user = new User("alex@gmail.com", "jira.com");
+
+        userRepository.save(user);
+
+        // get data from JIRA REST client and load them to the database
     }
 }
