@@ -1,4 +1,4 @@
-package com.westerndigital.keyinsight.JiraRestClient;
+package com.westerndigital.keyinsight.JiraRestJavaClient;
 
 public class JiraRestClient {
 
