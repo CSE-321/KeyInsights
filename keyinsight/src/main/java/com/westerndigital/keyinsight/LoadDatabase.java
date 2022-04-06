@@ -4,10 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import com.westerndigital.keyinsight.JavaIssue.JavaIssueRepository;
-import com.westerndigital.keyinsight.JavaIssue.JavaIssue;
-import com.westerndigital.keyinsight.JavaProject.JavaProjectRepository;
-import com.westerndigital.keyinsight.JavaProject.JavaProject;
+import com.westerndigital.keyinsight.JiraIssue.JiraIssueRepository;
+import com.westerndigital.keyinsight.JiraProject.JiraProject;
+import com.westerndigital.keyinsight.JiraProject.JiraProjectRepository;
+import com.westerndigital.keyinsight.JiraIssue.JiraIssue;
 import com.westerndigital.keyinsight.NotificationSettings.NotificationSettingsRepository;
 import com.westerndigital.keyinsight.Server.ServerRepository;
 import com.westerndigital.keyinsight.User.UserRepository;
@@ -38,15 +38,14 @@ public class LoadDatabase implements CommandLineRunner {
     private ServerRepository serverRepository;
 
     @Autowired
-    private JavaProjectRepository projectRepository;
+    private JiraProjectRepository projectRepository;
 
     @Autowired
-    private JavaIssueRepository issueRepository;
+    private JiraIssueRepository issueRepository;
 
     @Autowired
     private NotificationSettingsRepository notificationSettingsRepository;
 
-    
     private JiraRestJavaClient myJiraClient;
 
     @Override
@@ -68,27 +67,29 @@ public class LoadDatabase implements CommandLineRunner {
         try {
             HashMap<String, String> fieldValues = new HashMap<String, String>();
             int issueCount = 0;
+            ArrayList<String> projectNameList = new ArrayList<String>();
             Iterable<BasicProject> allProjects = myJiraClient.getAllProject();
             for (BasicProject basicProject : allProjects) {
-                JavaProject project = new JavaProject();
+                JiraProject project = new JiraProject();
                 String productUrl = basicProject.getKey();
                 Project singleProject = myJiraClient.getProject(productUrl);
                 String projectName = singleProject.getName();
+                projectNameList.add(projectName);
                 String productLeadName = singleProject.getLead().getName();
                 User projectLead = myJiraClient.getUser(productLeadName);
                 String projectLeadDisplayName = projectLead.getDisplayName();
                 project.setName(projectName);
                 project.setTeam_lead(projectLeadDisplayName);
                 project.setTeam_lead_avatar_url(projectLead.getAvatarUri().toString());
-                project.setCategory(singleProject.getDescription());
+                project.setCategory(singleProject.getKey());
                 String issueNumber = "10";
-                while (Integer.parseInt(issueNumber) != 1) {
+                while (Integer.parseInt(issueNumber) != 10000) {
                     Iterable<Issue> allIssues = myJiraClient.getAllIssues(projectName, issueCount);
                     for (Issue singleIssue : allIssues) {
                         issueNumber = singleIssue.getKey();
                         issueNumber = issueNumber.substring(issueNumber.indexOf('-') + 1);
                         System.out.println(issueNumber);
-                        JavaIssue issue = new JavaIssue();
+                        JiraIssue issue = new JiraIssue();
                         issue.setId(Integer.parseInt(issueNumber));
                         issue.setName(singleIssue.getKey());
                         issue.setProject_name(projectName);
@@ -145,19 +146,23 @@ public class LoadDatabase implements CommandLineRunner {
                             issue.setDue_time(dueTime);
                         }
 
-                        if (singleIssue.getField(fieldValues.get("Story Points")).getValue() == null) {
+                        String storyPointField = fieldValues.get("Story Points");
+
+                        if (singleIssue.getField(storyPointField).getValue() == null) {
                             issue.setStory_point(null);
-                        } else if (singleIssue.getField(fieldValues.get("Story Points")).getValue() != null) {
+                        } else if (singleIssue.getField(storyPointField).getValue() != null) {
                             float storyPoint = Float
-                                    .parseFloat(singleIssue.getField(fieldValues.get("Story Points")).getValue()
+                                    .parseFloat(singleIssue.getField(storyPointField).getValue()
                                             .toString());
                             issue.setStory_point(storyPoint);
                         }
 
-                        if (singleIssue.getField(fieldValues.get("Type")).getValue() == null) {
+                        String typeField = fieldValues.get("Type");
+
+                        if (singleIssue.getField(typeField).getValue() == null) {
                             issue.setSub_type(null);
-                        } else if (singleIssue.getField(fieldValues.get("Type")).getValue() != null) {
-                            String secondaryTypeValueJsonString = singleIssue.getField(fieldValues.get("Type"))
+                        } else if (singleIssue.getField(typeField).getValue() != null) {
+                            String secondaryTypeValueJsonString = singleIssue.getField(typeField)
                                     .getValue()
                                     .toString();
                             ObjectMapper mapper = new ObjectMapper();
@@ -194,8 +199,8 @@ public class LoadDatabase implements CommandLineRunner {
                     }
                 }
                 project.setNum_issues(issueCount);
-                JavaIssue tmpissue = issueRepository.findById(1).get();
-                project.setCreated_at(tmpissue.getCreation_date());                
+                JiraIssue tmpissue = issueRepository.findById(1).get();
+                project.setCreated_at(tmpissue.getCreation_date());
                 projectRepository.save(project);
             }
             System.out.println("finished");

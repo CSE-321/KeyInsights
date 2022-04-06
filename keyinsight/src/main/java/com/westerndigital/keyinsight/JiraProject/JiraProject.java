@@ -1,4 +1,4 @@
-package com.westerndigital.keyinsight.JavaProject;
+package com.westerndigital.keyinsight.JiraProject;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,7 +14,7 @@ import lombok.Setter;
 @Table(name = "Projects")
 @Getter
 @Setter
-public class JavaProject {
+public class JiraProject {
 
     @Id
     @SequenceGenerator(name = "project_sequence", sequenceName = "project_sequence", allocationSize = 1)
@@ -28,15 +28,16 @@ public class JavaProject {
     private Integer num_issues;
     private String category; // not 100% sure
 
-    // public JavaProject(String name, String team_lead, String team_lead_url, String created_at, Integer num_issues) {
-    //     this.name = name;
-    //     this.team_lead = team_lead;
-    //     this.team_lead_avatar_url = team_lead_avatar_url;
-    //     // this.created_at = created_at;
-    //     this.num_issues = num_issues;
+    // public JavaProject(String name, String team_lead, String team_lead_url,
+    // String created_at, Integer num_issues) {
+    // this.name = name;
+    // this.team_lead = team_lead;
+    // this.team_lead_avatar_url = team_lead_avatar_url;
+    // // this.created_at = created_at;
+    // this.num_issues = num_issues;
     // }
 
-    public JavaProject() {
+    public JiraProject() {
 
     }
 
