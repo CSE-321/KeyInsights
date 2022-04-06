@@ -20,7 +20,7 @@ import javax.persistence.GenerationType;
 @Setter
 public class JavaIssue {
     @Id
-    private Long id;
+    private Integer id;
     private String name;
     private String project_name;
     private String team_type;

@@ -21,7 +21,8 @@ create table if not exists Projects (
     team_lead varchar(128),
     team_lead_avatar_url varchar(128),
     num_issues integer
-    --created_at timestamp not null,
+    category varchar(64),
+    created_at varchar(64),
 );
 
 create table if not exists Issues (

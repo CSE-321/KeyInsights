@@ -80,15 +80,16 @@ public class LoadDatabase implements CommandLineRunner {
                 project.setName(projectName);
                 project.setTeam_lead(projectLeadDisplayName);
                 project.setTeam_lead_avatar_url(projectLead.getAvatarUri().toString());
+                project.setCategory(singleProject.getDescription());
                 String issueNumber = "10";
-                while (Long.parseLong(issueNumber) != 1) {
+                while (Integer.parseInt(issueNumber) != 1) {
                     Iterable<Issue> allIssues = myJiraClient.getAllIssues(projectName, issueCount);
                     for (Issue singleIssue : allIssues) {
                         issueNumber = singleIssue.getKey();
                         issueNumber = issueNumber.substring(issueNumber.indexOf('-') + 1);
                         System.out.println(issueNumber);
                         JavaIssue issue = new JavaIssue();
-                        issue.setId(Long.parseLong(issueNumber));
+                        issue.setId(Integer.parseInt(issueNumber));
                         issue.setName(singleIssue.getKey());
                         issue.setProject_name(projectName);
                         issue.setTeam_type(singleIssue.getIssueType().getName());
@@ -193,6 +194,8 @@ public class LoadDatabase implements CommandLineRunner {
                     }
                 }
                 project.setNum_issues(issueCount);
+                JavaIssue tmpissue = issueRepository.findById(1).get();
+                project.setCreated_at(tmpissue.getCreation_date());                
                 projectRepository.save(project);
             }
             System.out.println("finished");
