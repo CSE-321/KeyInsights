@@ -40,8 +40,6 @@ const LoginCard = () => {
         navigate('/projects', { replace: true });
       })
       .catch((error) => {
-        //if the credentials were rejected, tell user
-        //otherwise, show user the error (e.g. server down)
         setSignInRejected(true);
         setSignInError(error.message);
       });
