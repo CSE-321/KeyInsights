@@ -20,8 +20,13 @@ import javax.persistence.GenerationType;
 @Setter
 public class Issue {
     @Id
-    @SequenceGenerator(name = "issue_sequence", sequenceName = "issue_sequence", allocationSize = 1)
-    @GeneratedValue(generator = "issue_sequence", strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(
+        name = "issue_sequence", 
+        sequenceName = "issue_sequence", 
+        allocationSize = 1)
+    @GeneratedValue(
+        generator = "issue_sequence", 
+        strategy = GenerationType.SEQUENCE)
     private Long id;
 
     @Column(nullable = false)

@@ -1,3 +1,11 @@
+delete table if exists Users;
+delete table if exists Servers;
+delete table if exists Projects;
+delete table if exists Issues;
+delete table if exists NotificationSettings;
+delete table if exists ProjectAccess;
+delete table if exists ServerAccess;
+
 create table if not exists Users (
     user_id integer primary key,
     email varchar(128) not null
@@ -8,22 +16,33 @@ create table if not exists Servers (
 );
 
 create table if not exists Projects (
-    project_id varchar(10) primary key,
+    project_id integer primary key,
     name varchar(64) not null,
     team_lead varchar(128),
-    created_at timestamp not null,
-    num_issues integer 
+    team_lead_avatar_url varchar(128),
+    num_issues integer
+    category varchar(64),
+    created_at varchar(64),
 );
 
 create table if not exists Issues (
-    issue_id char(10) primary key,
-    project_id varchar(10) references Projects(project_id),
+    id integer primary key, 
+    name varchar(64),
+    project_name varchar(10) refernces Projects(name),
     team_type varchar(25),
-    sub_type varchar(25),
+    status varchar(25),
+    creation_date varchar(25),
+    creation_time varchar(25),
+    updated_date varchar(25),
+    updated_time varchar(25),
+    due_date varchar(25),
+    due_time varchar(25),
     story_point float,
+    sub_type varchar(25),
     priority varchar(25),
     resolution varchar(25),
-    status varchar(25)
+    assignee varchar(25),
+    assignee_avatar_url varchar(128)
 );
 
 create table if not exists NotificationSettings (

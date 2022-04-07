@@ -23,10 +23,14 @@ public class User {
     private Long id;
     private String email;
     private String serverUrl;
-    
-    User(Long id, String email) {
-        this.id = id;
+
+    public User() {
+
+    }
+
+    public User(String email, String serverUrl) {
         this.email = email;
+        this.serverUrl = serverUrl;
     }
 
     public String getEmail() {
@@ -35,5 +39,13 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getServerUrl() {
+        return serverUrl;
+    }
+
+    public void setServerUrl(String serverUrl) {
+        this.serverUrl = serverUrl;
     }
 }
