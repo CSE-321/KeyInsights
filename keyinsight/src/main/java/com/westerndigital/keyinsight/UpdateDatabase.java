@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 public class UpdateDatabase {
     //https://stackoverflow.com/questions/42246301/spring-scheduled-task-does-not-start-on-application-startup
 
-    @Scheduled(initialDelay = 0, fixedRate = 5000)
+    @Scheduled(initialDelay = 30*60*1000, fixedRate = 30*60*1000)
     public void scheduledWork() {
         System.out.println("Hello World!");
     }

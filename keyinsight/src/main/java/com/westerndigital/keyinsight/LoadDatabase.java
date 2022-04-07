@@ -24,6 +24,7 @@ import com.atlassian.jira.rest.client.api.domain.IssueField;
 import io.github.cdimascio.dotenv.Dotenv;
 
 import java.util.HashMap;
+import java.util.stream.StreamSupport;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -77,6 +78,7 @@ public class LoadDatabase implements CommandLineRunner {
         try {
             HashMap<String, String> fieldValues = new HashMap<String, String>();
             int issueCount = 0;
+            String issueNumber = "10";
             allProjects = myJiraClient.getAllProject();
             for (BasicProject basicProject : allProjects) {
                 JiraProject project = new JiraProject();
@@ -90,9 +92,9 @@ public class LoadDatabase implements CommandLineRunner {
                 project.setTeam_lead(projectLeadDisplayName);
                 project.setTeam_lead_avatar_url(projectLead.getAvatarUri().toString());
                 project.setCategory(singleProject.getKey());
-                String issueNumber = "10";
-                while (Integer.parseInt(issueNumber) != 1) {
-                    allIssues = myJiraClient.getAllIssues(projectName, issueCount);
+                allIssues = myJiraClient.getAllIssues(projectName, issueCount);
+                Long sizeOfAllIssues = StreamSupport.stream(allIssues.spliterator(), false).count();
+                while (sizeOfAllIssues != 0 && sizeOfAllIssues <= 1000) {
                     for (Issue singleIssue : allIssues) {
                         issueNumber = singleIssue.getKey();
                         issueNumber = issueNumber.substring(issueNumber.indexOf('-') + 1);
@@ -205,6 +207,8 @@ public class LoadDatabase implements CommandLineRunner {
                         issueRepository.save(issue);
                         issueCount += 1;
                     }
+                    allIssues = myJiraClient.getAllIssues(projectName, issueCount);
+                    sizeOfAllIssues = StreamSupport.stream(allIssues.spliterator(), false).count();
                 }
                 project.setNum_issues(issueCount);
                 JiraIssue tmpissue = issueRepository.findById(1).get();
