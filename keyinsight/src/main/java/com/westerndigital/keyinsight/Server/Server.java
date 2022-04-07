@@ -20,4 +20,5 @@ public class Server {
         generator = "server_sequence",
         strategy = GenerationType.SEQUENCE)
     private Long id;
+    private String name;
 }

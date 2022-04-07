@@ -20,4 +20,5 @@ public class NotificationSettings {
         generator = "notification_setting_sequence",
         strategy = GenerationType.SEQUENCE)
     private Long id;
+    private Long name;
 }
