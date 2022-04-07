@@ -31,9 +31,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Component
 public class LoadDatabase implements CommandLineRunner {
 
-    // @Autowired
-    private JiraUser jiraUser;
-
     // inject repositories
     @Autowired
     private JiraUserRepository userRepository;
@@ -52,6 +49,12 @@ public class LoadDatabase implements CommandLineRunner {
 
     private JiraRestJavaClient myJiraClient;
 
+    private Iterable<BasicProject> allProjects;
+
+    private Iterable<Issue> allIssues;
+
+    private Iterable<IssueField> allIssueFields;
+
     @Override
     public void run(String... args) throws Exception {
         userRepository.deleteAll();
@@ -61,24 +64,20 @@ public class LoadDatabase implements CommandLineRunner {
         issueRepository.deleteAll();
         notificationSettingsRepository.deleteAll();
 
-        jiraUser = new JiraUser("alex@gmail.com", "jira.com");
-
-        userRepository.save(jiraUser);
-
         // get data from JIRA REST client and load them to the database
 
         try {
             Dotenv dotenv = Dotenv.load();
             myJiraClient = new JiraRestJavaClient(dotenv.get("JIRA_USERNAME"),
                     dotenv.get("JIRA_PASSWORD"), dotenv.get("JIRA_URL"));
-            Iterable<BasicProject> allProjects = myJiraClient.getAllProject();
+            User user = myJiraClient.getUser(dotenv.get("JIRA_USERNAME"));
         } catch (RestClientException e) {
             System.out.println(e.getLocalizedMessage());
         }
         try {
             HashMap<String, String> fieldValues = new HashMap<String, String>();
             int issueCount = 0;
-            Iterable<BasicProject> allProjects = myJiraClient.getAllProject();
+            allProjects = myJiraClient.getAllProject();
             for (BasicProject basicProject : allProjects) {
                 JiraProject project = new JiraProject();
                 String productUrl = basicProject.getKey();
@@ -92,8 +91,8 @@ public class LoadDatabase implements CommandLineRunner {
                 project.setTeam_lead_avatar_url(projectLead.getAvatarUri().toString());
                 project.setCategory(singleProject.getKey());
                 String issueNumber = "10";
-                while (Integer.parseInt(issueNumber) != 10000) {
-                    Iterable<Issue> allIssues = myJiraClient.getAllIssues(projectName, issueCount);
+                while (Integer.parseInt(issueNumber) != 1) {
+                    allIssues = myJiraClient.getAllIssues(projectName, issueCount);
                     for (Issue singleIssue : allIssues) {
                         issueNumber = singleIssue.getKey();
                         issueNumber = issueNumber.substring(issueNumber.indexOf('-') + 1);
@@ -106,7 +105,7 @@ public class LoadDatabase implements CommandLineRunner {
                         issue.setStatus(singleIssue.getStatus().getName());
 
                         if (issueCount == 0) {
-                            Iterable<IssueField> allIssueFields = singleIssue.getFields();
+                            allIssueFields = singleIssue.getFields();
                             for (IssueField issueField : allIssueFields) {
                                 fieldValues.put(issueField.getName(), issueField.getId());
                             }

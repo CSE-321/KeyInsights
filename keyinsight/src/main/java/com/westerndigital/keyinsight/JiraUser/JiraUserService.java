@@ -1,5 +1,5 @@
-package com.westerndigital.keyinsight.User;
+package com.westerndigital.keyinsight.JiraUser;
 
-public class UserService {
-    
+public class JiraUserService {
+
 }

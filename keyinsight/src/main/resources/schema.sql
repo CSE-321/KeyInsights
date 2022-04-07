@@ -16,7 +16,7 @@ create table if not exists Servers (
 );
 
 create table if not exists Projects (
-    project_id integer primary key,
+    project_id int primary key,
     name varchar(64) not null,
     team_lead varchar(128),
     team_lead_avatar_url varchar(128),
@@ -26,7 +26,7 @@ create table if not exists Projects (
 );
 
 create table if not exists Issues (
-    id integer primary key, 
+    id int primary key, 
     name varchar(64),
     project_name varchar(10) refernces Projects(name),
     team_type varchar(25),
