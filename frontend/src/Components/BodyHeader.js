@@ -22,8 +22,6 @@ const BodyHeader = ({ title, subtext, showButton }) => {
     setIsButtonActive(showButton);
   }, [title, subtext, showButton]);
 
-  const servers = [];
-
   return (
     <>
       <div className="body-header">
