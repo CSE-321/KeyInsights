@@ -6,8 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import com.westerndigital.keyinsight.User.User;
-
+import com.westerndigital.keyinsight.Account.Account;
 import com.westerndigital.keyinsight.Login.LoginService;
 
 @RestController
@@ -17,7 +16,7 @@ public class LoginController {
     // private LoginService loginService;
     
     @PostMapping("/login")
-    public ResponseEntity<User> login(@RequestBody User user) {
+    public ResponseEntity<Account> login(@RequestBody Account user) {
         // process POST request
 
         String email = user.getEmail();

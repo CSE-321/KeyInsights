@@ -141,9 +141,28 @@ function Table({ columns, data }) {
           )}
         </div>
         <table {...getTableProps()} border="1" className="w-full">
-          <tbody
-            {...getTableBodyProps()}
-            className="flex flex-col sm:flex-col md:flex-row md:items-center">
+          <thead className=" border-b-2 broder-b-slate-100 text-gray-500">
+            {headerGroups.map((headerGroup) => (
+              <tr {...headerGroup.getHeaderGroupProps()}>
+                {headerGroup.headers.map((column) => (
+                  // Add the sorting props to control sorting. For this example
+                  // we can add them into the header props
+                  <th {...column.getHeaderProps(column.getSortByToggleProps())}>
+                    {column.render('Header')}
+                    {/* Add a sort direction indicator */}
+                    <span>
+                      {column.isSorted
+                        ? column.isSortedDesc
+                          ? ' 🔽'
+                          : ' 🔼'
+                        : ''}
+                    </span>
+                  </th>
+                ))}
+              </tr>
+            ))}
+          </thead>
+          <tbody {...getTableBodyProps()}>
             {page.map((row, i) => {
               // new
               prepareRow(row);

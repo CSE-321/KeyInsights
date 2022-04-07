@@ -4,14 +4,18 @@ import { useDispatch } from 'react-redux';
 import { signinUser, signoutUser } from '../Components/Auth/userSlice';
 
 export async function signIn(username, password, serverURL) {
+  const headers = {
+    'Content-Type': 'application/json',
+    Accept: 'application/json',
+  };
+
   const reqBody = {
-    username: username,
-    password: password,
-    serverURL: serverURL,
+    email: username,
+    serverUrl: serverURL,
   };
 
   const options = {
-    method: 'GET',
+    method: 'POST',
     body: JSON.stringify(reqBody),
     mode: 'no-cors',
   };

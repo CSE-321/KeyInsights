@@ -5,6 +5,7 @@ import BodyHeader from '../Components/BodyHeader';
 import ProjectCard from '../Components/ProjectCard';
 import SwitchButton from '../Components/SwitchButton';
 import Table, { SelectColumnFilter } from '../Components/Table';
+
 import { getAllProjects } from '../Util/Networking';
 import { Project } from '../Util/Project';
 
@@ -21,225 +22,277 @@ const ProjectsPage = () => {
 
   const data = useMemo(() => [
     {
-      id: Math.floor(Math.random() * 9999),
-      name: `BBX${Math.floor(Math.random() * 10)}`,
-      type: 'Software',
-      lead: 'Jane doe',
-      image:
-        'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80',
-      created: '2020-01-01',
-      issues: Math.floor(Math.random() * 1000),
-      serever: 'cloud-stm',
+      project: {
+        id: Math.floor(Math.random() * 9999),
+        name: `BBX${Math.floor(Math.random() * 10)}`,
+        type: 'Software',
+        lead: 'Jane doe',
+        image:
+          'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80',
+        created: '2020-01-01',
+        issues: Math.floor(Math.random() * 1000),
+        serever: 'cloud-stm',
+      },
     },
     {
-      id: Math.floor(Math.random() * 9999),
-      name: `BBX${Math.floor(Math.random() * 10)}`,
-      type: 'Software',
-      lead: 'Jane doe',
-      image:
-        'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80',
-      created: '2020-01-01',
-      issues: Math.floor(Math.random() * 1000),
-      serever: 'cloud-stm',
+      project: {
+        id: Math.floor(Math.random() * 9999),
+        name: `BBX${Math.floor(Math.random() * 10)}`,
+        type: 'Software',
+        lead: 'Jane doe',
+        image:
+          'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80',
+        created: '2020-01-01',
+        issues: Math.floor(Math.random() * 1000),
+        serever: 'cloud-stm',
+      },
     },
     {
-      id: Math.floor(Math.random() * 9999),
-      name: `BBX${Math.floor(Math.random() * 10)}`,
-      type: 'Software',
-      lead: 'Jane doe',
-      image:
-        'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80',
-      created: '2020-01-01',
-      issues: Math.floor(Math.random() * 1000),
-      serever: 'cloud-stm',
+      project: {
+        id: Math.floor(Math.random() * 9999),
+        name: `BBX${Math.floor(Math.random() * 10)}`,
+        type: 'Software',
+        lead: 'Jane doe',
+        image:
+          'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80',
+        created: '2020-01-01',
+        issues: Math.floor(Math.random() * 1000),
+        serever: 'cloud-stm',
+      },
     },
     {
-      id: Math.floor(Math.random() * 9999),
-      name: `BBX${Math.floor(Math.random() * 10)}`,
-      type: 'Hardware',
-      lead: 'Alex doe',
-      image:
-        'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80',
-      created: '2020-01-01',
-      issues: Math.floor(Math.random() * 1000),
-      serever: 'cloud-stm',
+      project: {
+        id: Math.floor(Math.random() * 9999),
+        name: `BBX${Math.floor(Math.random() * 10)}`,
+        type: 'Hardware',
+        lead: 'Jane doe',
+        image:
+          'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80',
+        created: '2020-01-01',
+        issues: Math.floor(Math.random() * 1000),
+        serever: 'cloud-stm',
+      },
     },
-    {
-      id: Math.floor(Math.random() * 9999),
-      name: `BBX${Math.floor(Math.random() * 10)}`,
-      type: 'Software',
-      lead: 'Jane doe',
-      image:
-        'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80',
-      created: '2020-01-01',
-      issues: Math.floor(Math.random() * 1000),
-      serever: 'cloud-stm',
-    },
-    {
-      id: Math.floor(Math.random() * 9999),
-      name: `BBX${Math.floor(Math.random() * 10)}`,
-      type: 'Software',
-      lead: 'Jane doe',
-      image:
-        'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80',
-      created: '2020-01-01',
-      issues: Math.floor(Math.random() * 1000),
-      serever: 'cloud-stm',
-    },
-    {
-      id: Math.floor(Math.random() * 9999),
-      name: `BBX${Math.floor(Math.random() * 10)}`,
-      type: 'Software',
-      lead: 'Jane doe',
-      image:
-        'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80',
-      created: '2020-01-01',
-      issues: Math.floor(Math.random() * 1000),
-      serever: 'cloud-stm',
-    },
-    {
-      id: Math.floor(Math.random() * 9999),
-      name: `BBX${Math.floor(Math.random() * 10)}`,
-      type: 'Hardware',
-      lead: 'Alex doe',
-      image:
-        'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80',
-      created: '2020-01-01',
-      issues: Math.floor(Math.random() * 1000),
-      serever: 'cloud-stm',
-    },
-    {
-      id: Math.floor(Math.random() * 9999),
-      name: `BBX${Math.floor(Math.random() * 10)}`,
-      type: 'Software',
-      lead: 'Jane doe',
-      image:
-        'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80',
-      created: '2020-01-01',
-      issues: Math.floor(Math.random() * 1000),
-      serever: 'cloud-stm',
-    },
-    {
-      id: Math.floor(Math.random() * 9999),
-      name: `BBX${Math.floor(Math.random() * 10)}`,
-      type: 'Software',
-      lead: 'Jane doe',
-      image:
-        'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80',
-      created: '2020-01-01',
-      issues: Math.floor(Math.random() * 1000),
-      serever: 'cloud-stm',
-    },
-    {
-      id: Math.floor(Math.random() * 9999),
-      name: `BBX${Math.floor(Math.random() * 10)}`,
-      type: 'Software',
-      lead: 'Jane doe',
-      image:
-        'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80',
-      created: '2020-01-01',
-      issues: Math.floor(Math.random() * 1000),
-      serever: 'cloud-stm',
-    },
-    {
-      id: Math.floor(Math.random() * 9999),
-      name: `BBX${Math.floor(Math.random() * 10)}`,
-      type: 'Hardware',
-      lead: 'Alex doe',
-      image:
-        'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80',
-      created: '2020-01-01',
-      issues: Math.floor(Math.random() * 1000),
-      serever: 'cloud-stm',
-    },
-    {
-      id: Math.floor(Math.random() * 9999),
-      name: `BBX${Math.floor(Math.random() * 10)}`,
-      type: 'Software',
-      lead: 'Jane doe',
-      image:
-        'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80',
-      created: '2020-01-01',
-      issues: Math.floor(Math.random() * 1000),
-      serever: 'cloud-stm',
-    },
-    {
-      id: Math.floor(Math.random() * 9999),
-      name: `BBX${Math.floor(Math.random() * 10)}`,
-      type: 'Software',
-      lead: 'Jane doe',
-      image:
-        'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80',
-      created: '2020-01-01',
-      issues: Math.floor(Math.random() * 1000),
-      serever: 'cloud-stm',
-    },
-    {
-      id: Math.floor(Math.random() * 9999),
-      name: `BBX${Math.floor(Math.random() * 10)}`,
-      type: 'Software',
-      lead: 'Jane doe',
-      image:
-        'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80',
-      created: '2020-01-01',
-      issues: Math.floor(Math.random() * 1000),
-      serever: 'cloud-stm',
-    },
-    {
-      id: Math.floor(Math.random() * 9999),
-      name: `BBX${Math.floor(Math.random() * 10)}`,
-      type: 'Hardware',
-      lead: 'Alex doe',
-      image:
-        'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80',
-      created: '2020-01-01',
-      issues: Math.floor(Math.random() * 1000),
-      serever: 'cloud-stm',
-    },
-    {
-      id: Math.floor(Math.random() * 9999),
-      name: `BBX${Math.floor(Math.random() * 10)}`,
-      type: 'Software',
-      lead: 'Jane doe',
-      image:
-        'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80',
-      created: '2020-01-01',
-      issues: Math.floor(Math.random() * 1000),
-      serever: 'cloud-stm',
-    },
-    {
-      id: Math.floor(Math.random() * 9999),
-      name: `BBX${Math.floor(Math.random() * 10)}`,
-      type: 'Software',
-      lead: 'Jane doe',
-      image:
-        'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80',
-      created: '2020-01-01',
-      issues: Math.floor(Math.random() * 1000),
-      serever: 'cloud-stm',
-    },
-    {
-      id: Math.floor(Math.random() * 9999),
-      name: `BBX${Math.floor(Math.random() * 10)}`,
-      type: 'Software',
-      lead: 'Jane doe',
-      image:
-        'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80',
-      created: '2020-01-01',
-      issues: Math.floor(Math.random() * 1000),
-      serever: 'cloud-stm',
-    },
-    {
-      id: Math.floor(Math.random() * 9999),
-      name: `BBX${Math.floor(Math.random() * 10)}`,
-      type: 'Hardware',
-      lead: 'Alex doe',
-      image:
-        'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80',
-      created: '2020-01-01',
-      issues: Math.floor(Math.random() * 1000),
-      serever: 'cloud-stm',
-    },
+    // {
+    //   id: Math.floor(Math.random() * 9999),
+    //   name: `BBX${Math.floor(Math.random() * 10)}`,
+    //   type: 'Software',
+    //   lead: 'Jane doe',
+    //   image:
+    //     'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80',
+    //   created: '2020-01-01',
+    //   issues: Math.floor(Math.random() * 1000),
+    //   serever: 'cloud-stm',
+    // },
+    // {
+    //   id: Math.floor(Math.random() * 9999),
+    //   name: `BBX${Math.floor(Math.random() * 10)}`,
+    //   type: 'Software',
+    //   lead: 'Jane doe',
+    //   image:
+    //     'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80',
+    //   created: '2020-01-01',
+    //   issues: Math.floor(Math.random() * 1000),
+    //   serever: 'cloud-stm',
+    // },
+    // {
+    //   id: Math.floor(Math.random() * 9999),
+    //   name: `BBX${Math.floor(Math.random() * 10)}`,
+    //   type: 'Software',
+    //   lead: 'Jane doe',
+    //   image:
+    //     'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80',
+    //   created: '2020-01-01',
+    //   issues: Math.floor(Math.random() * 1000),
+    //   serever: 'cloud-stm',
+    // },
+    // {
+    //   id: Math.floor(Math.random() * 9999),
+    //   name: `BBX${Math.floor(Math.random() * 10)}`,
+    //   type: 'Hardware',
+    //   lead: 'Alex doe',
+    //   image:
+    //     'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80',
+    //   created: '2020-01-01',
+    //   issues: Math.floor(Math.random() * 1000),
+    //   serever: 'cloud-stm',
+    // },
+    // {
+    //   id: Math.floor(Math.random() * 9999),
+    //   name: `BBX${Math.floor(Math.random() * 10)}`,
+    //   type: 'Software',
+    //   lead: 'Jane doe',
+    //   image:
+    //     'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80',
+    //   created: '2020-01-01',
+    //   issues: Math.floor(Math.random() * 1000),
+    //   serever: 'cloud-stm',
+    // },
+    // {
+    //   id: Math.floor(Math.random() * 9999),
+    //   name: `BBX${Math.floor(Math.random() * 10)}`,
+    //   type: 'Software',
+    //   lead: 'Jane doe',
+    //   image:
+    //     'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80',
+    //   created: '2020-01-01',
+    //   issues: Math.floor(Math.random() * 1000),
+    //   serever: 'cloud-stm',
+    // },
+    // {
+    //   id: Math.floor(Math.random() * 9999),
+    //   name: `BBX${Math.floor(Math.random() * 10)}`,
+    //   type: 'Software',
+    //   lead: 'Jane doe',
+    //   image:
+    //     'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80',
+    //   created: '2020-01-01',
+    //   issues: Math.floor(Math.random() * 1000),
+    //   serever: 'cloud-stm',
+    // },
+    // {
+    //   id: Math.floor(Math.random() * 9999),
+    //   name: `BBX${Math.floor(Math.random() * 10)}`,
+    //   type: 'Hardware',
+    //   lead: 'Alex doe',
+    //   image:
+    //     'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80',
+    //   created: '2020-01-01',
+    //   issues: Math.floor(Math.random() * 1000),
+    //   serever: 'cloud-stm',
+    // },
+    // {
+    //   id: Math.floor(Math.random() * 9999),
+    //   name: `BBX${Math.floor(Math.random() * 10)}`,
+    //   type: 'Software',
+    //   lead: 'Jane doe',
+    //   image:
+    //     'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80',
+    //   created: '2020-01-01',
+    //   issues: Math.floor(Math.random() * 1000),
+    //   serever: 'cloud-stm',
+    // },
+    // {
+    //   id: Math.floor(Math.random() * 9999),
+    //   name: `BBX${Math.floor(Math.random() * 10)}`,
+    //   type: 'Software',
+    //   lead: 'Jane doe',
+    //   image:
+    //     'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80',
+    //   created: '2020-01-01',
+    //   issues: Math.floor(Math.random() * 1000),
+    //   serever: 'cloud-stm',
+    // },
+    // {
+    //   id: Math.floor(Math.random() * 9999),
+    //   name: `BBX${Math.floor(Math.random() * 10)}`,
+    //   type: 'Software',
+    //   lead: 'Jane doe',
+    //   image:
+    //     'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80',
+    //   created: '2020-01-01',
+    //   issues: Math.floor(Math.random() * 1000),
+    //   serever: 'cloud-stm',
+    // },
+    // {
+    //   id: Math.floor(Math.random() * 9999),
+    //   name: `BBX${Math.floor(Math.random() * 10)}`,
+    //   type: 'Hardware',
+    //   lead: 'Alex doe',
+    //   image:
+    //     'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80',
+    //   created: '2020-01-01',
+    //   issues: Math.floor(Math.random() * 1000),
+    //   serever: 'cloud-stm',
+    // },
+    // {
+    //   id: Math.floor(Math.random() * 9999),
+    //   name: `BBX${Math.floor(Math.random() * 10)}`,
+    //   type: 'Software',
+    //   lead: 'Jane doe',
+    //   image:
+    //     'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80',
+    //   created: '2020-01-01',
+    //   issues: Math.floor(Math.random() * 1000),
+    //   serever: 'cloud-stm',
+    // },
+    // {
+    //   id: Math.floor(Math.random() * 9999),
+    //   name: `BBX${Math.floor(Math.random() * 10)}`,
+    //   type: 'Software',
+    //   lead: 'Jane doe',
+    //   image:
+    //     'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80',
+    //   created: '2020-01-01',
+    //   issues: Math.floor(Math.random() * 1000),
+    //   serever: 'cloud-stm',
+    // },
+    // {
+    //   id: Math.floor(Math.random() * 9999),
+    //   name: `BBX${Math.floor(Math.random() * 10)}`,
+    //   type: 'Software',
+    //   lead: 'Jane doe',
+    //   image:
+    //     'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80',
+    //   created: '2020-01-01',
+    //   issues: Math.floor(Math.random() * 1000),
+    //   serever: 'cloud-stm',
+    // },
+    // {
+    //   id: Math.floor(Math.random() * 9999),
+    //   name: `BBX${Math.floor(Math.random() * 10)}`,
+    //   type: 'Hardware',
+    //   lead: 'Alex doe',
+    //   image:
+    //     'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80',
+    //   created: '2020-01-01',
+    //   issues: Math.floor(Math.random() * 1000),
+    //   serever: 'cloud-stm',
+    // },
+    // {
+    //   id: Math.floor(Math.random() * 9999),
+    //   name: `BBX${Math.floor(Math.random() * 10)}`,
+    //   type: 'Software',
+    //   lead: 'Jane doe',
+    //   image:
+    //     'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80',
+    //   created: '2020-01-01',
+    //   issues: Math.floor(Math.random() * 1000),
+    //   serever: 'cloud-stm',
+    // },
+    // {
+    //   id: Math.floor(Math.random() * 9999),
+    //   name: `BBX${Math.floor(Math.random() * 10)}`,
+    //   type: 'Software',
+    //   lead: 'Jane doe',
+    //   image:
+    //     'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80',
+    //   created: '2020-01-01',
+    //   issues: Math.floor(Math.random() * 1000),
+    //   serever: 'cloud-stm',
+    // },
+    // {
+    //   id: Math.floor(Math.random() * 9999),
+    //   name: `BBX${Math.floor(Math.random() * 10)}`,
+    //   type: 'Software',
+    //   lead: 'Jane doe',
+    //   image:
+    //     'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80',
+    //   created: '2020-01-01',
+    //   issues: Math.floor(Math.random() * 1000),
+    //   serever: 'cloud-stm',
+    // },
+    // {
+    //   id: Math.floor(Math.random() * 9999),
+    //   name: `BBX${Math.floor(Math.random() * 10)}`,
+    //   type: 'Hardware',
+    //   lead: 'Alex doe',
+    //   image:
+    //     'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80',
+    //   created: '2020-01-01',
+    //   issues: Math.floor(Math.random() * 1000),
+    //   serever: 'cloud-stm',
+    // },
   ]);
   // for (let i = 0; i < 10; i++) {
   //   const project = {
@@ -261,21 +314,26 @@ const ProjectsPage = () => {
     () => [
       {
         Header: 'Project Name',
-        accessor: 'name',
+        accessor: 'project',
+        // eslint-disable-next-line react/prop-types
+        Cell: ({ cell: { value } }) => <ProjectCard project={value} />,
       },
       {
         Header: 'Type',
-        accessor: 'type',
+        accessor: 'project.type',
         Filter: SelectColumnFilter,
         filter: 'includes',
+        Cell: ({ cell: { value } }) => null,
       },
       {
         Header: 'Lead',
         accessor: 'lead',
+        Cell: ({ cell: { value } }) => null,
       },
       {
         Header: 'Issues',
-        accessor: 'issues',
+        accessor: 'project.issues',
+        Cell: ({ cell: { value } }) => null,
       },
     ],
     [],
@@ -300,7 +358,7 @@ const ProjectsPage = () => {
         {isViewGrid ? (
           <>
             <div className="flex flex-col sm:grid sm:grid-flow-row gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-              {arrayOfProjects.map((project) => (
+              {data.map((project) => (
                 <ProjectCard key={project.id} project={project} />
               ))}
             </div>

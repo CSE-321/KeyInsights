@@ -1,6 +1,6 @@
-package com.westerndigital.keyinsight.User;
+package com.westerndigital.keyinsight.Account;
 
-import com.westerndigital.keyinsight.User.User;
+import com.westerndigital.keyinsight.Account.Account;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;

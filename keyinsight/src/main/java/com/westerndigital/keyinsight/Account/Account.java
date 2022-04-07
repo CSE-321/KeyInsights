@@ -1,4 +1,4 @@
-package com.westerndigital.keyinsight.User;
+package com.westerndigital.keyinsight.Account;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,7 +9,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "Users")
-public class User {
+public class Account {
     
     // automatically generate an ID
     @Id
@@ -24,11 +24,11 @@ public class User {
     private String email;
     private String serverUrl;
 
-    public User() {
+    public Account() {
 
     }
 
-    public User(String email, String serverUrl) {
+    public Account(String email, String serverUrl) {
         this.email = email;
         this.serverUrl = serverUrl;
     }
