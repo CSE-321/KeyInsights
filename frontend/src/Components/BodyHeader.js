@@ -15,6 +15,7 @@ const BodyHeader = ({ title, subtext, showButton }) => {
   const [headerTitle, setHeaderTitle] = React.useState(title);
   const [headerSubtext, setHeaderSubtext] = React.useState(subtext);
   const [isButtonActive, setIsButtonActive] = React.useState(false);
+  const [showModal, setShowModal] = React.useState(false);
 
   React.useEffect(() => {
     setHeaderTitle(title);
@@ -42,7 +43,9 @@ const BodyHeader = ({ title, subtext, showButton }) => {
           //     <Dropdown />
           //   </div>
           // </Fragment>
-          <button className="rounded-lg bg-primary-purple text-white h-1/4 w-1/12">
+          <button
+            className="rounded-lg bg-primary-purple text-white h-1/4 w-1/12"
+            onClick={() => setShowModal(true)}>
             {' '}
             Select Project
           </button>

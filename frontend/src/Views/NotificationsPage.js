@@ -2,7 +2,7 @@ import React, { Fragment, useState } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import ToggleSwitch from '../Components/ToggleSwitch';
 import BodyHeader from '../Components/BodyHeader';
-import Dropdown from '../Components/Dropdown';
+import Modal from '../Components/Modal';
 
 const NotificationsPage = () => {
   const [toggled, setToggled] = useState(false);
