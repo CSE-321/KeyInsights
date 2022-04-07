@@ -289,7 +289,7 @@ const ProjectsPage = () => {
       <BodyHeader
         title={headerTitle}
         subtext="Access your available project insights"
-        showButton={true}></BodyHeader>
+        showButton={false}></BodyHeader>
       <div className="flex flex-col mx-7 my-5">
         <div className="flex flex-row justify-between items-center ">
           <p className="text-gray-600"> Home/Server/Projects</p>
@@ -300,7 +300,7 @@ const ProjectsPage = () => {
         {isViewGrid ? (
           <>
             <div className="flex flex-col sm:grid sm:grid-flow-row gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-              {arrayOfProjects.map((project) => (
+              {data.map((project) => (
                 <ProjectCard key={project.id} project={project} />
               ))}
             </div>
