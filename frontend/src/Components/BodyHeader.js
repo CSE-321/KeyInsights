@@ -30,7 +30,7 @@ const BodyHeader = ({ title, subtext, showButton }) => {
       <div className="body-header">
         <div id="header-description">
           <h1
-            className="header-text text-2xl sm:text-3xl md:text-4xl"
+            className="header-text text-2xl sm:text-2xl md:text-3xl lg:text-4xl"
             key={headerTitle}>
             {headerTitle}
           </h1>
@@ -44,7 +44,7 @@ const BodyHeader = ({ title, subtext, showButton }) => {
           //   </div>
           // </Fragment>
           <button
-            className="rounded-lg bg-primary-purple text-white h-1/4 w-1/12"
+            className="rounded-lg bg-primary-purple text-white ml-2 h-10 w-32 text-xs sm:w-28 sm:h-12 md:h-12 md:w-24 lg:h-12 lg:w-32 sm:text-sm md:text-md lg:text-lg"
             onClick={() => setShowModal(true)}>
             {' '}
             Select Project
