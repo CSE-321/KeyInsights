@@ -22,7 +22,8 @@ public class User {
         strategy = GenerationType.SEQUENCE)
     private Long id;
     private String email;
-
+    private String serverUrl;
+    
     User(Long id, String email) {
         this.id = id;
         this.email = email;
