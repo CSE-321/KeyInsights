@@ -6,6 +6,7 @@ import Modal from '../Components/Modal';
 
 const NotificationsPage = () => {
   const [toggled, setToggled] = useState(false);
+  const [isProjectSelected, setIsProjectSelected] = useState(false);
 
   // These values for the textboxes in topdown order
   const [val, setVal] = useState(0);
@@ -22,7 +23,13 @@ const NotificationsPage = () => {
         showButton={true}
       />
       <br></br>
-      <div className="h-full w-99/100 border-solid border border-black block relative mt-1 mr-7 ml-7 rounded-lg p-7">
+      {!isProjectSelected && (
+        <>
+          <p className="ml-7 text-rose-500 text-lg">No Project Selected!</p>
+          <br></br>
+        </>
+      )}
+      <div className="h-full w-99/100 border-solid border border-black block relative mb-1 mt-1 mr-7 ml-7 rounded-lg p-7">
         <div className="inline-block align-middle">
           <ToggleSwitch
             onChange={(event) => setToggled(event.target.checked)}
