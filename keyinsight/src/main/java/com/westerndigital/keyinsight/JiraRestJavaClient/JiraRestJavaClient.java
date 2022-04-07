@@ -45,7 +45,21 @@ public class JiraRestJavaClient {
         return restClient.getProjectClient().getProject(key).claim();
     }
 
+    public Integer getCountOfAllIssues(String projectName, int currentLocation){
+        String jql = String.format("project = %s", projectName);
+        return restClient.getSearchClient().searchJql(
+                jql, -1, currentLocation, null)
+                .claim().getTotal();
+    }
+
     public Iterable<Issue> getAllIssues(String projectName, int currentLocation) {
+        String jql = String.format("project = %s", projectName);
+        return restClient.getSearchClient().searchJql(
+                jql, -1, currentLocation, null)
+                .claim().getIssues();
+    }
+
+    public Iterable<Issue> getNewlyUpdatedIssues(String projectName, int currentLocation){
         String jql = String.format("project = %s", projectName);
         return restClient.getSearchClient().searchJql(
                 jql, -1, currentLocation, null)

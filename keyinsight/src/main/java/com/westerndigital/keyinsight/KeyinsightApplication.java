@@ -14,6 +14,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.StreamSupport;
 
 import com.atlassian.jira.rest.client.api.domain.BasicProject;
 import com.atlassian.jira.rest.client.api.domain.Project;
@@ -64,7 +65,7 @@ public class KeyinsightApplication {
 			HashMap<String, String> fieldValues = new HashMap<String, String>();
 
 			int projectCount = 0;
-			int issueCount = 0;
+			int issueCount = 9000;
 			Iterable<BasicProject> allProjects = myJiraClient.getAllProject();
 			for (BasicProject project : allProjects) {
 				String projectUrl = project.getKey();
@@ -76,136 +77,142 @@ public class KeyinsightApplication {
 				System.out.println("Testing Info: " + singleProject.getDescription());
 				System.out.println("Testing more Info: " + singleProject.getIssueTypes());
 				String id = "10";
-				// while (Integer.parseInt(id) != 1) {
-				// 	Iterable<Issue> allIssues = myJiraClient.getAllIssues(singleProject.getName(), issueCount);
-				// 	for (Issue issue : allIssues) {
-				// 		id = issue.getKey();
-				// 		id = id.substring(id.indexOf('-') + 1);
-				// 		issueName.add(issue.getKey());
-				// 		issueMainType.add(issue.getIssueType().getName());
-				// 		issueFromProject.add(issue.getProject().getName());
-				// 		issueStatus.add(issue.getStatus().getName());
+				Iterable<Issue> allIssues = myJiraClient.getAllIssues(singleProject.getName(), issueCount);
+				Long sizeOfAllIssues = StreamSupport.stream(allIssues.spliterator(), false).count();
+				System.out.println(sizeOfAllIssues);
+				while (sizeOfAllIssues <= 1000 && sizeOfAllIssues != 0) {
+					for (Issue issue : allIssues) {
+						id = issue.getKey();
+						id = id.substring(id.indexOf('-') + 1);
+						System.out.println(id);
+						issueName.add(issue.getKey());
+						issueMainType.add(issue.getIssueType().getName());
+						issueFromProject.add(issue.getProject().getName());
+						issueStatus.add(issue.getStatus().getName());
 
-				// 		if (issueCount == 0) {
-				// 			Iterable<IssueField> allIssueFields = issue.getFields();
-				// 			for (IssueField issueField : allIssueFields) {
-				// 				fieldValues.put(issueField.getName(), issueField.getId());
-				// 				// System.out.println(issueField.getId() + " : " + issueField.getName());
-				// 			}
-				// 			// Found out that Story Points are customfield_10618 for this server B8X4
-				// 			// Found out that Second Type that has Bugs are customfield_12628 for this
-				// 			// server B8X4
-				// 		}
-				// 		// System.out.println(issueCount);
+						if (issueCount == 9000) {
+							Iterable<IssueField> allIssueFields = issue.getFields();
+							for (IssueField issueField : allIssueFields) {
+								fieldValues.put(issueField.getName(), issueField.getId());
+								// System.out.println(issueField.getId() + " : " + issueField.getName());
+							}
+							// Found out that Story Points are customfield_10618 for this server B8X4
+							// Found out that Second Type that has Bugs are customfield_12628 for this
+							// server B8X4
+						}
+						//System.out.println(issueCount);
 
-				// 		String createDate = String.format("%d-%d-%d",
-				// 				issue.getCreationDate().getYear(),
-				// 				issue.getCreationDate().getMonthOfYear(),
-				// 				issue.getCreationDate().getDayOfMonth());
+						String createDate = String.format("%d-%d-%d",
+								issue.getCreationDate().getYear(),
+								issue.getCreationDate().getMonthOfYear(),
+								issue.getCreationDate().getDayOfMonth());
 
-				// 		issueCreateDate.add(createDate);
+						issueCreateDate.add(createDate);
 
-				// 		String createTime = String.format("%d:%d",
-				// 				issue.getCreationDate().getHourOfDay(),
-				// 				issue.getCreationDate().getMinuteOfHour());
+						String createTime = String.format("%d:%d",
+								issue.getCreationDate().getHourOfDay(),
+								issue.getCreationDate().getMinuteOfHour());
 
-				// 		issueCreateTime.add(createTime);
+						issueCreateTime.add(createTime);
 
-				// 		if (issue.getDueDate() == null) {
-				// 			issueDueDate.add(null);
-				// 			issueDueTime.add(null);
-				// 		} else if (issue.getDueDate() != null) {
-				// 			String dueDate = String.format("%d-%d-%d", issue.getDueDate().getYear(),
-				// 					issue.getDueDate().getMonthOfYear(),
-				// 					issue.getDueDate().getDayOfMonth());
+						if (issue.getDueDate() == null) {
+							issueDueDate.add(null);
+							issueDueTime.add(null);
+						} else if (issue.getDueDate() != null) {
+							String dueDate = String.format("%d-%d-%d", issue.getDueDate().getYear(),
+									issue.getDueDate().getMonthOfYear(),
+									issue.getDueDate().getDayOfMonth());
 
-				// 			issueDueDate.add(dueDate);
+							issueDueDate.add(dueDate);
 
-				// 			String dueTime = String.format("%d:%d", issue.getDueDate().getHourOfDay(),
-				// 					issue.getDueDate().getMinuteOfHour());
+							String dueTime = String.format("%d:%d", issue.getDueDate().getHourOfDay(),
+									issue.getDueDate().getMinuteOfHour());
 
-				// 			issueDueTime.add(dueTime);
-				// 		}
+							issueDueTime.add(dueTime);
+						}
 
-				// 		String updatedDate = String.format("%d-%d-%d",
-				// 				issue.getUpdateDate().getYear(),
-				// 				issue.getUpdateDate().getMonthOfYear(),
-				// 				issue.getUpdateDate().getDayOfMonth());
+						String updatedDate = String.format("%d-%d-%d",
+								issue.getUpdateDate().getYear(),
+								issue.getUpdateDate().getMonthOfYear(),
+								issue.getUpdateDate().getDayOfMonth());
 
-				// 		issueUpdatedDate.add(updatedDate);
+						issueUpdatedDate.add(updatedDate);
 
-				// 		String updatedTime = String.format("%d:%d",
-				// 				issue.getUpdateDate().getHourOfDay(),
-				// 				issue.getUpdateDate().getMinuteOfHour());
+						String updatedTime = String.format("%d:%d",
+								issue.getUpdateDate().getHourOfDay(),
+								issue.getUpdateDate().getMinuteOfHour());
 
-				// 		issueUpdatedTime.add(updatedTime);
+						issueUpdatedTime.add(updatedTime);
 
-				// 		if (issue.getField(fieldValues.get("Story Points")).getValue() == null) {
-				// 			issueStoryPoints.add(null);
-				// 		} else if (issue.getField(fieldValues.get("Story Points")).getValue() != null) {
-				// 			float storyPoints = Float
-				// 					.parseFloat(issue.getField(fieldValues.get("Story Points")).getValue().toString());
-				// 			issueStoryPoints.add(storyPoints);
-				// 		}
+						if (issue.getField(fieldValues.get("Story Points")).getValue() == null) {
+							issueStoryPoints.add(null);
+						} else if (issue.getField(fieldValues.get("Story Points")).getValue() != null) {
+							float storyPoints = Float
+									.parseFloat(issue.getField(fieldValues.get("Story Points")).getValue().toString());
+							issueStoryPoints.add(storyPoints);
+						}
 
-				// 		if (issue.getField(fieldValues.get("Type")).getValue() == null) {
-				// 			issueSecondaryType.add(null);
-				// 		} else if (issue.getField(fieldValues.get("Type")).getValue() != null) {
-				// 			String secondaryTypeValueJsonString = issue.getField(fieldValues.get("Type")).getValue()
-				// 					.toString();
-				// 			ObjectMapper mapper = new ObjectMapper();
-				// 			JsonNode node = mapper.readTree(secondaryTypeValueJsonString);
-				// 			String SecondaryTypeValue = node.get("value").asText();
-				// 			// https://
-				// 			// stackoverflow.com/questions/5245840/how-to-convert-jsonstring-to-jsonobject-in-java
-				// 			issueSecondaryType.add(SecondaryTypeValue);
-				// 		}
+						if (issue.getField(fieldValues.get("Type")).getValue() == null) {
+							issueSecondaryType.add(null);
+						} else if (issue.getField(fieldValues.get("Type")).getValue() != null) {
+							String secondaryTypeValueJsonString = issue.getField(fieldValues.get("Type")).getValue()
+									.toString();
+							ObjectMapper mapper = new ObjectMapper();
+							JsonNode node = mapper.readTree(secondaryTypeValueJsonString);
+							String SecondaryTypeValue = node.get("value").asText();
+							// https://
+							// stackoverflow.com/questions/5245840/how-to-convert-jsonstring-to-jsonobject-in-java
+							issueSecondaryType.add(SecondaryTypeValue);
+						}
 
-				// 		// found out that Cancelled Projects are under resolution so issue.getResolution
-				// 		if (issue.getResolution() == null) {
-				// 			issueResolution.add("null");
-				// 		} else if (issue.getResolution() != null) {
-				// 			issueResolution.add(issue.getResolution().getName());
-				// 		}
+						// found out that Cancelled Projects are under resolution so issue.getResolution
+						if (issue.getResolution() == null) {
+							issueResolution.add("null");
+						} else if (issue.getResolution() != null) {
+							issueResolution.add(issue.getResolution().getName());
+						}
 
-				// 		if (issue.getPriority() == null) {
-				// 			issuePriority.add("null");
-				// 		} else if (issue.getPriority() != null) {
-				// 			issuePriority.add(issue.getPriority().getName());
-				// 		}
+						if (issue.getPriority() == null) {
+							issuePriority.add("null");
+						} else if (issue.getPriority() != null) {
+							issuePriority.add(issue.getPriority().getName());
+						}
 
-				// 		if (issue.getAssignee() == null) {
-				// 			issueAssignee.add("null");
-				// 		} else if (issue.getAssignee() != null) {
-				// 			issueAssignee.add(issue.getAssignee().getDisplayName());
-				// 		}
-				// 		issueCount += 1;
-				// 	}
-				// 	// System.out.println("There were " + projectCount + " project(s)");
-				// 	// System.out.println("The Project Name(s) were: " + projectName.get(0));
-				// 	// System.out.println("The Project Lead(s) was; " + projectLeadName.get(0));
-				// 	// System.out.println("There were " + issueCount + " issue(s) that I was able to
-				// 	// pull");
-				// 	// System.out.println("The Issue Name(s) were: " + issueName.get(0));
-				// 	// System.out.println("The Issue Project were: " + issueFromProject.get(0));
-				// 	// System.out.println("The Issue Main Type were: " + issueMainType.get(0));
-				// 	// System.out.println("The Issue Story Points were: " +
-				// 	// issueStoryPoints.get(0));
-				// 	// System.out.println("The Issue Secondary Type were: " +
-				// 	// issueSecondaryType.get(0));
-				// 	// System.out.println("The Issue Priority were: " + issuePriority.get(0));
-				// 	// System.out.println("The Issue Resolution were: " + issueResolution.get(0));
-				// 	// System.out.println("The Issue Status were: " + issueStatus.get(0));
-				// 	// System.out.println("The Issue Create Date were: " + issueCreateDate.get(0));
-				// 	// System.out.println("The Issue Create Time were: " + issueCreateTime.get(0));
-				// 	// System.out.println("The Issue Updated Date were: " +
-				// 	// issueUpdatedDate.get(0));
-				// 	// System.out.println("The Issue Updated Time were: " +
-				// 	// issueUpdatedTime.get(0));
-				// 	// System.out.println("The Issue Due Date were: " + issueDueDate.get(0));
-				// 	// System.out.println("The Issue Due Time were: " + issueDueTime.get(0));
-				// 	// System.out.println("The Issue Assignee was: " + issueAssignee.get(0));
-				// }
+						if (issue.getAssignee() == null) {
+							issueAssignee.add("null");
+						} else if (issue.getAssignee() != null) {
+							issueAssignee.add(issue.getAssignee().getDisplayName());
+						}
+						issueCount += 1;
+						
+					}
+					allIssues = myJiraClient.getAllIssues(singleProject.getName(), issueCount);
+					sizeOfAllIssues = StreamSupport.stream(allIssues.spliterator(), false).count();
+					// System.out.println("There were " + projectCount + " project(s)");
+					// System.out.println("The Project Name(s) were: " + projectName.get(0));
+					// System.out.println("The Project Lead(s) was; " + projectLeadName.get(0));
+					// System.out.println("There were " + issueCount + " issue(s) that I was able to
+					// pull");
+					// System.out.println("The Issue Name(s) were: " + issueName.get(0));
+					// System.out.println("The Issue Project were: " + issueFromProject.get(0));
+					// System.out.println("The Issue Main Type were: " + issueMainType.get(0));
+					// System.out.println("The Issue Story Points were: " +
+					// issueStoryPoints.get(0));
+					// System.out.println("The Issue Secondary Type were: " +
+					// issueSecondaryType.get(0));
+					// System.out.println("The Issue Priority were: " + issuePriority.get(0));
+					// System.out.println("The Issue Resolution were: " + issueResolution.get(0));
+					// System.out.println("The Issue Status were: " + issueStatus.get(0));
+					// System.out.println("The Issue Create Date were: " + issueCreateDate.get(0));
+					// System.out.println("The Issue Create Time were: " + issueCreateTime.get(0));
+					// System.out.println("The Issue Updated Date were: " +
+					// issueUpdatedDate.get(0));
+					// System.out.println("The Issue Updated Time were: " +
+					// issueUpdatedTime.get(0));
+					// System.out.println("The Issue Due Date were: " + issueDueDate.get(0));
+					// System.out.println("The Issue Due Time were: " + issueDueTime.get(0));
+					// System.out.println("The Issue Assignee was: " + issueAssignee.get(0));
+				}
 				projectCount += 1;
 			}
 			// System.out.println("There were " + projectCount + " project(s)");
