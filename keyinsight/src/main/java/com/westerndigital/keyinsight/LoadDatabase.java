@@ -10,9 +10,9 @@ import com.westerndigital.keyinsight.JiraProject.JiraProjectRepository;
 import com.westerndigital.keyinsight.JiraIssue.JiraIssue;
 import com.westerndigital.keyinsight.NotificationSettings.NotificationSettingsRepository;
 import com.westerndigital.keyinsight.Server.ServerRepository;
-import com.westerndigital.keyinsight.User.User;
-import com.westerndigital.keyinsight.User.UserRepository;
 import com.westerndigital.keyinsight.JiraRestJavaClient.JiraRestJavaClient;
+import com.westerndigital.keyinsight.JiraUser.JiraUserRepository;
+import com.westerndigital.keyinsight.JiraUser.JiraUser;
 
 import com.atlassian.jira.rest.client.api.RestClientException;
 import com.atlassian.jira.rest.client.api.domain.BasicProject;
@@ -32,11 +32,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class LoadDatabase implements CommandLineRunner {
 
     // @Autowired
-    private User user;
+    private JiraUser jiraUser;
 
     // inject repositories
     @Autowired
-    private UserRepository userRepository;
+    private JiraUserRepository userRepository;
 
     @Autowired
     private ServerRepository serverRepository;
@@ -61,9 +61,9 @@ public class LoadDatabase implements CommandLineRunner {
         issueRepository.deleteAll();
         notificationSettingsRepository.deleteAll();
 
-        user = new User("alex@gmail.com", "jira.com");
+        jiraUser = new JiraUser("alex@gmail.com", "jira.com");
 
-        userRepository.save(user);
+        userRepository.save(jiraUser);
 
         // get data from JIRA REST client and load them to the database
 
