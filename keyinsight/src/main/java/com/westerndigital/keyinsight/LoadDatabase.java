@@ -12,7 +12,6 @@ import com.westerndigital.keyinsight.NotificationSettings.NotificationSettingsRe
 import com.westerndigital.keyinsight.Server.ServerRepository;
 import com.westerndigital.keyinsight.JiraRestJavaClient.JiraRestJavaClient;
 import com.westerndigital.keyinsight.JiraUser.JiraUserRepository;
-import com.westerndigital.keyinsight.JiraUser.JiraUser;
 
 import com.atlassian.jira.rest.client.api.RestClientException;
 import com.atlassian.jira.rest.client.api.domain.BasicProject;
@@ -78,7 +77,7 @@ public class LoadDatabase implements CommandLineRunner {
         try {
             HashMap<String, String> fieldValues = new HashMap<String, String>();
             int issueCount = 0;
-            String issueNumber = "10";
+            String issueNumber;
             allProjects = myJiraClient.getAllProject();
             for (BasicProject basicProject : allProjects) {
                 JiraProject project = new JiraProject();
@@ -91,7 +90,6 @@ public class LoadDatabase implements CommandLineRunner {
                 project.setName(projectName);
                 project.setTeam_lead(projectLeadDisplayName);
                 project.setTeam_lead_avatar_url(projectLead.getAvatarUri().toString());
-                project.setCategory(singleProject.getKey());
                 allIssues = myJiraClient.getAllIssues(projectName, issueCount);
                 Long sizeOfAllIssues = StreamSupport.stream(allIssues.spliterator(), false).count();
                 while (sizeOfAllIssues != 0 && sizeOfAllIssues <= 1000) {
@@ -120,6 +118,10 @@ public class LoadDatabase implements CommandLineRunner {
                                 singleIssue.getCreationDate().getDayOfMonth());
 
                         issue.setCreation_date(createCreationDate);
+
+                        if (issue.getId() == 1) {
+                            project.setCreated_at(issue.getCreation_date());
+                        }
 
                         String createCreationTime = String.format("%d:%d",
                                 singleIssue.getCreationDate().getHourOfDay(),
@@ -211,8 +213,6 @@ public class LoadDatabase implements CommandLineRunner {
                     sizeOfAllIssues = StreamSupport.stream(allIssues.spliterator(), false).count();
                 }
                 project.setNum_issues(issueCount);
-                JiraIssue tmpissue = issueRepository.findById(1).get();
-                project.setCreated_at(tmpissue.getCreation_date());
                 projectRepository.save(project);
             }
             System.out.println("finished");
