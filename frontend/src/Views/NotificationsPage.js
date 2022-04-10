@@ -62,7 +62,7 @@ const NotificationsPage = () => {
           </h1>
           <input
             type="text"
-            className="borer-solid border border-black w-16 rounded-sm w-4 rounded-sm sm:w-8 md:w-12 lg:w-16"
+            className="borer-solid border border-black w-4 rounded-sm sm:w-8 md:w-12 lg:w-16"
             pattern="[0-9]*"
             value={val2}
             onChange={(e) =>
@@ -82,7 +82,7 @@ const NotificationsPage = () => {
           </h1>
           <input
             type="text"
-            className="borer-solid border border-black w-16 rounded-sm w-4 rounded-sm sm:w-8 md:w-12 lg:w-16"
+            className="borer-solid border border-black w-4 rounded-sm sm:w-8 md:w-12 lg:w-16"
             pattern="[0-9]*"
             value={val3}
             onChange={(e) =>
@@ -102,7 +102,7 @@ const NotificationsPage = () => {
           </h1>
           <input
             type="text"
-            className="borer-solid border border-black w-16 rounded-sm w-4 rounded-sm sm:w-8 md:w-12 lg:w-16"
+            className="borer-solid border border-black w-4 rounded-sm sm:w-8 md:w-12 lg:w-16"
             pattern="[0-9]*"
             value={val4}
             onChange={(e) =>
