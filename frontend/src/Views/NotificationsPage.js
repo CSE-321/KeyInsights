@@ -5,6 +5,7 @@ import BodyHeader from '../Components/BodyHeader';
 import Modal from '../Components/Modal';
 
 const NotificationsPage = () => {
+  // variables to track states of toggle switches and project selection
   const [toggled, setToggled] = useState(false);
   const [isProjectSelected, setIsProjectSelected] = useState(false);
 
@@ -37,7 +38,7 @@ const NotificationsPage = () => {
             onChange={(event) => setToggled(event.target.checked)}
             label="toggle1"
           />
-          <h1 className="inline text-sm sm:text-lg md:text-xl lg:text-2xl">
+          <h1 className="inline text-md sm:text-lg md:text-xl lg:text-2xl">
             Notify me if ticket status critical/unchanged after{' '}
           </h1>
           <input
@@ -48,7 +49,7 @@ const NotificationsPage = () => {
             onChange={(e) =>
               setVal((v) => (e.target.validity.valid ? e.target.value : v))
             }></input>
-          <h1 className="inline text-sm sm:text-lg md:text-xl lg:text-2xl">
+          <h1 className="inline text-md sm:text-lg md:text-xl lg:text-2xl">
             {' '}
             days{' '}
           </h1>
@@ -57,18 +58,18 @@ const NotificationsPage = () => {
             onChange={(event) => setToggled(event.target.checked)}
             label="toggle2"
           />
-          <h1 className="inline text-sm sm:text-lg md:text-xl lg:text-2xl">
+          <h1 className="inline text-md sm:text-lg md:text-xl lg:text-2xl">
             Notify me if sprint status unchanged after{' '}
           </h1>
           <input
             type="text"
-            className="borer-solid border border-black w-16 rounded-sm w-4 rounded-sm sm:w-8 md:w-12 lg:w-16"
+            className="borer-solid border border-black w-4 rounded-sm sm:w-8 md:w-12 lg:w-16"
             pattern="[0-9]*"
             value={val2}
             onChange={(e) =>
               setVal2((v) => (e.target.validity.valid ? e.target.value : v))
             }></input>
-          <h1 className="inline text-sm sm:text-lg md:text-xl lg:text-2xl">
+          <h1 className="inline text-md sm:text-lg md:text-xl lg:text-2xl">
             {' '}
             days{' '}
           </h1>
@@ -80,35 +81,23 @@ const NotificationsPage = () => {
           <h1 className="inline text-sm sm:text-lg md:text-xl lg:text-2xl">
             Notify me if ticket(s) unfinished at end of sprint{' '}
           </h1>
-          <input
-            type="text"
-            className="borer-solid border border-black w-16 rounded-sm w-4 rounded-sm sm:w-8 md:w-12 lg:w-16"
-            pattern="[0-9]*"
-            value={val3}
-            onChange={(e) =>
-              setVal3((v) => (e.target.validity.valid ? e.target.value : v))
-            }></input>
-          <h1 className="inline text-sm sm:text-lg md:text-xl lg:text-2xl">
-            {' '}
-            days{' '}
-          </h1>
           <br></br>
           <ToggleSwitch
             onChange={(event) => setToggled(event.target.checked)}
             label="toggle4"
           />
-          <h1 className="inline text-sm sm:text-lg md:text-xl lg:text-2xl">
+          <h1 className="inline text-md sm:text-lg md:text-xl lg:text-2xl">
             Send me a project digest report every{' '}
           </h1>
           <input
             type="text"
-            className="borer-solid border border-black w-16 rounded-sm w-4 rounded-sm sm:w-8 md:w-12 lg:w-16"
+            className="borer-solid border border-black w-4 rounded-sm sm:w-8 md:w-12 lg:w-16"
             pattern="[0-9]*"
             value={val4}
             onChange={(e) =>
               setVal4((v) => (e.target.validity.valid ? e.target.value : v))
             }></input>
-          <h1 className="inline text-sm sm:text-lg md:text-xl lg:text-2xl">
+          <h1 className="inline text-md sm:text-lg md:text-xl lg:text-2xl">
             {' '}
             days{' '}
           </h1>
@@ -117,7 +106,7 @@ const NotificationsPage = () => {
             onChange={(event) => setToggled(event.target.checked)}
             label="toggle5"
           />
-          <h1 className="inline text-sm sm:text-lg md:text-xl lg:text-2xl">
+          <h1 className="inline text-md sm:text-lg md:text-xl lg:text-2xl">
             Send me a workload digest report every{' '}
           </h1>
           <input
@@ -128,7 +117,7 @@ const NotificationsPage = () => {
             onChange={(e) =>
               setVal5((v) => (e.target.validity.valid ? e.target.value : v))
             }></input>
-          <h1 className="inline text-sm sm:text-lg md:text-xl lg:text-2xl">
+          <h1 className="inline text-md sm:text-lg md:text-xl lg:text-2xl">
             {' '}
             days{' '}
           </h1>
