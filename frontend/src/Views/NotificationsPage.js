@@ -6,6 +6,10 @@ import Modal from '../Components/Modal';
 
 const NotificationsPage = () => {
   const [toggled, setToggled] = useState(false);
+  const [toggled2, setToggled2] = useState(false);
+  const [toggled3, setToggled3] = useState(false);
+  const [toggled4, setToggled4] = useState(false);
+  const [toggled5, setToggled5] = useState(false);
   const [isProjectSelected, setIsProjectSelected] = useState(false);
 
   // These values for the textboxes in topdown order
@@ -50,7 +54,7 @@ const NotificationsPage = () => {
             }></input>
           <h1 className="inline text-sm sm:text-lg md:text-xl lg:text-2xl">
             {' '}
-            days{' '}
+            days.{' '}
           </h1>
           <br></br>
           <ToggleSwitch
@@ -70,7 +74,7 @@ const NotificationsPage = () => {
             }></input>
           <h1 className="inline text-sm sm:text-lg md:text-xl lg:text-2xl">
             {' '}
-            days{' '}
+            days.{' '}
           </h1>
           <br></br>
           <ToggleSwitch
@@ -78,19 +82,7 @@ const NotificationsPage = () => {
             label="toggle3"
           />
           <h1 className="inline text-sm sm:text-lg md:text-xl lg:text-2xl">
-            Notify me if ticket(s) unfinished at end of sprint{' '}
-          </h1>
-          <input
-            type="text"
-            className="borer-solid border border-black w-4 rounded-sm sm:w-8 md:w-12 lg:w-16"
-            pattern="[0-9]*"
-            value={val3}
-            onChange={(e) =>
-              setVal3((v) => (e.target.validity.valid ? e.target.value : v))
-            }></input>
-          <h1 className="inline text-sm sm:text-lg md:text-xl lg:text-2xl">
-            {' '}
-            days{' '}
+            Notify me if ticket(s) unfinished at end of sprint.{' '}
           </h1>
           <br></br>
           <ToggleSwitch
@@ -110,7 +102,7 @@ const NotificationsPage = () => {
             }></input>
           <h1 className="inline text-sm sm:text-lg md:text-xl lg:text-2xl">
             {' '}
-            days{' '}
+            days.{' '}
           </h1>
           <br></br>
           <ToggleSwitch
@@ -130,7 +122,7 @@ const NotificationsPage = () => {
             }></input>
           <h1 className="inline text-sm sm:text-lg md:text-xl lg:text-2xl">
             {' '}
-            days{' '}
+            days.{' '}
           </h1>
         </div>
       </div>
