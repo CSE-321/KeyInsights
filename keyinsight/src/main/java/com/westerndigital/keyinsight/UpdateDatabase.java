@@ -1,7 +1,7 @@
 package com.westerndigital.keyinsight;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import com.westerndigital.keyinsight.JiraIssue.JiraIssueRepository;
@@ -29,8 +29,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Component
-public class LoadDatabase implements CommandLineRunner {
-
+public class UpdateDatabase {
+    // https://stackoverflow.com/questions/42246301/spring-scheduled-task-does-not-start-on-application-startup
     // inject repositories
     @Autowired
     private JiraUserRepository userRepository;
@@ -55,17 +55,8 @@ public class LoadDatabase implements CommandLineRunner {
 
     private Iterable<IssueField> allIssueFields;
 
-    @Override
-    public void run(String... args) throws Exception {
-        userRepository.deleteAll();
-        serverRepository.deleteAll();
-        notificationSettingsRepository.deleteAll();
-        projectRepository.deleteAll();
-        issueRepository.deleteAll();
-        notificationSettingsRepository.deleteAll();
-
-        // get data from JIRA REST client and load them to the database
-
+    @Scheduled(initialDelay = 5 * 60 * 1000, fixedRate = 30 * 60 * 1000)
+    public void scheduledWork() throws Exception {
         try {
             Dotenv dotenv = Dotenv.load();
             myJiraClient = new JiraRestJavaClient(dotenv.get("JIRA_USERNAME"),
@@ -75,30 +66,34 @@ public class LoadDatabase implements CommandLineRunner {
             System.out.println(e.getLocalizedMessage());
         }
         try {
+            System.out.println("In Updating Database");
             HashMap<String, String> fieldValues = new HashMap<String, String>();
-            int issueCount = 0;
-            String issueNumber;
             allProjects = myJiraClient.getAllProject();
             for (BasicProject basicProject : allProjects) {
-                JiraProject project = new JiraProject();
                 String productUrl = basicProject.getKey();
                 Project singleProject = myJiraClient.getProject(productUrl);
                 String projectName = singleProject.getName();
                 String productLeadName = singleProject.getLead().getName();
                 User projectLead = myJiraClient.getUser(productLeadName);
                 String projectLeadDisplayName = projectLead.getDisplayName();
+                JiraProject project = projectRepository.findByName(projectName);
                 project.setName(projectName);
                 project.setTeam_lead(projectLeadDisplayName);
                 project.setTeam_lead_avatar_url(projectLead.getAvatarUri().toString());
-                allIssues = myJiraClient.getAllIssues(projectName, issueCount);
+                int issueCount = 0;
+                int newlyCreatedIssueCount = 0;
+                allIssues = myJiraClient.getAllNewCreatedOrUpdatedLast30MinutesIssues(projectName, issueCount);
                 Long sizeOfAllIssues = StreamSupport.stream(allIssues.spliterator(), false).count();
                 while (sizeOfAllIssues != 0 && sizeOfAllIssues <= 1000) {
                     for (Issue singleIssue : allIssues) {
-                        issueNumber = singleIssue.getKey();
+                        String issueNumber = singleIssue.getKey();
                         issueNumber = issueNumber.substring(issueNumber.indexOf('-') + 1);
                         System.out.println(issueNumber);
-                        JiraIssue issue = new JiraIssue();
-                        issue.setId(Integer.parseInt(issueNumber));
+                        JiraIssue issue = issueRepository.findById(Integer.parseInt(issueNumber))
+                                .orElse(new JiraIssue());
+                        if (issue.getId() == null) {
+                            newlyCreatedIssueCount += 1;
+                        }
                         issue.setName(singleIssue.getKey());
                         issue.setProject_name(projectName);
                         issue.setTeam_type(singleIssue.getIssueType().getName());
@@ -209,17 +204,22 @@ public class LoadDatabase implements CommandLineRunner {
                         issueRepository.save(issue);
                         issueCount += 1;
                     }
-                    allIssues = myJiraClient.getAllIssues(projectName, issueCount);
+                    allIssues = myJiraClient.getAllNewCreatedOrUpdatedLast30MinutesIssues(projectName, issueCount);
                     sizeOfAllIssues = StreamSupport.stream(allIssues.spliterator(), false).count();
                 }
-                project.setNum_issues(issueCount);
+                if (newlyCreatedIssueCount != 0) {
+                    int currentIssueNumbers = project.getNum_issues();
+                    project.setNum_issues(currentIssueNumbers + newlyCreatedIssueCount);
+                }
                 projectRepository.save(project);
+                System.out.println("Had " + issueCount + " issues");
+                System.out.println("Had " + newlyCreatedIssueCount + " newly Issues Created");
             }
-            System.out.println("finished");
+            System.out.println("finished, please wait 30 minutes for the next update");
 
         } catch (RestClientException e) {
             System.out.println(e.getLocalizedMessage());
         }
-
     }
+
 }
