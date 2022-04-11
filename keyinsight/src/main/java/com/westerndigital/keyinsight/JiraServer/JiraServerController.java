@@ -1,4 +1,5 @@
-package com.westerndigital.keyinsight.Server;
+package com.westerndigital.keyinsight.JiraServer;
+
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -8,17 +9,17 @@ import java.util.List;
 
 @RequestMapping("/api/v1/server")
 
-public class ServerController {
+public class JiraServerController {
 
-   @Autowired
-    private ServerService serverService;
+    @Autowired
+    private JiraServerService serverService;
 
-    public ServerController(ServerService serverService){
+    public JiraServerController(JiraServerService serverService) {
         this.serverService = serverService;
     }
 
     @GetMapping
-    public ResponseEntity<List<Server>> getAllServers() {
+    public ResponseEntity<List<JiraServer>> getAllServers() {
         return new ResponseEntity<>(serverService.getAllServers(), HttpStatus.OK);
     }
 }

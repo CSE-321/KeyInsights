@@ -9,8 +9,8 @@ import com.westerndigital.keyinsight.JiraProject.JiraProject;
 import com.westerndigital.keyinsight.JiraProject.JiraProjectRepository;
 import com.westerndigital.keyinsight.JiraIssue.JiraIssue;
 import com.westerndigital.keyinsight.NotificationSettings.NotificationSettingsRepository;
-import com.westerndigital.keyinsight.Server.ServerRepository;
 import com.westerndigital.keyinsight.JiraRestJavaClient.JiraRestJavaClient;
+import com.westerndigital.keyinsight.JiraServer.JiraServerRepository;
 import com.westerndigital.keyinsight.JiraUser.JiraUserRepository;
 
 import com.atlassian.jira.rest.client.api.RestClientException;
@@ -36,7 +36,7 @@ public class UpdateDatabase {
     private JiraUserRepository userRepository;
 
     @Autowired
-    private ServerRepository serverRepository;
+    private JiraServerRepository serverRepository;
 
     @Autowired
     private JiraProjectRepository projectRepository;

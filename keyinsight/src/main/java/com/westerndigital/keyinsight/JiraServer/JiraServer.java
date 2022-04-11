@@ -1,4 +1,4 @@
-package com.westerndigital.keyinsight.Server;
+package com.westerndigital.keyinsight.JiraServer;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,16 +9,11 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "Servers")
-public class Server {
-    
+public class JiraServer {
+
     @Id
-    @SequenceGenerator(
-        name = "server_sequence",
-        sequenceName = "server_sequence",
-        allocationSize = 1)
-    @GeneratedValue(
-        generator = "server_sequence",
-        strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = "server_sequence", sequenceName = "server_sequence", allocationSize = 1)
+    @GeneratedValue(generator = "server_sequence", strategy = GenerationType.SEQUENCE)
     private Long id;
     private String name;
 }
