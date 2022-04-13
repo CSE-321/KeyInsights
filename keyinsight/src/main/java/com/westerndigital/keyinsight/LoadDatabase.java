@@ -58,15 +58,21 @@ public class LoadDatabase implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+        //This block of code underneath just deletes every entry in the database during startup
+        //------------------------------------------
         userRepository.deleteAll();
         serverRepository.deleteAll();
         notificationSettingsRepository.deleteAll();
         projectRepository.deleteAll();
         issueRepository.deleteAll();
         notificationSettingsRepository.deleteAll();
+        //-------------------------------------------
 
-        // get data from JIRA REST client and load them to the database
-
+        //This block of code attempts to use the username, password, and server url to create a
+        //Jira Rest Java Client(JRJC) that connects to the server
+        //That JRJC allows us to interact with the Jira Server and grab the information we need
+        //The authenication doesn't happen until the client attempts grab some kind of information
+        //--------------------------------------------------------------------
         try {
             Dotenv dotenv = Dotenv.load();
             myJiraClient = new JiraRestJavaClient(dotenv.get("JIRA_USERNAME"),
@@ -75,99 +81,130 @@ public class LoadDatabase implements CommandLineRunner {
         } catch (RestClientException e) {
             System.out.println(e.getLocalizedMessage());
         }
+        //--------------------------------------------------------------------
+
+        //This whole try catch block is in case an exeception occurs 
+        //when extracting the information into the PostgreSQL database
+        //-------------------------------------------------------------------------------
         try {
-            HashMap<String, String> fieldValues = new HashMap<String, String>();
-            int issueCount = 0;
-            String issueNumber;
-            allProjects = myJiraClient.getAllProject();
+
+            allProjects = myJiraClient.getAllProject(); // grabs all the projects that are within the Jira Server
+
+            //Iterating through all the projects that was grabbed in the line of code above
             for (BasicProject basicProject : allProjects) {
-                JiraProject project = new JiraProject();
+
+                JiraProject project = new JiraProject();// creates a Java Project Object that allows us to store the Jira Project information using the setters
+
+                //This block of code is just extracting information from the Project 
+                //using getters from the class and JRJC
+                //------------------------------------------------------------
                 String projectKey = basicProject.getKey();
                 Project singleProject = myJiraClient.getProject(projectKey);
                 String projectName = singleProject.getName();
                 String productLeadName = singleProject.getLead().getName();
                 User projectLead = myJiraClient.getUser(productLeadName);
                 String projectLeadDisplayName = projectLead.getDisplayName();
+                //------------------------------------------------------------
+
+                //This block of code is setting all the information from the code above
+                //and storing it in the Java Project Object 
+                //-------------------------------------------------------------------
                 project.setName(projectName);
                 project.setTeamLead(projectLeadDisplayName);
                 project.setTeamLeadAvatarUrl(projectLead.getAvatarUri().toString());
-                allIssues = myJiraClient.getAllIssues(projectName, issueCount);
-                Long sizeOfAllIssues = StreamSupport.stream(allIssues.spliterator(), false).count();
-                while (sizeOfAllIssues != 0 && sizeOfAllIssues <= 1000) {
-                    for (Issue singleIssue : allIssues) {
-                        issueNumber = singleIssue.getKey();
-                        issueNumber = issueNumber.substring(issueNumber.indexOf('-') + 1);
-                        System.out.println(issueNumber);
-                        JiraIssue issue = new JiraIssue();
-                        issue.setId(Integer.parseInt(issueNumber));
-                        issue.setName(singleIssue.getKey());
-                        issue.setProjectName(projectName);
-                        issue.setTeamType(singleIssue.getIssueType().getName());
-                        issue.setStatus(singleIssue.getStatus().getName());
+                //-------------------------------------------------------------------
 
+                //This block of code is to get ready to go through all the issues that the Jira Project has
+                //-----------------------------------------------------------------------------------
+                int issueCount = 0;
+                String issueNumber;
+                HashMap<String, String> fieldValues = new HashMap<String, String>();
+                allIssues = myJiraClient.getAllIssues(projectName, issueCount); // if I have issueCount = 0, the first Issue that I grab is B8X4-10282 not B8X4-1
+                Long allIssuesCount = StreamSupport.stream(allIssues.spliterator(), false).count();
+                //-----------------------------------------------------------------------------------
+
+                //This while loop just runs as long as the allIssuesCount isn't 0
+                //-----------------------------------------------------------------------------
+                while (allIssuesCount > 0) {
+
+                    //As long as the allIssuesCount isn't 0, we have to iterate through all of the issues stored in the Iterable
+                    for (Issue singleIssue : allIssues) {
+
+                        JiraIssue issue = new JiraIssue(); // creates a Java Issue Object that allows us to store the Jira Issue information using the setters
+
+                        //Only needs to run on the FIRST iteration, we need to grab all the fields that 
+                        //an issue could potentially have and store it in the hashmap to use later
+                        //----------------------------------------------------------------
                         if (issueCount == 0) {
                             allIssueFields = singleIssue.getFields();
                             for (IssueField issueField : allIssueFields) {
                                 fieldValues.put(issueField.getName(), issueField.getId());
                             }
-
                         }
+                        //----------------------------------------------------------------
 
+                        //This block of code is just grabbing the issueNumber after the dash
+                        //Example B8X4-10282,this block of code just grabs 10282
+                        //------------------------------------------------------------------
+                        issueNumber = singleIssue.getKey();
+                        issueNumber = issueNumber.substring(issueNumber.indexOf('-') + 1);
+                        System.out.println(issueNumber);
+                        //------------------------------------------------------------------
+
+                        //This block of code is just formatting
+                        //the creation date and time for each issue
+                        //Currently, these values are never null;
+                        //However, I am not sure if that is always the case
+                        //-----------------------------------------------------
                         String createCreationDate = String.format("%d-%d-%d",
                                 singleIssue.getCreationDate().getYear(),
                                 singleIssue.getCreationDate().getMonthOfYear(),
                                 singleIssue.getCreationDate().getDayOfMonth());
 
-                        issue.setCreationDate(createCreationDate);
-
-                        if (issue.getId() == 1) {
-                            project.setCreatedDate(issue.getCreationDate());
-                        }
-
                         String createCreationTime = String.format("%d:%d",
                                 singleIssue.getCreationDate().getHourOfDay(),
                                 singleIssue.getCreationDate().getMinuteOfHour());
+                        //-------------------------------------------------------
 
-                        issue.setCreationTime(createCreationTime);
-
+                        //This block of code is just formatting
+                        //the updated date and time for each issue
+                        //Currently, these values are never null;
+                        //However, I am not sure if that is always the case
+                        //-------------------------------------------------------
                         String updatedDate = String.format("%d-%d-%d",
                                 singleIssue.getUpdateDate().getYear(),
                                 singleIssue.getUpdateDate().getMonthOfYear(),
                                 singleIssue.getUpdateDate().getDayOfMonth());
 
-                        issue.setUpdatedDate(updatedDate);
-
+                    
                         String updatedTime = String.format("%d:%d",
                                 singleIssue.getUpdateDate().getHourOfDay(),
                                 singleIssue.getUpdateDate().getMinuteOfHour());
-
-                        issue.setUpdatedTime(updatedTime);
-
-                        if (singleIssue.getDueDate() == null) {
-                            issue.setDueDate(null);
-                            issue.setDueTime(null);
-                        } else if (singleIssue.getDueDate() != null) {
-                            String dueDate = String.format("%d-%d-%d", singleIssue.getDueDate().getYear(),
+                        //-------------------------------------------------------
+                        
+                        //This block of code is just formatting
+                        //the due date and time for each issue
+                        //Currently, some values are null;
+                        //so I need to use if statements to handle that
+                        //---------------------------------------------------------------------------
+                        String dueDate = null;
+                        String dueTime = null;
+                        if (singleIssue.getDueDate() != null) {
+                            dueDate = String.format("%d-%d-%d", singleIssue.getDueDate().getYear(),
                                     singleIssue.getDueDate().getMonthOfYear(),
                                     singleIssue.getDueDate().getDayOfMonth());
 
-                            issue.setDueDate(dueDate);
-
-                            String dueTime = String.format("%d:%d", singleIssue.getDueDate().getHourOfDay(),
+                            dueTime = String.format("%d:%d", singleIssue.getDueDate().getHourOfDay(),
                                     singleIssue.getDueDate().getMinuteOfHour());
-
-                            issue.setDueTime(dueTime);
                         }
+                        //---------------------------------------------------------------------------
 
                         String storyPointField = fieldValues.get("Story Points");
-
-                        if (singleIssue.getField(storyPointField).getValue() == null) {
-                            issue.setStoryPoint(null);
-                        } else if (singleIssue.getField(storyPointField).getValue() != null) {
-                            float storyPoint = Float
+                        Float storyPointInfo = null;
+                        if (singleIssue.getField(storyPointField).getValue() != null) {
+                            storyPointInfo = Float
                                     .parseFloat(singleIssue.getField(storyPointField).getValue()
                                             .toString());
-                            issue.setStoryPoint(storyPoint);
                         }
 
                         String typeField = fieldValues.get("Type");
@@ -207,15 +244,34 @@ public class LoadDatabase implements CommandLineRunner {
                             issue.setAssignee(singleIssue.getAssignee().getDisplayName());
                             issue.setAssigneeAvatarUrl(singleIssue.getAssignee().getAvatarUri().toString());
                         }
+
+                        issue.setId(Integer.parseInt(issueNumber));
+                        issue.setName(singleIssue.getKey());
+                        issue.setProjectName(projectName);
+                        issue.setTeamType(singleIssue.getIssueType().getName());
+                        issue.setStatus(singleIssue.getStatus().getName());
+                        issue.setCreationDate(createCreationDate);
+                        issue.setCreationTime(createCreationTime);
+                        issue.setUpdatedDate(updatedDate);
+                        issue.setUpdatedTime(updatedTime);
+                        issue.setDueDate(dueDate);
+                        issue.setDueTime(dueTime);
+                        issue.setStoryPoint(storyPointInfo);
+
                         issueRepository.save(issue);
                         issueCount += 1;
+                        if (issue.getId() == 1) {
+                            project.setCreatedDate(issue.getCreationDate());
+                        }
                     }
                     allIssues = myJiraClient.getAllIssues(projectName, issueCount);
-                    sizeOfAllIssues = StreamSupport.stream(allIssues.spliterator(), false).count();
+                    allIssuesCount = StreamSupport.stream(allIssues.spliterator(), false).count();
                 }
+                //------------------------------------------------------------------------------------------------
                 project.setNumIssues(issueCount);
                 projectRepository.save(project);
             }
+        //
 
             String teamType = "CAD";
 
@@ -295,6 +351,7 @@ public class LoadDatabase implements CommandLineRunner {
         } catch (RestClientException e) {
             System.out.println(e.getLocalizedMessage());
         }
+        //--------------------------------------------------------------------------------
 
     }
 }
