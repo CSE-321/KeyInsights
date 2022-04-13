@@ -55,7 +55,7 @@ public class UpdateDatabase {
 
     private Iterable<IssueField> allIssueFields;
 
-    @Scheduled(initialDelay = 5 * 60 * 1000, fixedRate = 30 * 60 * 1000)
+    @Scheduled(initialDelay = 30 * 60 * 1000, fixedRate = 30 * 60 * 1000)
     public void scheduledWork() throws Exception {
         try {
             Dotenv dotenv = Dotenv.load();
@@ -78,8 +78,8 @@ public class UpdateDatabase {
                 String projectLeadDisplayName = projectLead.getDisplayName();
                 JiraProject project = projectRepository.findByName(projectName);
                 project.setName(projectName);
-                project.setTeam_lead(projectLeadDisplayName);
-                project.setTeam_lead_avatar_url(projectLead.getAvatarUri().toString());
+                project.setTeamLead(projectLeadDisplayName);
+                project.setTeamLeadAvatarUrl(projectLead.getAvatarUri().toString());
                 int issueCount = 0;
                 int newlyCreatedIssueCount = 0;
                 allIssues = myJiraClient.getAllNewCreatedOrUpdatedLast30MinutesIssues(projectName, issueCount);
@@ -95,8 +95,8 @@ public class UpdateDatabase {
                             newlyCreatedIssueCount += 1;
                         }
                         issue.setName(singleIssue.getKey());
-                        issue.setProject_name(projectName);
-                        issue.setTeam_type(singleIssue.getIssueType().getName());
+                        issue.setProjectName(projectName);
+                        issue.setTeamType(singleIssue.getIssueType().getName());
                         issue.setStatus(singleIssue.getStatus().getName());
 
                         if (issueCount == 0) {
@@ -112,62 +112,62 @@ public class UpdateDatabase {
                                 singleIssue.getCreationDate().getMonthOfYear(),
                                 singleIssue.getCreationDate().getDayOfMonth());
 
-                        issue.setCreation_date(createCreationDate);
+                        issue.setCreationDate(createCreationDate);
 
                         if (issue.getId() == 1) {
-                            project.setCreated_at(issue.getCreation_date());
+                            project.setCreatedDate(issue.getCreationDate());
                         }
 
                         String createCreationTime = String.format("%d:%d",
                                 singleIssue.getCreationDate().getHourOfDay(),
                                 singleIssue.getCreationDate().getMinuteOfHour());
 
-                        issue.setCreation_time(createCreationTime);
+                        issue.setCreationTime(createCreationTime);
 
                         String updatedDate = String.format("%d-%d-%d",
                                 singleIssue.getUpdateDate().getYear(),
                                 singleIssue.getUpdateDate().getMonthOfYear(),
                                 singleIssue.getUpdateDate().getDayOfMonth());
 
-                        issue.setUpdated_date(updatedDate);
+                        issue.setUpdatedDate(updatedDate);
 
                         String updatedTime = String.format("%d:%d",
                                 singleIssue.getUpdateDate().getHourOfDay(),
                                 singleIssue.getUpdateDate().getMinuteOfHour());
 
-                        issue.setUpdated_time(updatedTime);
+                        issue.setUpdatedTime(updatedTime);
 
                         if (singleIssue.getDueDate() == null) {
-                            issue.setDue_date(null);
-                            issue.setDue_time(null);
+                            issue.setDueDate(null);
+                            issue.setDueTime(null);
                         } else if (singleIssue.getDueDate() != null) {
                             String dueDate = String.format("%d-%d-%d", singleIssue.getDueDate().getYear(),
                                     singleIssue.getDueDate().getMonthOfYear(),
                                     singleIssue.getDueDate().getDayOfMonth());
 
-                            issue.setDue_date(dueDate);
+                            issue.setDueDate(dueDate);
 
                             String dueTime = String.format("%d:%d", singleIssue.getDueDate().getHourOfDay(),
                                     singleIssue.getDueDate().getMinuteOfHour());
 
-                            issue.setDue_time(dueTime);
+                            issue.setDueTime(dueTime);
                         }
 
                         String storyPointField = fieldValues.get("Story Points");
 
                         if (singleIssue.getField(storyPointField).getValue() == null) {
-                            issue.setStory_point(null);
+                            issue.setStoryPoint(null);
                         } else if (singleIssue.getField(storyPointField).getValue() != null) {
                             float storyPoint = Float
                                     .parseFloat(singleIssue.getField(storyPointField).getValue()
                                             .toString());
-                            issue.setStory_point(storyPoint);
+                            issue.setStoryPoint(storyPoint);
                         }
 
                         String typeField = fieldValues.get("Type");
 
                         if (singleIssue.getField(typeField).getValue() == null) {
-                            issue.setSub_type(null);
+                            issue.setSubType(null);
                         } else if (singleIssue.getField(typeField).getValue() != null) {
                             String secondaryTypeValueJsonString = singleIssue.getField(typeField)
                                     .getValue()
@@ -177,7 +177,7 @@ public class UpdateDatabase {
                             String secondaryTypeValue = node.get("value").asText();
                             // https://
                             // stackoverflow.com/questions/5245840/how-to-convert-jsonstring-to-jsonobject-in-java
-                            issue.setSub_type(secondaryTypeValue);
+                            issue.setSubType(secondaryTypeValue);
                         }
 
                         // found out that Cancelled Projects are under resolution so
@@ -196,10 +196,10 @@ public class UpdateDatabase {
 
                         if (singleIssue.getAssignee() == null) {
                             issue.setAssignee(null);
-                            issue.setAssignee_avatar_url(null);
+                            issue.setAssigneeAvatarUrl(null);
                         } else if (singleIssue.getAssignee() != null) {
                             issue.setAssignee(singleIssue.getAssignee().getDisplayName());
-                            issue.setAssignee_avatar_url(singleIssue.getAssignee().getAvatarUri().toString());
+                            issue.setAssigneeAvatarUrl(singleIssue.getAssignee().getAvatarUri().toString());
                         }
                         issueRepository.save(issue);
                         issueCount += 1;
@@ -208,8 +208,8 @@ public class UpdateDatabase {
                     sizeOfAllIssues = StreamSupport.stream(allIssues.spliterator(), false).count();
                 }
                 if (newlyCreatedIssueCount != 0) {
-                    int currentIssueNumbers = project.getNum_issues();
-                    project.setNum_issues(currentIssueNumbers + newlyCreatedIssueCount);
+                    int currentIssueNumbers = project.getNumIssues();
+                    project.setNumIssues(currentIssueNumbers + newlyCreatedIssueCount);
                 }
                 projectRepository.save(project);
                 System.out.println("Had " + issueCount + " issues");

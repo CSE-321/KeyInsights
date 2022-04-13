@@ -16,33 +16,32 @@ create table if not exists Servers (
 );
 
 create table if not exists Projects (
-    project_id int primary key,
+    id int primary key,
     name varchar(64) not null,
-    team_lead varchar(128),
-    team_lead_avatar_url varchar(128),
-    num_issues integer
-    category varchar(64),
-    created_at varchar(64),
+    teamLead varchar(128),
+    teamLeadAvatarUrl varchar(128),
+    numIssues integer
+    createdDate varchar(64)
 );
 
 create table if not exists Issues (
     id int primary key, 
     name varchar(64),
-    project_name varchar(10) refernces Projects(name),
-    team_type varchar(25),
+    projectName varchar(10) refernces Projects(name),
+    teamType varchar(25),
     status varchar(25),
-    creation_date varchar(25),
-    creation_time varchar(25),
-    updated_date varchar(25),
-    updated_time varchar(25),
-    due_date varchar(25),
-    due_time varchar(25),
-    story_point float,
-    sub_type varchar(25),
+    creationDate varchar(25),
+    creationTime varchar(25),
+    updatedDate varchar(25),
+    updatedTime varchar(25),
+    dueDate varchar(25),
+    dueTime varchar(25),
+    storyPoint float,
+    subType varchar(25),
     priority varchar(25),
     resolution varchar(25),
     assignee varchar(25),
-    assignee_avatar_url varchar(128)
+    assigneeAvatarUrl varchar(128)
 );
 
 create table if not exists NotificationSettings (

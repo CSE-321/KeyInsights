@@ -24,6 +24,7 @@ import io.github.cdimascio.dotenv.Dotenv;
 
 import java.util.HashMap;
 import java.util.stream.StreamSupport;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -88,8 +89,8 @@ public class LoadDatabase implements CommandLineRunner {
                 User projectLead = myJiraClient.getUser(productLeadName);
                 String projectLeadDisplayName = projectLead.getDisplayName();
                 project.setName(projectName);
-                project.setTeam_lead(projectLeadDisplayName);
-                project.setTeam_lead_avatar_url(projectLead.getAvatarUri().toString());
+                project.setTeamLead(projectLeadDisplayName);
+                project.setTeamLeadAvatarUrl(projectLead.getAvatarUri().toString());
                 allIssues = myJiraClient.getAllIssues(projectName, issueCount);
                 Long sizeOfAllIssues = StreamSupport.stream(allIssues.spliterator(), false).count();
                 while (sizeOfAllIssues != 0 && sizeOfAllIssues <= 1000) {
@@ -100,8 +101,8 @@ public class LoadDatabase implements CommandLineRunner {
                         JiraIssue issue = new JiraIssue();
                         issue.setId(Integer.parseInt(issueNumber));
                         issue.setName(singleIssue.getKey());
-                        issue.setProject_name(projectName);
-                        issue.setTeam_type(singleIssue.getIssueType().getName());
+                        issue.setProjectName(projectName);
+                        issue.setTeamType(singleIssue.getIssueType().getName());
                         issue.setStatus(singleIssue.getStatus().getName());
 
                         if (issueCount == 0) {
@@ -117,62 +118,62 @@ public class LoadDatabase implements CommandLineRunner {
                                 singleIssue.getCreationDate().getMonthOfYear(),
                                 singleIssue.getCreationDate().getDayOfMonth());
 
-                        issue.setCreation_date(createCreationDate);
+                        issue.setCreationDate(createCreationDate);
 
                         if (issue.getId() == 1) {
-                            project.setCreated_at(issue.getCreation_date());
+                            project.setCreatedDate(issue.getCreationDate());
                         }
 
                         String createCreationTime = String.format("%d:%d",
                                 singleIssue.getCreationDate().getHourOfDay(),
                                 singleIssue.getCreationDate().getMinuteOfHour());
 
-                        issue.setCreation_time(createCreationTime);
+                        issue.setCreationTime(createCreationTime);
 
                         String updatedDate = String.format("%d-%d-%d",
                                 singleIssue.getUpdateDate().getYear(),
                                 singleIssue.getUpdateDate().getMonthOfYear(),
                                 singleIssue.getUpdateDate().getDayOfMonth());
 
-                        issue.setUpdated_date(updatedDate);
+                        issue.setUpdatedDate(updatedDate);
 
                         String updatedTime = String.format("%d:%d",
                                 singleIssue.getUpdateDate().getHourOfDay(),
                                 singleIssue.getUpdateDate().getMinuteOfHour());
 
-                        issue.setUpdated_time(updatedTime);
+                        issue.setUpdatedTime(updatedTime);
 
                         if (singleIssue.getDueDate() == null) {
-                            issue.setDue_date(null);
-                            issue.setDue_time(null);
+                            issue.setDueDate(null);
+                            issue.setDueTime(null);
                         } else if (singleIssue.getDueDate() != null) {
                             String dueDate = String.format("%d-%d-%d", singleIssue.getDueDate().getYear(),
                                     singleIssue.getDueDate().getMonthOfYear(),
                                     singleIssue.getDueDate().getDayOfMonth());
 
-                            issue.setDue_date(dueDate);
+                            issue.setDueDate(dueDate);
 
                             String dueTime = String.format("%d:%d", singleIssue.getDueDate().getHourOfDay(),
                                     singleIssue.getDueDate().getMinuteOfHour());
 
-                            issue.setDue_time(dueTime);
+                            issue.setDueTime(dueTime);
                         }
 
                         String storyPointField = fieldValues.get("Story Points");
 
                         if (singleIssue.getField(storyPointField).getValue() == null) {
-                            issue.setStory_point(null);
+                            issue.setStoryPoint(null);
                         } else if (singleIssue.getField(storyPointField).getValue() != null) {
                             float storyPoint = Float
                                     .parseFloat(singleIssue.getField(storyPointField).getValue()
                                             .toString());
-                            issue.setStory_point(storyPoint);
+                            issue.setStoryPoint(storyPoint);
                         }
 
                         String typeField = fieldValues.get("Type");
 
                         if (singleIssue.getField(typeField).getValue() == null) {
-                            issue.setSub_type(null);
+                            issue.setSubType(null);
                         } else if (singleIssue.getField(typeField).getValue() != null) {
                             String secondaryTypeValueJsonString = singleIssue.getField(typeField)
                                     .getValue()
@@ -182,7 +183,7 @@ public class LoadDatabase implements CommandLineRunner {
                             String secondaryTypeValue = node.get("value").asText();
                             // https://
                             // stackoverflow.com/questions/5245840/how-to-convert-jsonstring-to-jsonobject-in-java
-                            issue.setSub_type(secondaryTypeValue);
+                            issue.setSubType(secondaryTypeValue);
                         }
 
                         // found out that Cancelled Projects are under resolution so
@@ -201,10 +202,10 @@ public class LoadDatabase implements CommandLineRunner {
 
                         if (singleIssue.getAssignee() == null) {
                             issue.setAssignee(null);
-                            issue.setAssignee_avatar_url(null);
+                            issue.setAssigneeAvatarUrl(null);
                         } else if (singleIssue.getAssignee() != null) {
                             issue.setAssignee(singleIssue.getAssignee().getDisplayName());
-                            issue.setAssignee_avatar_url(singleIssue.getAssignee().getAvatarUri().toString());
+                            issue.setAssigneeAvatarUrl(singleIssue.getAssignee().getAvatarUri().toString());
                         }
                         issueRepository.save(issue);
                         issueCount += 1;
@@ -212,10 +213,84 @@ public class LoadDatabase implements CommandLineRunner {
                     allIssues = myJiraClient.getAllIssues(projectName, issueCount);
                     sizeOfAllIssues = StreamSupport.stream(allIssues.spliterator(), false).count();
                 }
-                project.setNum_issues(issueCount);
+                project.setNumIssues(issueCount);
                 projectRepository.save(project);
             }
+
+            String teamType = "CAD";
+
+            String closed = "Closed";
+            String wip = "In Progress";
+            String notStarted = "Waiting";
+            String reopened = "Reopened";
+
+            String bug = "Bug";
+            
+            String criticalPriority = "Critical";
+
+            String completed = "Completed";
+
+            String cancelled = "Project cancelled";
+
+          
+            int totalTeamTypeJiraIssueCount = issueRepository.totalTeamTypeJiraIssueCount(teamType);
+            Float totalTeamTypeJiraIssueStoryPoint = issueRepository.totalTeamTypeJiraIssueStoryPoint(teamType).orElse(0.0f);
+
+            int totalTeamTypeJiraClosedIssueCount = issueRepository.totalTeamTypeJiraStatusIssueCount(teamType, closed);
+            Float totalTeamTypeJiraClosedIssueStoryPoint = issueRepository.totalTeamTypeJiraStatusIssueStoryPoint(teamType, closed).orElse(0.0f);
+
+            int totalTeamTypeJiraWIPIssueCount = issueRepository.totalTeamTypeJiraStatusIssueCount(teamType, wip);
+            Float totalTeamTypeJiraWIPIssueStoryPoint = issueRepository.totalTeamTypeJiraStatusIssueStoryPoint(teamType, wip).orElse(0.0f);
+
+            int totalTeamTypeJiraNotStartedIssueCount = issueRepository.totalTeamTypeJiraStatusIssueCount(teamType, notStarted);
+            Float totalTeamTypeJiraNotStartedIssueStoryPoint = issueRepository.totalTeamTypeJiraStatusIssueStoryPoint(teamType, notStarted).orElse(0.0f);
+
+            int totalTeamTypeJiraBugIssueCount = issueRepository.totalTeamTypeJiraSubTypeIssueCount(teamType, bug);
+
+            int totalTeamTypeJiraReopenedIssueCount = issueRepository.totalTeamTypeJiraStatusIssueCount(teamType, reopened);
+
+            int totalTeamTypeJiraCriticalIssueCount = issueRepository.totalTeamTypeJiraPriorityIssueCount(teamType, criticalPriority);
+
+            int totalTeamTypeJiraCriticalCompletedIssueCount = issueRepository.totalTeamTypeJiraPriorityResolutionIssueCount(teamType, criticalPriority, completed);
+
+            int totalTeamTypeJiraCriticalCancelledIssueCount = issueRepository.totalTeamTypeJiraPriorityResolutionIssueCount(teamType, criticalPriority, cancelled);
+
+            int totalTeamTypeJiraCancelledIssueCount = issueRepository.totalTeamTypeJiraResolutionIssueCount(teamType, cancelled);
+            
             System.out.println("finished");
+
+            System.out.println("The query for totalTeamTypeJiraIssueCount returns: " + totalTeamTypeJiraIssueCount);
+            System.out.println("The query for totalTeamTypeJiraIssueStoryPoint returns: " + totalTeamTypeJiraIssueStoryPoint);
+
+            System.out.println("The query for totalTeamTypeJiraClosedIssueCount returns: " + totalTeamTypeJiraClosedIssueCount);
+            System.out.println("The query for totalTeamTypeJiraClosedIssueStoryPoint returns: " + totalTeamTypeJiraClosedIssueStoryPoint);
+            System.out.println("The percentage between totalTeamTypeJiraClosedIssueCount and totalTeamTypeJiraIssueStoryPoint is " + (totalTeamTypeJiraClosedIssueStoryPoint/totalTeamTypeJiraIssueStoryPoint) * 100.0f + "%");
+
+            System.out.println("The query for totalTeamTypeJiraWIPIssueCount returns: " + totalTeamTypeJiraWIPIssueCount);
+            System.out.println("The query for totalTeamTypeJiraWIPIssueStoryPoint returns: " + totalTeamTypeJiraWIPIssueStoryPoint);
+            System.out.println("The percentage between totalTeamTypeJiraWIPIssueStoryPoint and totalTeamTypeJiraIssueStoryPoint is " + (totalTeamTypeJiraWIPIssueStoryPoint/totalTeamTypeJiraIssueStoryPoint) * 100.0f + "%");
+
+            System.out.println("The query for totalTeamTypeJiraNotStartedIssueCount returns: " + totalTeamTypeJiraNotStartedIssueCount);
+            System.out.println("The query for totalTeamTypeJiraNotStartedIssueStoryPoint returns: " + totalTeamTypeJiraNotStartedIssueStoryPoint);
+            System.out.println("The percentage between totalTeamTypeJiraNotStartedIssueStoryPoint and totalTeamTypeJiraIssueStoryPoint is " + (totalTeamTypeJiraNotStartedIssueStoryPoint/totalTeamTypeJiraIssueStoryPoint) * 100.0f + "%");
+
+            System.out.println("The query for totalTeamTypeJiraBugIssueCount returns: " + totalTeamTypeJiraBugIssueCount);
+            System.out.println("The percentange between totalTeamTypeJiraBugIssueCount and totalTeamTypeJiraIssueCount is " + ((float)totalTeamTypeJiraBugIssueCount/totalTeamTypeJiraIssueCount) * 100.0f + "%");
+
+            System.out.println("The query for totalTeamTypeJiraReopenedIssueCount returns: " + totalTeamTypeJiraReopenedIssueCount);
+            System.out.println("The percentage between totalTeamTypeJiraReopenedIssueCount and totalTeamTypeJiraIssueCount is " + ((float)totalTeamTypeJiraReopenedIssueCount/totalTeamTypeJiraIssueCount) * 100 + "%");
+
+            System.out.println("The query for totalTeamTypeJiraCriticalIssueCount returns: " + totalTeamTypeJiraCriticalIssueCount);
+            System.out.println("The percentage between totalTeamTypeJiraCriticalIssueCount and totalTeamTypeJiraIssueCount is " + ((float)totalTeamTypeJiraCriticalIssueCount/totalTeamTypeJiraIssueCount) * 100 + "%");
+
+            System.out.println("The query for totalTeamTypeJiraCriticalCompletedIssueCount returns: " + totalTeamTypeJiraCriticalCompletedIssueCount);
+            System.out.println("The percentage between totalTeamTypeJiraCriticalCompletedIssueCount and totalTeamTypeJiraIssueCount is " + ((float)totalTeamTypeJiraCriticalCompletedIssueCount/totalTeamTypeJiraIssueCount) * 100 + "%");
+
+            System.out.println("The query for totalTeamTypeJiraCriticalCancelledIssueCount returns: " + totalTeamTypeJiraCriticalCancelledIssueCount);
+            System.out.println("The percentage between totalTeamTypeJiraCriticalCancelledIssueCount and totalTeamTypeJiraIssueCount is " + ((float)totalTeamTypeJiraCriticalCancelledIssueCount/totalTeamTypeJiraIssueCount) * 100 + "%");
+
+            System.out.println("The query for totalTeamTypeJiraCancelledIssueCount returns: " + totalTeamTypeJiraCancelledIssueCount);
+            System.out.println("The percentage between totalTeamTypeJiraCancelledIssueCount and totalTeamTypeJiraIssueCount is " + ((float)totalTeamTypeJiraCancelledIssueCount/totalTeamTypeJiraIssueCount) * 100 + "%");
 
         } catch (RestClientException e) {
             System.out.println(e.getLocalizedMessage());
