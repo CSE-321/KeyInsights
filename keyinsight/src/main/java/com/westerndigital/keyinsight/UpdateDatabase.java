@@ -70,8 +70,8 @@ public class UpdateDatabase {
             HashMap<String, String> fieldValues = new HashMap<String, String>();
             allProjects = myJiraClient.getAllProject();
             for (BasicProject basicProject : allProjects) {
-                String productUrl = basicProject.getKey();
-                Project singleProject = myJiraClient.getProject(productUrl);
+                String projectKey = basicProject.getKey();
+                Project singleProject = myJiraClient.getProject(projectKey);
                 String projectName = singleProject.getName();
                 String productLeadName = singleProject.getLead().getName();
                 User projectLead = myJiraClient.getUser(productLeadName);

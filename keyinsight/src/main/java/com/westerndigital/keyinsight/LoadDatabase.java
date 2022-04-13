@@ -82,8 +82,8 @@ public class LoadDatabase implements CommandLineRunner {
             allProjects = myJiraClient.getAllProject();
             for (BasicProject basicProject : allProjects) {
                 JiraProject project = new JiraProject();
-                String productUrl = basicProject.getKey();
-                Project singleProject = myJiraClient.getProject(productUrl);
+                String projectKey = basicProject.getKey();
+                Project singleProject = myJiraClient.getProject(projectKey);
                 String projectName = singleProject.getName();
                 String productLeadName = singleProject.getLead().getName();
                 User projectLead = myJiraClient.getUser(productLeadName);
