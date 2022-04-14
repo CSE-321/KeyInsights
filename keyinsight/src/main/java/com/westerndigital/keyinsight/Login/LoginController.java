@@ -6,8 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import com.westerndigital.keyinsight.User.User;
-
+import com.westerndigital.keyinsight.JiraUser.JiraUser;
 import com.westerndigital.keyinsight.Login.LoginService;
 
 @RestController
@@ -22,11 +21,11 @@ public class LoginController {
     }
     
     @PostMapping("/login")
-    public ResponseEntity<User> login(@RequestBody User user) {
+    public ResponseEntity<JiraUser> login(@RequestBody JiraUser user) {
         // process POST request
 
 
         return ResponseEntity.ok(user);
     }
-    
+
 }

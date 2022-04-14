@@ -52,6 +52,16 @@ public class JiraRestJavaClient {
                 .claim().getIssues();
     }
 
+    public Iterable<Issue> getAllNewCreatedOrUpdatedLast30MinutesIssues(String projectName, int currentLocation) {
+        String Last30Minutes = "-30m";
+        String Last10Weeks = "-10w";
+        String jql = String.format("project = %s and created >= \"%s\"or updated >= \"%s\"", projectName, Last10Weeks,
+                Last30Minutes);
+        return restClient.getSearchClient().searchJql(
+                jql, -1, currentLocation, null)
+                .claim().getIssues();
+    }
+
     public Issue getSingleIssue(String issueKey) {
         return restClient.getIssueClient().getIssue(issueKey).claim();
     }

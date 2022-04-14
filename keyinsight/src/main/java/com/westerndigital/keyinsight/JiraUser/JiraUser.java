@@ -1,4 +1,4 @@
-package com.westerndigital.keyinsight.User;
+package com.westerndigital.keyinsight.JiraUser;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,28 +9,23 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "Users")
-public class User {
-    
+public class JiraUser {
+
     // automatically generate an ID
     @Id
-    @SequenceGenerator(
-        name = "user_sequence",
-        sequenceName = "user_sequence",
-        allocationSize = 1)
-    @GeneratedValue(
-        generator = "user_sequence",
-        strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = "user_sequence", sequenceName = "user_sequence", allocationSize = 1)
+    @GeneratedValue(generator = "user_sequence", strategy = GenerationType.SEQUENCE)
     private Long id;
     private String username;
     private String email;
     private String password;
     private String serverUrl;
 
-    public User() {
+    public JiraUser() {
 
     }
 
-    public User(String email, String serverUrl) {
+    public JiraUser(String email, String serverUrl) {
         this.email = email;
         this.serverUrl = serverUrl;
     }
