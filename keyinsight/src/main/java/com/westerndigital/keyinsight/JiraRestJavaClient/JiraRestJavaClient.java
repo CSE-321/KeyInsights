@@ -48,7 +48,7 @@ public class JiraRestJavaClient {
     public Iterable<Issue> getAllIssues(String projectName, int currentLocation) {
         String jql = String.format("project = %s", projectName);
         return restClient.getSearchClient().searchJql(
-                jql, -1, currentLocation, null)
+                jql, 750, currentLocation, null)
                 .claim().getIssues();
     }
 

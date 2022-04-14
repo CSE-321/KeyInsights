@@ -31,8 +31,8 @@ public interface JiraIssueRepository extends JpaRepository<JiraIssue, Integer> {
     @Query(value = "SELECT COUNT(j.id) FROM JiraIssue j WHERE j.teamType = :teamType AND j.priority = :priority AND j.resolution = :resolution")
     Integer totalTeamTypeJiraPriorityResolutionIssueCount(@Param("teamType") String teamType, @Param("priority") String priority, @Param("resolution") String resolution);
 
-    @Query(value = "SELECT COUNT(j.id) FROM JiraIssue j WHERE j.teamType = :teamType AND j.priority = :priority AND j.resolution NOT IN(:resolution1, :resolution2, :resolution3)")
-    Integer totalTeamTypeJiraPriorityOppositeResolutionIssueCount(@Param("teamType") String teamType, @Param("priority") String priority, @Param("resolution1") String resolution1,@Param("resolution2") String resolution2,@Param("resolution3") String resolution3);
+    @Query(value = "SELECT COUNT(j.id) FROM JiraIssue j WHERE j.teamType = :teamType AND j.priority = :priority AND (j.resolution NOT IN(:resolution1, :resolution2, :resolution3) OR j.resolution IN(:resolution4))")
+    Integer totalTeamTypeJiraPriorityOppositeResolutionIssueCount(@Param("teamType") String teamType, @Param("priority") String priority, @Param("resolution1") String resolution1,@Param("resolution2") String resolution2,@Param("resolution3") String resolution3,@Param("resolution4") String resolution4);
 
     @Query(value = "SELECT COUNT(j.id) FROM JiraIssue j WHERE j.teamType = :teamType AND j.resolution = :resolution")
     Integer totalTeamTypeJiraResolutionIssueCount(@Param("teamType") String teamType, @Param("resolution") String resolution);
