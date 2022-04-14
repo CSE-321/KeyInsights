@@ -57,6 +57,14 @@ public class UpdateDatabase {
 
     @Scheduled(initialDelay = 30 * 60 * 1000, fixedRate = 30 * 60 * 1000)
     public void scheduledWork() throws Exception {
+        // This block of code attempts to use the username, password, and server url to
+        // create a
+        // Jira Rest Java Client(JRJC) that connects to the server
+        // That JRJC allows us to interact with the Jira Server and grab the information
+        // we need
+        // The authenication doesn't happen until the client attempts grab some kind of
+        // information
+        // --------------------------------------------------------------------
         try {
             Dotenv dotenv = Dotenv.load();
             myJiraClient = new JiraRestJavaClient(dotenv.get("JIRA_USERNAME"),
@@ -65,153 +73,235 @@ public class UpdateDatabase {
         } catch (RestClientException e) {
             System.out.println(e.getLocalizedMessage());
         }
+        // --------------------------------------------------------------------
+
+        // This whole try catch block is in case an exeception occurs
+        // when extracting the information into the PostgreSQL database
+        // -------------------------------------------------------------------------------
         try {
+
             System.out.println("In Updating Database");
-            HashMap<String, String> fieldValues = new HashMap<String, String>();
-            allProjects = myJiraClient.getAllProject();
+            allProjects = myJiraClient.getAllProject(); // grabs all the projects that are within the Jira Server
+
             for (BasicProject basicProject : allProjects) {
-                String projectKey = basicProject.getKey();
-                Project singleProject = myJiraClient.getProject(projectKey);
-                String projectName = singleProject.getName();
-                String productLeadName = singleProject.getLead().getName();
-                User projectLead = myJiraClient.getUser(productLeadName);
-                String projectLeadDisplayName = projectLead.getDisplayName();
-                JiraProject project = projectRepository.findByName(projectName);
-                project.setName(projectName);
-                project.setTeamLead(projectLeadDisplayName);
-                project.setTeamLeadAvatarUrl(projectLead.getAvatarUri().toString());
+
+                JiraProject project = projectRepository.findByName(basicProject.getName());// Finds the information from
+                                                                                           // the database that pertains
+                                                                                           // to this projectname
+
+                // This block of code is to get ready to go through all the issues that the Jira
+                // Project has
+                // This code also has an additional variable called newlyCreatedIssueCount
+                // This is to keep count of any new issues created to update the variable in
+                // project table
+                // -----------------------------------------------------------------------------------------------
                 int issueCount = 0;
                 int newlyCreatedIssueCount = 0;
-                allIssues = myJiraClient.getAllNewCreatedOrUpdatedLast30MinutesIssues(projectName, issueCount);
-                Long sizeOfAllIssues = StreamSupport.stream(allIssues.spliterator(), false).count();
-                while (sizeOfAllIssues != 0 && sizeOfAllIssues <= 1000) {
+                HashMap<String, String> fieldValues = new HashMap<String, String>();
+                allIssues = myJiraClient.getAllNewCreatedOrUpdatedLast30MinutesIssues(basicProject.getName(),
+                        issueCount);// if I have issueCount = 0, the first
+                // Issue that I grab is B8X4-10282 not
+                // B8X4-1
+                // Also, currently I have it so it finds issues created in the last 10 weeks
+                // and issues updated in the last 30 minutes just so I know it is working
+                Long allIssuesCount = StreamSupport.stream(allIssues.spliterator(), false).count();
+                // -----------------------------------------------------------------------------------------------
+
+                // This while loop just runs as long as the allIssuesCount isn't 0
+                // -----------------------------------------------------------------------------
+                while (allIssuesCount > 0) {
+                    // As long as the allIssuesCount isn't 0, we have to iterate through all of the
+                    // issues stored in the Iterable
                     for (Issue singleIssue : allIssues) {
+
+                        // This block of code is just grabbing the issueNumber after the dash
+                        // Example B8X4-10282,this block of code just grabs 10282
+                        // ------------------------------------------------------------------
                         String issueNumber = singleIssue.getKey();
                         issueNumber = issueNumber.substring(issueNumber.indexOf('-') + 1);
                         System.out.println(issueNumber);
+                        // ------------------------------------------------------------------
+
+                        // -------------------------------------------------------------------------
                         JiraIssue issue = issueRepository.findById(Integer.parseInt(issueNumber))
-                                .orElse(new JiraIssue());
-                        if (issue.getId() == null) {
+                                .orElse(new JiraIssue()); // finds an issue in the database with that issueNumber
+                                                          // if it doesn't exist, create a new Java Issue Object
+                        if (issue.getId() == null) { // if this is a newly created issue, add 1 to the count to update
+                                                     // the project column later
                             newlyCreatedIssueCount += 1;
                         }
-                        issue.setName(singleIssue.getKey());
-                        issue.setProjectName(projectName);
-                        issue.setTeamType(singleIssue.getIssueType().getName());
-                        issue.setStatus(singleIssue.getStatus().getName());
+                        // -------------------------------------------------------------------------
 
+                        // Only needs to run on the FIRST iteration, we need to grab all the fields that
+                        // an issue could potentially have and store it in the hashmap to use later
+                        // ----------------------------------------------------------------
                         if (issueCount == 0) {
                             allIssueFields = singleIssue.getFields();
                             for (IssueField issueField : allIssueFields) {
                                 fieldValues.put(issueField.getName(), issueField.getId());
                             }
-
                         }
+                        // ----------------------------------------------------------------
 
+                        // This block of code is just formatting
+                        // the creation date and time for each issue
+                        // Currently, these values are never null;
+                        // However, I am not sure if that is always the case
+                        // -----------------------------------------------------
                         String createCreationDate = String.format("%d-%d-%d",
                                 singleIssue.getCreationDate().getYear(),
                                 singleIssue.getCreationDate().getMonthOfYear(),
                                 singleIssue.getCreationDate().getDayOfMonth());
 
-                        issue.setCreationDate(createCreationDate);
-
-                        if (issue.getId() == 1) {
-                            project.setCreatedDate(issue.getCreationDate());
-                        }
-
                         String createCreationTime = String.format("%d:%d",
                                 singleIssue.getCreationDate().getHourOfDay(),
                                 singleIssue.getCreationDate().getMinuteOfHour());
+                        // -------------------------------------------------------
 
-                        issue.setCreationTime(createCreationTime);
-
+                        // This block of code is just formatting
+                        // the updated date and time for each issue
+                        // Currently, these values are never null;
+                        // However, I am not sure if that is always the case
+                        // -------------------------------------------------------
                         String updatedDate = String.format("%d-%d-%d",
                                 singleIssue.getUpdateDate().getYear(),
                                 singleIssue.getUpdateDate().getMonthOfYear(),
                                 singleIssue.getUpdateDate().getDayOfMonth());
 
-                        issue.setUpdatedDate(updatedDate);
-
                         String updatedTime = String.format("%d:%d",
                                 singleIssue.getUpdateDate().getHourOfDay(),
                                 singleIssue.getUpdateDate().getMinuteOfHour());
+                        // -------------------------------------------------------
 
-                        issue.setUpdatedTime(updatedTime);
-
-                        if (singleIssue.getDueDate() == null) {
-                            issue.setDueDate(null);
-                            issue.setDueTime(null);
-                        } else if (singleIssue.getDueDate() != null) {
-                            String dueDate = String.format("%d-%d-%d", singleIssue.getDueDate().getYear(),
+                        // This block of code is just formatting
+                        // the due date and time for each issue
+                        // Currently, I know that some issues could have this be null
+                        // so I need to use if statements to handle that
+                        // ---------------------------------------------------------------------------
+                        String dueDate = null;
+                        String dueTime = null;
+                        if (singleIssue.getDueDate() != null) {
+                            dueDate = String.format("%d-%d-%d", singleIssue.getDueDate().getYear(),
                                     singleIssue.getDueDate().getMonthOfYear(),
                                     singleIssue.getDueDate().getDayOfMonth());
 
-                            issue.setDueDate(dueDate);
-
-                            String dueTime = String.format("%d:%d", singleIssue.getDueDate().getHourOfDay(),
+                            dueTime = String.format("%d:%d", singleIssue.getDueDate().getHourOfDay(),
                                     singleIssue.getDueDate().getMinuteOfHour());
-
-                            issue.setDueTime(dueTime);
                         }
 
+                        // This block of code is grabbing the story points per issue if they have them
+                        // This is one location where the hashmap comes back from earlier
+                        // ------------------------------------------------------------------------
                         String storyPointField = fieldValues.get("Story Points");
-
-                        if (singleIssue.getField(storyPointField).getValue() == null) {
-                            issue.setStoryPoint(null);
-                        } else if (singleIssue.getField(storyPointField).getValue() != null) {
-                            float storyPoint = Float
+                        Float storyPointInfo = null;
+                        if (singleIssue.getField(storyPointField).getValue() != null) {
+                            storyPointInfo = Float
                                     .parseFloat(singleIssue.getField(storyPointField).getValue()
                                             .toString());
-                            issue.setStoryPoint(storyPoint);
                         }
+                        // ------------------------------------------------------------------------
 
+                        // This block of code is grabbing all the subTypes per issue
+                        // This is another location where the hashmap comes back again
+                        // ------------------------------------------------------------------------
                         String typeField = fieldValues.get("Type");
-
-                        if (singleIssue.getField(typeField).getValue() == null) {
-                            issue.setSubType(null);
-                        } else if (singleIssue.getField(typeField).getValue() != null) {
-                            String secondaryTypeValueJsonString = singleIssue.getField(typeField)
+                        String subType = null;
+                        if (singleIssue.getField(typeField).getValue() != null) {
+                            String subTypeValueJsonString = singleIssue.getField(typeField)
                                     .getValue()
                                     .toString();
                             ObjectMapper mapper = new ObjectMapper();
-                            JsonNode node = mapper.readTree(secondaryTypeValueJsonString);
-                            String secondaryTypeValue = node.get("value").asText();
-                            // https://
-                            // stackoverflow.com/questions/5245840/how-to-convert-jsonstring-to-jsonobject-in-java
-                            issue.setSubType(secondaryTypeValue);
+                            JsonNode node = mapper.readTree(subTypeValueJsonString);
+                            subType = node.get("value").asText();
+                            // https://stackoverflow.com/questions/5245840/how-to-convert-jsonstring-to-jsonobject-in-java
                         }
+                        // ------------------------------------------------------------------------
 
-                        // found out that Cancelled Projects are under resolution so
-                        // singleIssue.getResolution
-                        if (singleIssue.getResolution() == null) {
-                            issue.setResolution(null);
-                        } else if (singleIssue.getResolution() != null) {
-                            issue.setResolution(singleIssue.getResolution().getName());
+                        // Block of code just grabbing the resolution per issue
+                        // ------------------------------------------------------
+                        String resolution = null;
+                        if (singleIssue.getResolution() != null) {
+                            resolution = singleIssue.getResolution().getName();
                         }
+                        // ------------------------------------------------------
 
-                        if (singleIssue.getPriority() == null) {
-                            issue.setPriority(null);
-                        } else if (singleIssue.getPriority() != null) {
-                            issue.setPriority(singleIssue.getPriority().getName());
+                        // Block of code just grabbing the priority per issue
+                        // ---------------------------------------------------
+                        String priority = null;
+                        if (singleIssue.getPriority() != null) {
+                            priority = singleIssue.getPriority().getName();
                         }
+                        // ---------------------------------------------------
 
-                        if (singleIssue.getAssignee() == null) {
-                            issue.setAssignee(null);
-                            issue.setAssigneeAvatarUrl(null);
-                        } else if (singleIssue.getAssignee() != null) {
-                            issue.setAssignee(singleIssue.getAssignee().getDisplayName());
-                            issue.setAssigneeAvatarUrl(singleIssue.getAssignee().getAvatarUri().toString());
+                        // Block of code grabbing the assignee and the avator url for them per issue
+                        // --------------------------------------------------------------------------
+                        String assigneeName = null;
+                        String assigneeNameUrl = null;
+                        if (singleIssue.getAssignee() != null) {
+                            assigneeName = singleIssue.getAssignee().getDisplayName();
+                            assigneeNameUrl = singleIssue.getAssignee().getAvatarUri().toString();
                         }
+                        // --------------------------------------------------------------------------
+
+                        // Setting the values from the Jira Extraction to a variable in the Java Issue
+                        // Object
+                        // --------------------------------------------------------
+                        issue.setName(singleIssue.getKey());
+                        issue.setProjectName(basicProject.getName());
+                        issue.setTeamType(singleIssue.getIssueType().getName());
+                        issue.setStatus(singleIssue.getStatus().getName());
+                        issue.setCreationDate(createCreationDate);
+                        issue.setCreationTime(createCreationTime);
+                        issue.setUpdatedDate(updatedDate);
+                        issue.setUpdatedTime(updatedTime);
+                        issue.setDueDate(dueDate);
+                        issue.setDueTime(dueTime);
+                        issue.setStoryPoint(storyPointInfo);
+                        issue.setSubType(subType);
+                        issue.setResolution(resolution);
+                        issue.setPriority(priority);
+                        issue.setAssignee(assigneeName);
+                        issue.setAssigneeAvatarUrl(assigneeNameUrl);
+                        // --------------------------------------------------------
+
+                        // Just saving that Issue Object with the saved values
+                        // into the database with the repository
+                        // Also increasing the issueCount so that I know
+                        // where to start the next issue search from
+                        // ---------------------------
                         issueRepository.save(issue);
                         issueCount += 1;
+                        // ---------------------------
+
+                        // No need to update the project creation date as this is just updating recent
+                        // issues
                     }
-                    allIssues = myJiraClient.getAllNewCreatedOrUpdatedLast30MinutesIssues(projectName, issueCount);
-                    sizeOfAllIssues = StreamSupport.stream(allIssues.spliterator(), false).count();
+
+                    // Outside the while loop means we haev iterated through all the issues in the
+                    // iterable
+                    // Now we continue to grab the next set of issues using the issueCount as the
+                    // starting point
+                    // -----------------------------------------------------------------------------
+                    allIssues = myJiraClient.getAllNewCreatedOrUpdatedLast30MinutesIssues(basicProject.getName(),
+                            issueCount);
+                    allIssuesCount = StreamSupport.stream(allIssues.spliterator(), false).count();
+                    // -----------------------------------------------------------------------------
                 }
+
+                // Outside of the while loop means we have iterated through all the issues
+                // within that project
+                // Potentially, we could have had new issues so we have to check is the
+                // newlyCreatedIssueCount is not 0 to see if we need to update that column
+                // otherwise don't do anything with it
+                // with the saved values to the repository
+                // --------------------------------
                 if (newlyCreatedIssueCount != 0) {
                     int currentIssueNumbers = project.getNumIssues();
                     project.setNumIssues(currentIssueNumbers + newlyCreatedIssueCount);
                 }
                 projectRepository.save(project);
+                // ---------------------------------
+
                 System.out.println("Had " + issueCount + " issues");
                 System.out.println("Had " + newlyCreatedIssueCount + " newly Issues Created");
             }
