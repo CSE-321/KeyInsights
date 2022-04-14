@@ -342,8 +342,6 @@ public class LoadDatabase implements CommandLineRunner {
 
             String done = "Done";
 
-            String unresolved = null;
-
             String cancelled = "Project cancelled";
             // --------------------------------------
 
@@ -411,7 +409,7 @@ public class LoadDatabase implements CommandLineRunner {
             // Line of code for % of critical not completed Jira Issues
             // -----------------------------------------------------------------------------------------------------------
             int totalTeamTypeJiraCriticalNotCompletedIssueCount = issueRepository
-                    .totalTeamTypeJiraPriorityOppositeResolutionIssueCount(teamType, criticalPriority, completed, fixed, done, unresolved);
+                    .totalTeamTypeJiraPriorityOppositeResolutionIssueCount(teamType, criticalPriority, completed, fixed, done);
             // -----------------------------------------------------------------------------------------------------------
 
             // Line of code for % of cancelled Jira Issues
