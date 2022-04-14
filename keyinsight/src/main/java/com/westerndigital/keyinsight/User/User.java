@@ -21,7 +21,9 @@ public class User {
         generator = "user_sequence",
         strategy = GenerationType.SEQUENCE)
     private Long id;
+    private String username;
     private String email;
+    private String password;
     private String serverUrl;
 
     public User() {
@@ -31,6 +33,14 @@ public class User {
     public User(String email, String serverUrl) {
         this.email = email;
         this.serverUrl = serverUrl;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getEmail() {

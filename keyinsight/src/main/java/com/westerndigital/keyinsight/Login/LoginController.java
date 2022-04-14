@@ -13,24 +13,19 @@ import com.westerndigital.keyinsight.Login.LoginService;
 @RestController
 public class LoginController {
 
-    // @Autowired
-    // private LoginService loginService;
+    @Autowired
+    private LoginService loginService;
+
+    public LoginController(LoginService loginService) {
+        // inject the service layer
+        this.loginService = loginService; 
+    }
     
     @PostMapping("/login")
     public ResponseEntity<User> login(@RequestBody User user) {
         // process POST request
 
-        String email = user.getEmail();
-        String serverUrl = user.getServerUrl();
 
-        System.out.println("Email: " + email + ", Server URL: " + serverUrl);
-
-        System.out.println(ResponseEntity.ok(user));
-
-        // loginService.getLogin();
-
-
-        
         return ResponseEntity.ok(user);
     }
     
