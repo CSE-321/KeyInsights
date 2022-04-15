@@ -1,6 +1,7 @@
 package com.westerndigital.keyinsight.JiraIssue;
 
 import java.util.Optional;
+import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -9,6 +10,9 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface JiraIssueRepository extends JpaRepository<JiraIssue, Integer> {
+
+    @Query(value = "SELECT DISTINCT(j.team_type) FROM JiraIssue j")
+    List<String> teamType();
 
     @Query(value = "SELECT COUNT(j.id) FROM JiraIssue j WHERE j.teamType = :teamType")
     Integer totalTeamTypeJiraIssueCount(@Param("teamType") String teamType);
