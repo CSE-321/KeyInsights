@@ -14,7 +14,7 @@ import java.util.List;
 
 @Controller
 
-@RequestMapping("api/v1/issue")
+@RequestMapping("api/v1/KPI")
 
 public class JiraIssueController {
 @Autowired
@@ -23,8 +23,13 @@ private JiraIssueService jiraIssueService;
 public JiraIssueController(JiraIssueService jiraIssueService) {
     this.jiraIssueService = jiraIssueService;
 }
+@GetMapping 
+public ResponseEntity<List<JiraIssue>> getAllIssues(){
+    return new ResponseEntity<>(jiraIssueService.getAllIssues(), HttpStatus.OK);
+}
 
-@PostMapping(path = "/issues")
+
+/*@PostMapping(path = "/issues")
 public ResponseEntity<HttpStatus> addIssue(JiraIssue issue) {
     if(addIssue(issue) == null) {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -35,4 +40,6 @@ public ResponseEntity<HttpStatus> addIssue(JiraIssue issue) {
     
 }
 
+}
+*/
 }

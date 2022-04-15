@@ -16,5 +16,8 @@ public class JiraIssueService {
     public void addIssue(JiraIssue issue) {
         issueRepository.save(issue);
     }
+    public List<JiraIssue> getAllIssues() {
+        return null;
+    }
 
 }
