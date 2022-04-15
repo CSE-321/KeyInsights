@@ -1,4 +1,4 @@
-package com.westerndigital.keyinsight.KPI;
+package com.westerndigital.keyinsight.KPI1;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -7,7 +7,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class KPI {
+public class KPI1 {
 
     private String teamType;
     private Integer totalJiraCount;
@@ -26,5 +26,9 @@ public class KPI {
     private Float percentageCriticalIssues;
     private Float percentageCriticalIssuesNotCompleted;
     private Float percentageCancelledIssues;
+
+    public KPI1(){
+        
+    }
 
 }
