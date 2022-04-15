@@ -16,7 +16,7 @@ import com.westerndigital.keyinsight.KPI1.KPI1;
 
 @Controller
 
-@RequestMapping("api/v1/KPI")
+@RequestMapping("api/v1/issues")
 
 public class JiraIssueController {
 @Autowired

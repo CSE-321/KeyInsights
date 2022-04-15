@@ -13,7 +13,7 @@ import java.rmi.ServerException;
 import java.util.List;
 
 @Controller
-
+@RequestMapping("api/v1/KPI1")
 public class KPI1Controller {
 @Autowired
 private KPI1Service kpi1Service;

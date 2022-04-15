@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 public interface JiraIssueRepository extends JpaRepository<JiraIssue, Integer> {
 
     @Query(value = "SELECT DISTINCT(j.team_type) FROM JiraIssue j")
-    List<String> teamType();
+    List<String> getAllTeamType();
 
     @Query(value = "SELECT COUNT(j.id) FROM JiraIssue j WHERE j.teamType = :teamType")
     Integer totalTeamTypeJiraIssueCount(@Param("teamType") String teamType);

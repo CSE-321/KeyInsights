@@ -16,8 +16,9 @@ public class KPI1Service {
     }
     public List<KPI1> getKPI1() {
         List<KPI1> listofKPI1;
-        List<String> teamtypes;
-
+        List<String> teamtypes = issueRepository.getAllTeamType();
+        System.out.print(teamtypes);
+        
         //for(KPI : ){
 
         //}
