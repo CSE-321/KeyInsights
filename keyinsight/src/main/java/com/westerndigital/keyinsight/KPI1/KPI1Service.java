@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 
 import com.westerndigital.keyinsight.JiraIssue.JiraIssueRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -15,7 +16,7 @@ public class KPI1Service {
         this.issueRepository = issueRepository;
     }
     public List<KPI1> getKPI1() {
-        List<KPI1> listofKPI1;
+        ArrayList<KPI1> listofKPI1 = new ArrayList<KPI1>();
         List<String> teamtypes = issueRepository.getAllTeamType();
         System.out.print(teamtypes);
 
@@ -115,70 +116,28 @@ public class KPI1Service {
                     cancelled);
             // -----------------------------------------------------------------------------------------------------------
             kpi1.setTeamType(teamType);
-            System.out.println("The query for totalTeamTypeJiraIssueCount returns: " + totalTeamTypeJiraIssueCount);
-            System.out.println(
-                    "The query for totalTeamTypeJiraIssueStoryPoint returns: " + totalTeamTypeJiraIssueStoryPoint);
+            kpi1.setTotalJiraCount(totalTeamTypeJiraIssueCount);
+            kpi1.setTotalJiraStoryPoints(totalTeamTypeJiraIssueStoryPoint);
+            kpi1.setClosedJiraCount(totalTeamTypeJiraClosedIssueCount);
+            kpi1.setClosedJiraStoryPoints(totalTeamTypeJiraClosedIssueStoryPoint);
+            kpi1.setPercentageClosedJiraStoryPoints((totalTeamTypeJiraClosedIssueStoryPoint / totalTeamTypeJiraIssueStoryPoint) * 100.0f);
+            kpi1.setWipJiraCount(totalTeamTypeJiraWIPIssueCount);
+            kpi1.setWipJiraStoryPoints(totalTeamTypeJiraWIPIssueStoryPoint);
+            kpi1.setPercentageWIPJiraStoryPoints((totalTeamTypeJiraWIPIssueStoryPoint / totalTeamTypeJiraIssueStoryPoint) * 100.0f);
+            kpi1.setNotStartedJiraCount(totalTeamTypeJiraNotStartedIssueCount);
+            kpi1.setNotStartedJiraStoryPoints(totalTeamTypeJiraNotStartedIssueStoryPoint);
+            kpi1.setPercentageNotStartedJiraStoryPoints((totalTeamTypeJiraNotStartedIssueStoryPoint / totalTeamTypeJiraIssueStoryPoint) * 100.0f);
+            kpi1.setPercentageBugs(((float) totalTeamTypeJiraBugIssueCount / totalTeamTypeJiraIssueCount) * 100.0f);
+            kpi1.setPercentageReopenedIssues(((float) totalTeamTypeJiraReopenedIssueCount / totalTeamTypeJiraIssueCount) * 100);
+            kpi1.setPercentageCriticalIssues(((float) totalTeamTypeJiraCriticalIssueCount / totalTeamTypeJiraIssueCount) * 100);
+            kpi1.setPercentageCriticalIssuesNotCompleted(((float) totalTeamTypeJiraCriticalNotCompletedIssueCount / totalTeamTypeJiraIssueCount)
+            * 100);
+            kpi1.setPercentageCancelledIssues(((float) totalTeamTypeJiraCancelledIssueCount / totalTeamTypeJiraIssueCount) * 100);
 
-            System.out.println(
-                    "The query for totalTeamTypeJiraClosedIssueCount returns: " + totalTeamTypeJiraClosedIssueCount);
-            System.out.println("The query for totalTeamTypeJiraClosedIssueStoryPoint returns: "
-                    + totalTeamTypeJiraClosedIssueStoryPoint);
-            System.out.println(
-                    "The percentage between totalTeamTypeJiraClosedIssueCount and totalTeamTypeJiraIssueStoryPoint is "
-                            + (totalTeamTypeJiraClosedIssueStoryPoint / totalTeamTypeJiraIssueStoryPoint) * 100.0f
-                            + "%");
-
-            System.out
-                    .println("The query for totalTeamTypeJiraWIPIssueCount returns: " + totalTeamTypeJiraWIPIssueCount);
-            System.out.println("The query for totalTeamTypeJiraWIPIssueStoryPoint returns: "
-                    + totalTeamTypeJiraWIPIssueStoryPoint);
-            System.out.println(
-                    "The percentage between totalTeamTypeJiraWIPIssueStoryPoint and totalTeamTypeJiraIssueStoryPoint is "
-                            + (totalTeamTypeJiraWIPIssueStoryPoint / totalTeamTypeJiraIssueStoryPoint) * 100.0f + "%");
-            
-            System.out.println("The query for totalTeamTypeJiraNotStartedIssueCount returns: "
-                    + totalTeamTypeJiraNotStartedIssueCount);
-            System.out.println("The query for totalTeamTypeJiraNotStartedIssueStoryPoint returns: "
-                    + totalTeamTypeJiraNotStartedIssueStoryPoint);
-            System.out.println(
-                    "The percentage between totalTeamTypeJiraNotStartedIssueStoryPoint and totalTeamTypeJiraIssueStoryPoint is "
-                            + (totalTeamTypeJiraNotStartedIssueStoryPoint / totalTeamTypeJiraIssueStoryPoint) * 100.0f
-                            + "%");
-
-            System.out
-                    .println("The query for totalTeamTypeJiraBugIssueCount returns: " + totalTeamTypeJiraBugIssueCount);
-            System.out.println(
-                    "The percentange between totalTeamTypeJiraBugIssueCount and totalTeamTypeJiraIssueCount is "
-                            + ((float) totalTeamTypeJiraBugIssueCount / totalTeamTypeJiraIssueCount) * 100.0f + "%");
-
-            System.out.println("The query for totalTeamTypeJiraReopenedIssueCount returns: "
-                    + totalTeamTypeJiraReopenedIssueCount);
-            System.out.println(
-                    "The percentage between totalTeamTypeJiraReopenedIssueCount and totalTeamTypeJiraIssueCount is "
-                            + ((float) totalTeamTypeJiraReopenedIssueCount / totalTeamTypeJiraIssueCount) * 100 + "%");
-
-            System.out.println("The query for totalTeamTypeJiraCriticalIssueCount returns: "
-                    + totalTeamTypeJiraCriticalIssueCount);
-            System.out.println(
-                    "The percentage between totalTeamTypeJiraCriticalIssueCount and totalTeamTypeJiraIssueCount is "
-                            + ((float) totalTeamTypeJiraCriticalIssueCount / totalTeamTypeJiraIssueCount) * 100 + "%");
-
-            System.out.println("The query for totalTeamTypeJiraCriticalNotCompletedIssueCount returns: "
-                    + totalTeamTypeJiraCriticalNotCompletedIssueCount);
-            System.out.println(
-                    "The percentage between totalTeamTypeJiraCriticalNotCompletedIssueCount and totalTeamTypeJiraIssueCount is "
-                            + ((float) totalTeamTypeJiraCriticalNotCompletedIssueCount / totalTeamTypeJiraIssueCount)
-                                    * 100
-                            + "%");
-
-            System.out.println("The query for totalTeamTypeJiraCancelledIssueCount returns: "
-                    + totalTeamTypeJiraCancelledIssueCount);
-            System.out.println(
-                    "The percentage between totalTeamTypeJiraCancelledIssueCount and totalTeamTypeJiraIssueCount is "
-                            + ((float) totalTeamTypeJiraCancelledIssueCount / totalTeamTypeJiraIssueCount) * 100 + "%");
+            listofKPI1.add(kpi1);
 
         }
 
-        return null;
+        return listofKPI1;
     }
 }
