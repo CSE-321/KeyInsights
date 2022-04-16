@@ -1,6 +1,9 @@
 package com.westerndigital.keyinsight.security;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -10,21 +13,16 @@ import javax.servlet.http.HttpServletResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.westerndigital.keyinsight.JiraUser.JiraUser;
 
-import org.springframework.security.authentication.AuthenticationServiceException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication
+    .AuthenticationServiceException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication
     .UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 public class CustomAuthenticationFilter 
-    extends AbstractAuthenticationProcessingFilter {
-
-    protected CustomAuthenticationFilter() {
-        super(new AntPathRequestMatcher("/login", "POST"));
-    }
+    extends UsernamePasswordAuthenticationFilter {
 
     @Override
     public Authentication attemptAuthentication(
@@ -32,29 +30,34 @@ public class CustomAuthenticationFilter
         HttpServletResponse response
     ) throws AuthenticationException {
 
-        String username, password, serverUrl;
+        Object username, password, serverUrl;
+        Collection<GrantedAuthority> authorities;
 
         // extract data from the request JSON
         ObjectMapper requestMapper = new ObjectMapper();
         try {
+            // map JSON data to Java object representing the JIRA user
             JiraUser jiraUser = requestMapper.readValue(
                 request.getInputStream(), JiraUser.class);
             
             username = jiraUser.getUsername();
             password = jiraUser.getPassword();
             serverUrl = jiraUser.getServerUrl();
+            authorities = jiraUser.getAuthorities();
 
-            System.out.println("Username: " + username);
-            System.out.println("Password: " + password);
-            System.out.println("Server URL: " + serverUrl);
         } catch (IOException e) {
             throw new AuthenticationServiceException(e.getMessage(), e);
         }
 
-        CustomAuthenticationToken authRequest = new 
-            CustomAuthenticationToken(username, password, serverUrl);
+        // create a custom authentication token that with the login data
+        // that will be passed to the authentication provider
+        CustomAuthenticationToken authRequest = new CustomAuthenticationToken(
+            username, password, serverUrl, authorities);
 
-        return authRequest;
+        setDetails(request, authRequest);
+
+        // return the custom authentication token
+        return this.getAuthenticationManager().authenticate(authRequest);
     }
 
     @Override
