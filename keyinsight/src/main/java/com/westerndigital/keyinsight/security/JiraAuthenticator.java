@@ -18,10 +18,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class JiraAuthenticator {
 
-    // @Autowired
-    // private BCryptPasswordEncoder bCryptPasswordEncoder;
-
-    // @Autowired
     private JiraUserService jiraUserService;
 
     public boolean authenticate(String username, String password, 
@@ -56,11 +52,6 @@ public class JiraAuthenticator {
                 String jiraUsername = jiraUser.getName();
                 String jiraPassword = bCryptPasswordEncoder.encode(password);
                 String jiraServerUrl = jiraUser.getSelf().toString();
-
-                System.out.println(jiraId);
-                System.out.println(jiraUsername);
-                System.out.println(jiraPassword);
-                System.out.println(jiraServerUrl);
 
                 // JiraUser user = new JiraUser(jiraId, jiraUsername, 
                 //     jiraPassword, jiraServerUrl);
