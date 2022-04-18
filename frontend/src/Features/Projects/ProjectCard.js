@@ -3,6 +3,11 @@ import propType from 'prop-types';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 
+/**
+ * A component that renders a card cell for a project.
+ * @param {Project} A project object containing the project data
+ * @returns
+ */
 const ProjectCard = ({ project }) => {
   const [activeProject, setActiveProject] = useState(project);
 

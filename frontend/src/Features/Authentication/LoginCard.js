@@ -1,27 +1,27 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
-import { signinUser } from './Auth/userSlice';
-import { signIn } from '../Util/Networking';
-import { setActiveServer } from './Auth/serverSlice';
+import { signIn } from './Networking';
+import { signinUser } from '../../App/Slices/userSlice';
+import { setActiveServer } from '../../App/Slices/serverSlice';
 
+/**
+ * A component that displays the login card, which allows the user to
+ * sign in to a JIRA server's insights. The component modifies the state of the user
+ * slice to store the user's login JWT, and the server slice to store the active server
+ * @returns {JSX.Element}
+ */
 const LoginCard = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [serverURL, setServerURL] = useState('');
-  const [emailText, setEmailText] = useState('');
+  const [usernameText, setUsernameText] = useState('');
   const [passwordText, setPasswordText] = useState('');
-  const [invalidEmail, setInvalidEmail] = useState(false);
+  const [invalidUsername, setInvalidUsername] = useState(false);
   const [signInRejected, setSignInRejected] = useState(false);
   const [signInError, setSignInError] = useState('');
 
-  const validateEmail = (email) => {
-    const re =
-      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    re.test(String(email).toLowerCase())
-      ? setInvalidEmail(false)
-      : setInvalidEmail(true);
-  };
+  const validateUsername = (username) => {};
 
   const server = {
     id: '1',
@@ -31,17 +31,33 @@ const LoginCard = () => {
   };
 
   const onSubmit = () => {
-    signIn(emailText, passwordText, serverURL)
+    if (serverURL === '') {
+      setSignInRejected(true);
+      setSignInError('Please enter a server URL');
+      return;
+    }
+
+    if (usernameText === '') {
+      setSignInRejected(true);
+      setSignInError('Please enter a username');
+      return;
+    }
+
+    if (passwordText === '') {
+      setSignInRejected(true);
+      setSignInError('Please enter a password');
+      return;
+    }
+
+    signIn(usernameText, passwordText, serverURL)
       .then((user) => {
         setSignInRejected(false);
-        setInvalidEmail(false);
+        setInvalidUsername(false);
         dispatch(signinUser(user));
         dispatch(setActiveServer(server));
         navigate('/projects', { replace: true });
       })
       .catch((error) => {
-        //if the credentials were rejected, tell user
-        //otherwise, show user the error (e.g. server down)
         setSignInRejected(true);
         setSignInError(error.message);
       });
@@ -61,20 +77,20 @@ const LoginCard = () => {
               value={serverURL}
               onChange={(e) => setServerURL(e.target.value)}></input>
           </form>
-          <h2 className="text-lg sm:text-xl"> Email </h2>
+          <h2 className="text-lg sm:text-xl"> Username </h2>
 
           <form className="">
-            {invalidEmail ? (
-              <p className="text-rose-500"> Invalid email </p>
+            {invalidUsername ? (
+              <p className="text-rose-500"> Invalid Username </p>
             ) : null}
 
             <input
               className="w-full h-10 rounded-lg drop-shadow-md"
               type="text"
-              placeholder="   email@wd.com"
-              value={emailText}
-              onInput={(e) => setEmailText(e.target.value)}
-              onBlur={(e) => validateEmail(e.target.value)}
+              placeholder="WdJiraUser"
+              value={usernameText}
+              onInput={(e) => setUsernameText(e.target.value)}
+              onBlur={(e) => validateUsername(e.target.value)}
             />
           </form>
           <h2 className="text-lg sm:text-xl"> Password</h2>
