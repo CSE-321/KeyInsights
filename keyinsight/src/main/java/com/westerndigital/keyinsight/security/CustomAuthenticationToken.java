@@ -12,7 +12,7 @@ public class CustomAuthenticationToken extends
     private Object serverUrl;
     
     public CustomAuthenticationToken(Object username, Object password, 
-        Object serverUrl, Collection<GrantedAuthority> authorities) {
+        Object serverUrl, Collection<? extends GrantedAuthority> authorities) {
 
         super(username, password, authorities);
 

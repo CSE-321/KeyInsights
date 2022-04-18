@@ -1,9 +1,7 @@
 package com.westerndigital.keyinsight.security;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -12,7 +10,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.westerndigital.keyinsight.JiraUser.JiraUser;
+import com.westerndigital.keyinsight.JiraUser.JiraUserService;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication
     .AuthenticationServiceException;
 import org.springframework.security.core.Authentication;
@@ -30,20 +30,20 @@ public class CustomAuthenticationFilter
         HttpServletResponse response
     ) throws AuthenticationException {
 
-        Object username, password, serverUrl;
-        Collection<GrantedAuthority> authorities;
+        String username, password, serverUrl;
+        Collection<? extends GrantedAuthority> authorities;
 
         // extract data from the request JSON
         ObjectMapper requestMapper = new ObjectMapper();
         try {
             // map JSON data to Java object representing the JIRA user
-            JiraUser jiraUser = requestMapper.readValue(
+            JiraUser jiraUserFromRequest = requestMapper.readValue(
                 request.getInputStream(), JiraUser.class);
             
-            username = jiraUser.getUsername();
-            password = jiraUser.getPassword();
-            serverUrl = jiraUser.getServerUrl();
-            authorities = jiraUser.getAuthorities();
+            username = jiraUserFromRequest.getUsername();
+            password = jiraUserFromRequest.getPassword();
+            serverUrl = jiraUserFromRequest.getServerUrl();
+            authorities = jiraUserFromRequest.getAuthorities();
 
         } catch (IOException e) {
             throw new AuthenticationServiceException(e.getMessage(), e);
@@ -67,6 +67,6 @@ public class CustomAuthenticationFilter
         FilterChain chain,
         Authentication authentication
     ) throws IOException, ServletException {
-
+        System.out.println("AUTHENTICATION SUCCESSFUL");
     }
 }
