@@ -92,8 +92,9 @@ public class LoadDatabase implements CommandLineRunner {
                 project.setTeam_lead_avatar_url(projectLead.getAvatarUri().toString());
                 project.setCategory(singleProject.getKey());
                 String issueNumber = "10";
-                while (Integer.parseInt(issueNumber) != 10000) {
-                    Iterable<Issue> allIssues = myJiraClient.getAllIssues(projectName, issueCount);
+                while (Integer.parseInt(issueNumber) != 1) {
+                    Iterable<Issue> allIssues = myJiraClient.getAllIssues(projectName,
+                            issueCount);
                     for (Issue singleIssue : allIssues) {
                         issueNumber = singleIssue.getKey();
                         issueNumber = issueNumber.substring(issueNumber.indexOf('-') + 1);
@@ -143,13 +144,15 @@ public class LoadDatabase implements CommandLineRunner {
                             issue.setDue_date(null);
                             issue.setDue_time(null);
                         } else if (singleIssue.getDueDate() != null) {
-                            String dueDate = String.format("%d-%d-%d", singleIssue.getDueDate().getYear(),
+                            String dueDate = String.format("%d-%d-%d",
+                                    singleIssue.getDueDate().getYear(),
                                     singleIssue.getDueDate().getMonthOfYear(),
                                     singleIssue.getDueDate().getDayOfMonth());
 
                             issue.setDue_date(dueDate);
 
-                            String dueTime = String.format("%d:%d", singleIssue.getDueDate().getHourOfDay(),
+                            String dueTime = String.format("%d:%d",
+                                    singleIssue.getDueDate().getHourOfDay(),
                                     singleIssue.getDueDate().getMinuteOfHour());
 
                             issue.setDue_time(dueTime);
@@ -178,6 +181,8 @@ public class LoadDatabase implements CommandLineRunner {
                             JsonNode node = mapper.readTree(secondaryTypeValueJsonString);
                             String secondaryTypeValue = node.get("value").asText();
                             // https://
+                            //
+                            //
                             // stackoverflow.com/questions/5245840/how-to-convert-jsonstring-to-jsonobject-in-java
                             issue.setSub_type(secondaryTypeValue);
                         }
