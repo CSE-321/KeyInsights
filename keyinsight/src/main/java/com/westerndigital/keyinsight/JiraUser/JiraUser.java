@@ -2,7 +2,6 @@ package com.westerndigital.keyinsight.JiraUser;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -21,27 +20,24 @@ import lombok.Data;
 @Data
 public class JiraUser implements UserDetails {
 
-    // automatically generate an ID
     @Id
-    @SequenceGenerator(name = "user_sequence", sequenceName = "user_sequence", 
-        allocationSize = 1)
-    @GeneratedValue(generator = "user_sequence", 
-        strategy = GenerationType.SEQUENCE)
-    private Long id;
+    private String id;
     private String username;
-    private String email;
+    // private String email;
     private String password;
     private String serverUrl;
 
-    private final Set<GrantedAuthority> authorities = new HashSet<>();
+    public JiraUser() {}
 
-    public JiraUser() {
+    // public JiraUser(String username, String email, String serverUrl) {
+    //     this.username = username;
+    //     this.email = email;
+    //     this.serverUrl = serverUrl;
+    // }
 
-    }
-
-    public JiraUser(String username, String email, String serverUrl) {
+    public JiraUser(String id, String username, String password, String serverUrl) {
         this.username = username;
-        this.email = email;
+        this.password = password;
         this.serverUrl = serverUrl;
     }
 
@@ -61,8 +57,9 @@ public class JiraUser implements UserDetails {
         return true;
     }
 
-    public Collection<GrantedAuthority> getAuthorities() {
-        return authorities;
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return new HashSet<GrantedAuthority>();
     }
 
 }
