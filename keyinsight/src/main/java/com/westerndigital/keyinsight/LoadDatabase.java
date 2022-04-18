@@ -322,6 +322,7 @@ public class LoadDatabase implements CommandLineRunner {
             }
 
             System.out.println("finished");
+            myJiraClient.getRestClient().close();
 
         } catch (RestClientException e) {
             System.out.println(e.getLocalizedMessage());

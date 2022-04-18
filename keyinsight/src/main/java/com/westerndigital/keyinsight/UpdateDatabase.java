@@ -306,6 +306,7 @@ public class UpdateDatabase {
                 System.out.println("Had " + newlyCreatedIssueCount + " newly Issues Created");
             }
             System.out.println("finished, please wait 30 minutes for the next update");
+            myJiraClient.getRestClient().close();
 
         } catch (RestClientException e) {
             System.out.println(e.getLocalizedMessage());
