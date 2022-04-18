@@ -70,11 +70,11 @@ const NotificationsPage = () => {
         setModalOn={setModalOn}
       />
       <br></br>
-      <div className="flex w-full overflow-x-hidden m-0 p-0 mb-5 gap-x-[465px]">
+      <div className="flex w-full overflow-x-hidden m-0 p-0 mb-5 gap-x-[125px] sm:gap-x-[160px] md:gap-x-[300px] lg:gap-x-[465px]">
         {/* Show Error Message if Project not selected or show Project Name */}
         {!isProjectSelected && (
           <>
-            <p className="ml-7 mt-2 inline text-rose-500 text-sm sm:text-lg md:text-xl lg:text-2xl">
+            <p className="ml-7 mt-2 inline w-[217px] text-rose-500 text-md sm:text-lg md:text-xl lg:text-2xl">
               No Project Selected!
             </p>
             <br></br>
@@ -82,7 +82,7 @@ const NotificationsPage = () => {
         )}
         {isProjectSelected && (
           <>
-            <p className="ml-7 mt-2 text-sm sm:text-lg md:text-xl lg:text-2xl w-[217px]">
+            <p className="ml-7 mt-2 text-md sm:text-lg md:text-xl lg:text-2xl w-[217px] sm:w-[250px]">
               {project}
             </p>
             <br></br>
@@ -91,7 +91,7 @@ const NotificationsPage = () => {
         {isSettingsChanged && (
           <>
             <button
-              className="static rounded-lg bg-primary-purple text-white h-10 w-32 text-xs sm:w-28 sm:h-12 md:h-12 md:w-24 lg:h-12 lg:w-60 sm:text-sm md:text-md lg:text-lg"
+              className="static rounded-lg bg-primary-purple text-white h-10 w-32 text-xs sm:w-32 sm:h-12 md:h-12 md:w-64 lg:h-12 lg:w-60 sm:text-sm md:text-md lg:text-lg"
               onClick={createJSON}>
               {' '}
               Save Changes
@@ -101,7 +101,7 @@ const NotificationsPage = () => {
         {!isSettingsChanged && (
           <>
             <button
-              className="static opacity-50 rounded-lg bg-primary-purple text-white h-10 w-32 text-xs sm:w-28 sm:h-12 md:h-12 md:w-24 lg:h-12 lg:w-60 sm:text-sm md:text-md lg:text-lg"
+              className="static opacity-50 rounded-lg bg-primary-purple text-white h-10 w-32 text-xs sm:w-32 sm:h-12 md:h-12 md:w-64 lg:h-12 lg:w-60 sm:text-sm md:text-md lg:text-lg"
               onClick={createJSON}>
               {' '}
               Save Changes
