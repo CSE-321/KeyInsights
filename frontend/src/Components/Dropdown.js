@@ -1,9 +1,22 @@
-import React, { Fragment, useState, useEffect } from 'react';
+import React, { Fragment } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { setActiveServer } from '../Components/Auth/serverSlice';
+import { setActiveServer } from '../App/Slices/serverSlice';
 import PropTypes from 'prop-types';
 import '../CSS/Dropdown.css';
+import {
+  useTable,
+  useFilters,
+  useGlobalFilter,
+  useAsyncDebounce,
+  useSortBy,
+  usePagination,
+} from 'react-table';
 
+/**
+ * Depracated:
+ * A dropdown component that displays a list of servers.
+ * @returns
+ */
 const Dropdown = () => {
   //TODO: Make API call to get server list, and update server state
   const [showDropdown, setShowDropdown] = React.useState(false);

@@ -1,9 +1,11 @@
 import { type } from '@testing-library/user-event/dist/type';
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { signinUser, signoutUser } from '../Components/Auth/userSlice';
+import { signinUser, signoutUser } from '../../App/Slices/userSlice';
 
 export async function signIn(username, password, serverURL) {
+  //TODO: Change the serer urls to request parameter instead of body
+  //TODO: Remove http from server
   const headers = {
     'Content-Type': 'application/json',
   };

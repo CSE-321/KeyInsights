@@ -1,10 +1,16 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
-import { signinUser } from './Auth/userSlice';
-import { signIn } from '../Util/Networking';
-import { setActiveServer } from './Auth/serverSlice';
+import { signIn } from './Networking';
+import { signinUser } from '../../App/Slices/userSlice';
+import { setActiveServer } from '../../App/Slices/serverSlice';
 
+/**
+ * A component that displays the login card, which allows the user to
+ * sign in to a JIRA server's insights. The component modifies the state of the user
+ * slice to store the user's login JWT, and the server slice to store the active server
+ * @returns {JSX.Element}
+ */
 const LoginCard = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
