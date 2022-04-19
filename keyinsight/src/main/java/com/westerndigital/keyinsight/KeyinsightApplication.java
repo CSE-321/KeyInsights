@@ -73,6 +73,7 @@ public class KeyinsightApplication {
 			Instant instant = Instant.ofEpochMilli(singleIssue.getCreationDate().getMillis());
 			OffsetDateTime offsetDateTime = OffsetDateTime.ofInstant(instant, ZoneId.of(singleIssue.getCreationDate().getZone().getID()));
 			System.out.println(singleIssue.getCreationDate());
+			System.out.println(singleIssue.getCreationDate().toLocalDateTime());
 			System.out.println(offsetDateTime);
 			// Iterable<BasicProject> allProjects = myJiraClient.getAllProject();
 			// for (BasicProject project : allProjects) {
