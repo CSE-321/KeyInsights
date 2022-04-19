@@ -23,6 +23,9 @@ import com.atlassian.jira.rest.client.api.domain.IssueField;
 
 import io.github.cdimascio.dotenv.Dotenv;
 
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.stream.StreamSupport;
 
@@ -167,7 +170,8 @@ public class LoadDatabase implements CommandLineRunner {
                         // Currently, these values are never null;
                         // However, I am not sure if that is always the case
                         // -----------------------------------------------------
-                        DateTime creationDateTime = singleIssue.getCreationDate();
+                        Instant creationInstant = Instant.ofEpochMilli(singleIssue.getCreationDate().getMillis());
+			            OffsetDateTime creationDateTime = OffsetDateTime.ofInstant(creationInstant, ZoneId.of(singleIssue.getCreationDate().getZone().getID()));
                         // -------------------------------------------------------
 
                         // This block of code is just getting
@@ -175,7 +179,8 @@ public class LoadDatabase implements CommandLineRunner {
                         // Currently, these values are never null;
                         // However, I am not sure if that is always the case
                         // -------------------------------------------------------
-                        DateTime updatedDateTime = singleIssue.getUpdateDate();
+                        Instant updatedInstant = Instant.ofEpochMilli(singleIssue.getUpdateDate().getMillis());
+			            OffsetDateTime updatedDateTime = OffsetDateTime.ofInstant(updatedInstant, ZoneId.of(singleIssue.getUpdateDate().getZone().getID()));
                         // -------------------------------------------------------
 
                         // This block of code is just formatting
@@ -183,9 +188,10 @@ public class LoadDatabase implements CommandLineRunner {
                         // Currently, some values are null;
                         // so I need to use if statements to handle that
                         // ---------------------------------------------------------------------------
-                        DateTime dueDateTime = null;
+                        OffsetDateTime dueDateTime = null;
                         if (singleIssue.getDueDate() != null) {
-                            dueDateTime = singleIssue.getDueDate();
+                            Instant dueInstant = Instant.ofEpochMilli(singleIssue.getDueDate().getMillis());
+                            dueDateTime = OffsetDateTime.ofInstant(dueInstant, ZoneId.of(singleIssue.getDueDate().getZone().getID()));
                         }
                         // ---------------------------------------------------------------------------
 

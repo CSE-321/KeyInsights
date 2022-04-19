@@ -4,7 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import org.joda.time.DateTime;
+import java.time.OffsetDateTime;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -23,9 +23,9 @@ public class JiraIssue {
     private String projectName;
     private String teamType;
     private String status;
-    private DateTime createdDateTime;
-    private DateTime updatedDateTime;
-    private DateTime dueDateTime;
+    private OffsetDateTime createdDateTime;
+    private OffsetDateTime updatedDateTime;
+    private OffsetDateTime dueDateTime;
     private Float storyPoint;
     private String subType;
     private String priority;
