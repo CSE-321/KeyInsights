@@ -1,5 +1,6 @@
 package com.westerndigital.keyinsight.KPI1;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.westerndigital.keyinsight.JiraIssue.JiraIssueRepository;
@@ -10,14 +11,18 @@ import java.util.List;
 @Service
 
 public class KPI1Service {
-    private final JiraIssueRepository issueRepository;
+        @Autowired
+        private final JiraIssueRepository issueRepository;
 
     public KPI1Service(JiraIssueRepository issueRepository){
         this.issueRepository = issueRepository;
+ 
     }
+
     public List<KPI1> getKPI1() {
         ArrayList<KPI1> listofKPI1 = new ArrayList<KPI1>();
-        List<String> teamtypes = issueRepository.getAllTeamType();
+        String projectName = "B8X4";
+        List<String> teamtypes = issueRepository.getAllTeamType(projectName);
         System.out.print(teamtypes);
 
         String closed = "Closed";
@@ -59,60 +64,60 @@ public class KPI1Service {
 
             // Block of code for Total Jira# and story points
             // ----------------------------------------------------------------------------------------------------
-            int totalTeamTypeJiraIssueCount = issueRepository.totalTeamTypeJiraIssueCount(teamType);
-            Float totalTeamTypeJiraIssueStoryPoint = issueRepository.totalTeamTypeJiraIssueStoryPoint(teamType)
+            int totalTeamTypeJiraIssueCount = issueRepository.totalTeamTypeJiraIssueCount(projectName,teamType);
+            Float totalTeamTypeJiraIssueStoryPoint = issueRepository.totalTeamTypeJiraIssueStoryPoint(projectName,teamType)
                     .orElse(0.0f);
             // ----------------------------------------------------------------------------------------------------
 
             // Block of code for Closed Jira# and story points and % of total story points
             // ----------------------------------------------------------------------------------------------------------
-            int totalTeamTypeJiraClosedIssueCount = issueRepository.totalTeamTypeJiraStatusIssueCount(teamType, closed);
+            int totalTeamTypeJiraClosedIssueCount = issueRepository.totalTeamTypeJiraStatusIssueCount(projectName,teamType, closed);
             Float totalTeamTypeJiraClosedIssueStoryPoint = issueRepository
-                    .totalTeamTypeJiraStatusIssueStoryPoint(teamType, closed).orElse(0.0f);
+                    .totalTeamTypeJiraStatusIssueStoryPoint(projectName,teamType, closed).orElse(0.0f);
             // ----------------------------------------------------------------------------------------------------------
 
             // Block of code for WIP Jira# and story points and % of total story points
             // -----------------------------------------------------------------------------------------------------------
-            int totalTeamTypeJiraWIPIssueCount = issueRepository.totalTeamTypeJiraStatusIssueCount(teamType, wip);
+            int totalTeamTypeJiraWIPIssueCount = issueRepository.totalTeamTypeJiraStatusIssueCount(projectName,teamType, wip);
             Float totalTeamTypeJiraWIPIssueStoryPoint = issueRepository
-                    .totalTeamTypeJiraStatusIssueStoryPoint(teamType, wip).orElse(0.0f);
+                    .totalTeamTypeJiraStatusIssueStoryPoint(projectName,teamType, wip).orElse(0.0f);
             // ------------------------------------------------------------------------------------------------------------
 
             // Block of code for Not Started Jira# and story points and % of total story
             // points
             // -----------------------------------------------------------------------------------------------------------
-            int totalTeamTypeJiraNotStartedIssueCount = issueRepository.totalTeamTypeJiraStatusIssueCount(teamType,
+            int totalTeamTypeJiraNotStartedIssueCount = issueRepository.totalTeamTypeJiraStatusIssueCount(projectName,teamType,
                     notStarted);
             Float totalTeamTypeJiraNotStartedIssueStoryPoint = issueRepository
-                    .totalTeamTypeJiraStatusIssueStoryPoint(teamType, notStarted).orElse(0.0f);
+                    .totalTeamTypeJiraStatusIssueStoryPoint(projectName,teamType, notStarted).orElse(0.0f);
             // -----------------------------------------------------------------------------------------------------------
 
             // Line of code for % of bugs in Jira Issues
             // -----------------------------------------------------------------------------------------------------------
-            int totalTeamTypeJiraBugIssueCount = issueRepository.totalTeamTypeJiraSubTypeIssueCount(teamType, bug);
+            int totalTeamTypeJiraBugIssueCount = issueRepository.totalTeamTypeJiraSubTypeIssueCount(projectName,teamType, bug);
             // -----------------------------------------------------------------------------------------------------------
 
             // Line of code for % of reopen Jira Issues
             // -----------------------------------------------------------------------------------------------------------
-            int totalTeamTypeJiraReopenedIssueCount = issueRepository.totalTeamTypeJiraStatusIssueCount(teamType,
+            int totalTeamTypeJiraReopenedIssueCount = issueRepository.totalTeamTypeJiraStatusIssueCount(projectName,teamType,
                     reopened);
             // -----------------------------------------------------------------------------------------------------------
 
             // Line of code for % of critical Jira Issues
             // -----------------------------------------------------------------------------------------------------------
-            int totalTeamTypeJiraCriticalIssueCount = issueRepository.totalTeamTypeJiraPriorityIssueCount(teamType,
+            int totalTeamTypeJiraCriticalIssueCount = issueRepository.totalTeamTypeJiraPriorityIssueCount(projectName,teamType,
                     criticalPriority);
             // -----------------------------------------------------------------------------------------------------------
 
             // Line of code for % of critical not completed Jira Issues
             // -----------------------------------------------------------------------------------------------------------
             int totalTeamTypeJiraCriticalNotCompletedIssueCount = issueRepository
-                    .totalTeamTypeJiraPriorityOppositeResolutionIssueCount(teamType, criticalPriority, completed, fixed, done);
+                    .totalTeamTypeJiraPriorityOppositeResolutionIssueCount(projectName,teamType, criticalPriority, completed, fixed, done);
             // -----------------------------------------------------------------------------------------------------------
 
             // Line of code for % of cancelled Jira Issues
             // -----------------------------------------------------------------------------------------------------------
-            int totalTeamTypeJiraCancelledIssueCount = issueRepository.totalTeamTypeJiraResolutionIssueCount(teamType,
+            int totalTeamTypeJiraCancelledIssueCount = issueRepository.totalTeamTypeJiraResolutionIssueCount(projectName,teamType,
                     cancelled);
             // -----------------------------------------------------------------------------------------------------------
             kpi1.setTeamType(teamType);

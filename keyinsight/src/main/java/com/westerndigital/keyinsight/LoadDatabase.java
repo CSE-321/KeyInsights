@@ -1,5 +1,6 @@
 package com.westerndigital.keyinsight;
 
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -105,6 +106,7 @@ public class LoadDatabase implements CommandLineRunner {
                 String projectKey = basicProject.getKey();
                 Project singleProject = myJiraClient.getProject(projectKey);
                 String projectName = singleProject.getName();
+                projectName = projectName.trim();
                 String productLeadName = singleProject.getLead().getName();
                 User projectLead = myJiraClient.getUser(productLeadName);
                 String projectLeadDisplayName = projectLead.getDisplayName();
@@ -137,9 +139,6 @@ public class LoadDatabase implements CommandLineRunner {
                     // issues stored in the Iterable
                     for (Issue singleIssue : allIssues) {
 
-                        JiraIssue issue = new JiraIssue(); // creates a Java Issue Object that allows us to store the
-                                                           // Jira Issue information using the setters
-
                         // This block of code is just grabbing the issueNumber after the dash
                         // Example B8X4-10282,this block of code just grabs 10282
                         // ------------------------------------------------------------------
@@ -147,6 +146,10 @@ public class LoadDatabase implements CommandLineRunner {
                         issueNumber = issueNumber.substring(issueNumber.indexOf('-') + 1);
                         System.out.println(issueNumber);
                         // ------------------------------------------------------------------
+
+                        JiraIssue issue = issueRepository.findById(Integer.parseInt(issueNumber))
+                                .orElse(new JiraIssue()); // finds an issue in the database with that issueNumber
+                                                          // if it doesn't exist, create a new Java Issue Object
 
                         // Only needs to run on the FIRST iteration, we need to grab all the fields that
                         // an issue could potentially have and store it in the hashmap to use later
@@ -159,34 +162,20 @@ public class LoadDatabase implements CommandLineRunner {
                         }
                         // ----------------------------------------------------------------
 
-                        // This block of code is just formatting
+                        // This block of code is just getting the
                         // the creation date and time for each issue
                         // Currently, these values are never null;
                         // However, I am not sure if that is always the case
                         // -----------------------------------------------------
-                        String createCreationDate = String.format("%d-%d-%d",
-                                singleIssue.getCreationDate().getYear(),
-                                singleIssue.getCreationDate().getMonthOfYear(),
-                                singleIssue.getCreationDate().getDayOfMonth());
-
-                        String createCreationTime = String.format("%d:%d",
-                                singleIssue.getCreationDate().getHourOfDay(),
-                                singleIssue.getCreationDate().getMinuteOfHour());
+                        DateTime creationDateTime = singleIssue.getCreationDate();
                         // -------------------------------------------------------
 
-                        // This block of code is just formatting
+                        // This block of code is just getting
                         // the updated date and time for each issue
                         // Currently, these values are never null;
                         // However, I am not sure if that is always the case
                         // -------------------------------------------------------
-                        String updatedDate = String.format("%d-%d-%d",
-                                singleIssue.getUpdateDate().getYear(),
-                                singleIssue.getUpdateDate().getMonthOfYear(),
-                                singleIssue.getUpdateDate().getDayOfMonth());
-
-                        String updatedTime = String.format("%d:%d",
-                                singleIssue.getUpdateDate().getHourOfDay(),
-                                singleIssue.getUpdateDate().getMinuteOfHour());
+                        DateTime updatedDateTime = singleIssue.getUpdateDate();
                         // -------------------------------------------------------
 
                         // This block of code is just formatting
@@ -194,15 +183,9 @@ public class LoadDatabase implements CommandLineRunner {
                         // Currently, some values are null;
                         // so I need to use if statements to handle that
                         // ---------------------------------------------------------------------------
-                        String dueDate = null;
-                        String dueTime = null;
+                        DateTime dueDateTime = null;
                         if (singleIssue.getDueDate() != null) {
-                            dueDate = String.format("%d-%d-%d", singleIssue.getDueDate().getYear(),
-                                    singleIssue.getDueDate().getMonthOfYear(),
-                                    singleIssue.getDueDate().getDayOfMonth());
-
-                            dueTime = String.format("%d:%d", singleIssue.getDueDate().getHourOfDay(),
-                                    singleIssue.getDueDate().getMinuteOfHour());
+                            dueDateTime = singleIssue.getDueDate();
                         }
                         // ---------------------------------------------------------------------------
 
@@ -268,12 +251,9 @@ public class LoadDatabase implements CommandLineRunner {
                         issue.setProjectName(projectName);
                         issue.setTeamType(singleIssue.getIssueType().getName());
                         issue.setStatus(singleIssue.getStatus().getName());
-                        issue.setCreationDate(createCreationDate);
-                        issue.setCreationTime(createCreationTime);
-                        issue.setUpdatedDate(updatedDate);
-                        issue.setUpdatedTime(updatedTime);
-                        issue.setDueDate(dueDate);
-                        issue.setDueTime(dueTime);
+                        issue.setCreatedDateTime(creationDateTime);
+                        issue.setUpdatedDateTime(updatedDateTime);
+                        issue.setDueDateTime(dueDateTime);
                         issue.setStoryPoint(storyPointInfo);
                         issue.setSubType(subType);
                         issue.setResolution(resolution);
@@ -296,7 +276,7 @@ public class LoadDatabase implements CommandLineRunner {
                         // as that value
                         // ----------------------------------------------------
                         if (Integer.parseInt(issueNumber) == 1) {
-                            project.setCreatedDate(createCreationDate);
+                            project.setCreatedDate(creationDateTime);
                         }
                         // ----------------------------------------------------
                     }
