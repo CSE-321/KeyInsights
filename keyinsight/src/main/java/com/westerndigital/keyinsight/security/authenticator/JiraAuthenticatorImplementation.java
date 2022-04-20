@@ -1,14 +1,14 @@
-package com.westerndigital.keyinsight.security;
+package com.westerndigital.keyinsight.security.authenticator;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.concurrent.ExecutionException;
 
 import com.atlassian.jira.rest.client.api.JiraRestClient;
 import com.atlassian.jira.rest.client.api.JiraRestClientFactory;
 import com.atlassian.jira.rest.client.api.domain.User;
 import com.atlassian.jira.rest.client.internal.async
     .AsynchronousJiraRestClientFactory;
+import com.westerndigital.keyinsight.JiraUser.JiraUser;
 import com.westerndigital.keyinsight.JiraUser.JiraUserService;
 
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -16,7 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
-public class JiraAuthenticator {
+public class JiraAuthenticatorImplementation implements JiraAuthenticator {
 
     private JiraUserService jiraUserService;
 
@@ -32,17 +32,12 @@ public class JiraAuthenticator {
                 new AsynchronousJiraRestClientFactory();
 
             JiraRestClient jiraRestClient = jiraRestClientFactory
-                .createWithBasicHttpAuthentication(jiraServerUri, username, 
-                    password);
+                .createWithBasicHttpAuthentication(
+                    jiraServerUri, username, password);
 
             try {
                 User jiraUser =  jiraRestClient.getUserClient()
                     .getUser(username).get();
-
-                if (jiraUser == null) {
-                    throw new UsernameNotFoundException(
-                        "Username not found");
-                }
 
                 BCryptPasswordEncoder bCryptPasswordEncoder = 
                     new BCryptPasswordEncoder();
@@ -53,18 +48,16 @@ public class JiraAuthenticator {
                 String jiraPassword = bCryptPasswordEncoder.encode(password);
                 String jiraServerUrl = jiraUser.getSelf().toString();
 
-                // JiraUser user = new JiraUser(jiraId, jiraUsername, 
-                //     jiraPassword, jiraServerUrl);
+                JiraUser user = new JiraUser(jiraId, jiraUsername, 
+                    jiraPassword, jiraServerUrl);
 
-                // jiraUserService = new JiraUserService();
-                // jiraUserService.saveUser(user);
+                saveUserToDatabase(user);
 
                 return true;
 
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
+            } catch(Exception e) {
+                throw new UsernameNotFoundException(
+                    "Username not found");
             }
             
         } catch (URISyntaxException e) {
@@ -72,6 +65,9 @@ public class JiraAuthenticator {
         }
 
         return false;
+    }
 
+    public void saveUserToDatabase(JiraUser user) {
+        System.out.println("Saving user to the database");
     }
 }
