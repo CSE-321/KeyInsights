@@ -60,7 +60,7 @@ const ProjectCard = ({ project }) => {
           <img
             src={activeProject.image}
             className="w-10 h-10 rounded-full col-span-1 object-cover"></img>
-          <p className="col-span-3 self-center truncate">
+          <p className="col-span-3 self-center truncate ml-2">
             {activeProject.lead}
           </p>
           <p className="col-span-2 truncate">{activeProject.created}</p>
