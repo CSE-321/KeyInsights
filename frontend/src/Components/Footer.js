@@ -7,7 +7,7 @@ import React from 'react';
 const Footer = () => {
   return (
     <>
-      <footer className="bg-black w-screen border-t-1 border-white text-white flex flex-col mt-5 pt-5 pl-5 text-xs space-y-2 sm:mt-0  sm:bottom-0 ">
+      <footer className="bg-black w-screen border-t-1 border-white text-white flex flex-col text-xs relative  h-10v">
         <div className="flex flex-row justify-start space-x-2">
           <a href="#">
             <p> Privacy Policy </p>
