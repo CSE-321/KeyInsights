@@ -1,5 +1,8 @@
 package com.westerndigital.keyinsight.security;
 
+import com.westerndigital.keyinsight.security.filter.CustomAuthenticationFilter;
+import com.westerndigital.keyinsight.security.filter.CustomAuthorizationFilter;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -65,10 +68,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .addFilterAt(customAuthenticationFilter, 
                 UsernamePasswordAuthenticationFilter.class);
 
+        // add the custom authorization filter to validate the JWT tokens
+        // before the custom authentication filter
+        http
+            .addFilterAt(new CustomAuthorizationFilter(),
+                CustomAuthenticationFilter.class);
+
         // require that all requests to the API to be authenticated
         http
             .authorizeRequests()
-            .antMatchers(HttpMethod.POST, "/login").permitAll()
             .anyRequest()
             .authenticated()
             .and()
