@@ -1,7 +1,7 @@
 import React from 'react';
 import { useParams } from 'react-router';
 import BodyHeader from '../Components/BodyHeader';
-import KpiNavBar from '../Components/KpiNavBar';
+import KpiNavBar from '../Features/ProjectInsights/KpiNavBar';
 
 const ProjectInsightsPage = () => {
   let { id } = useParams();
