@@ -2,6 +2,8 @@ package com.westerndigital.keyinsight.JiraIssue;
 
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class JiraIssueService {
 

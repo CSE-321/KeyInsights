@@ -17,21 +17,21 @@ public class JiraIssue {
     @Id
     private Integer id;
     private String name;
-    private String project_name;
-    private String team_type;
+    private String projectName;
+    private String teamType;
     private String status;
-    private String creation_date;
-    private String creation_time;
-    private String updated_date;
-    private String updated_time;
-    private String due_date;
-    private String due_time;
-    private Float story_point;
-    private String sub_type;
+    private String creationDate;
+    private String creationTime;
+    private String updatedDate;
+    private String updatedTime;
+    private String dueDate;
+    private String dueTime;
+    private Float storyPoint;
+    private String subType;
     private String priority;
     private String resolution;
     private String assignee;
-    private String assignee_avatar_url;
+    private String assigneeAvatarUrl;
 
     // public JavaIssue(Long id, String issue_name, String project_name, String
     // team_type, String sub_type, Float story_point,
