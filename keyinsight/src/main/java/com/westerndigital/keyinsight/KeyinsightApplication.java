@@ -70,11 +70,17 @@ public class KeyinsightApplication {
 			int projectCount = 0;
 			int issueCount = 9000;
 			Issue singleIssue = myJiraClient.getSingleIssue("B8X4-3");
-			Instant instant = Instant.ofEpochMilli(singleIssue.getCreationDate().getMillis());
-			OffsetDateTime offsetDateTime = OffsetDateTime.ofInstant(instant, ZoneId.of(singleIssue.getCreationDate().getZone().getID()));
-			System.out.println(singleIssue.getCreationDate());
-			System.out.println(singleIssue.getCreationDate().toLocalDateTime());
-			System.out.println(offsetDateTime);
+			Iterable<IssueField> allIssueFields = singleIssue.getFields();
+			for (IssueField issueField : allIssueFields) {
+				fieldValues.put(issueField.getName(), issueField.getId());
+				System.out.println(issueField.getName() + " : " + issueField.getId());
+			}
+			System.out.println(singleIssue.getField(fieldValues.get("Resolved")).getValue());
+			// Instant instant = Instant.ofEpochMilli(singleIssue.getCreationDate().getMillis());
+			// OffsetDateTime offsetDateTime = OffsetDateTime.ofInstant(instant, ZoneId.of(singleIssue.getCreationDate().getZone().getID()));
+			// System.out.println(singleIssue.getCreationDate());
+			// System.out.println(singleIssue.getCreationDate().toLocalDateTime());
+			// System.out.println(offsetDateTime);
 			// Iterable<BasicProject> allProjects = myJiraClient.getAllProject();
 			// for (BasicProject project : allProjects) {
 			// 	String projectUrl = project.getKey();
