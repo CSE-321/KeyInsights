@@ -26,7 +26,6 @@ const BodyHeader = ({ title, subtext, showButton }) => {
   const [isButtonActive, setIsButtonActive] = React.useState(false);
   const [showModal, setShowModal] = React.useState(false);
 
-
   //monitors changes in props and updates internal states
   React.useEffect(() => {
     setHeaderTitle(title);
@@ -47,14 +46,11 @@ const BodyHeader = ({ title, subtext, showButton }) => {
         </div>
 
         {isButtonActive && (
-
-    
           <button
             className="rounded-lg bg-primary-purple text-white ml-2 h-10 w-32 text-xs sm:w-28 sm:h-12 md:h-12 md:w-24 lg:h-12 lg:w-32 sm:text-sm md:text-md lg:text-lg"
             onClick={() => setShowModal(true)}>
             {' '}
             Select Project
-
           </button>
         )}
       </div>
