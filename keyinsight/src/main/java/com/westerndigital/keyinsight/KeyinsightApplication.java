@@ -12,8 +12,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.net.URI;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
@@ -75,13 +77,17 @@ public class KeyinsightApplication {
 				fieldValues.put(issueField.getName(), issueField.getId());
 				System.out.println(issueField.getName() + " : " + issueField.getId());
 			}
-			System.out.println(singleIssue.getField(fieldValues.get("Resolved")).getValue());
-			// Instant instant = Instant.ofEpochMilli(singleIssue.getCreationDate().getMillis());
-			// OffsetDateTime offsetDateTime = OffsetDateTime.ofInstant(instant, ZoneId.of(singleIssue.getCreationDate().getZone().getID()));
+			String resolutionDateTimeString = singleIssue.getField(fieldValues.get("Resolved")).getValue().toString();
+			System.out.println(resolutionDateTimeString);
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+			OffsetDateTime resolutionDateTime = OffsetDateTime.parse(resolutionDateTimeString,formatter);
+			System.out.println(resolutionDateTime.format(formatter));
+			Instant instant = Instant.ofEpochMilli(singleIssue.getCreationDate().getMillis());
+			OffsetDateTime offsetDateTime = OffsetDateTime.ofInstant(instant, ZoneId.of(singleIssue.getCreationDate().getZone().getID()));
 			// System.out.println(singleIssue.getCreationDate());
 			// System.out.println(singleIssue.getCreationDate().toLocalDateTime());
-			// System.out.println(offsetDateTime);
-			// Iterable<BasicProject> allProjects = myJiraClient.getAllProject();
+			System.out.println(offsetDateTime);
+			// // Iterable<BasicProject> allProjects = myJiraClient.getAllProject();
 			// for (BasicProject project : allProjects) {
 			// 	String projectUrl = project.getKey();
 			// 	Project singleProject = myJiraClient.getProject(projectUrl);
