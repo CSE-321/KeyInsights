@@ -26,6 +26,7 @@ public class JiraIssue {
     private OffsetDateTime createdDateTime;
     private OffsetDateTime updatedDateTime;
     private OffsetDateTime dueDateTime;
+    private OffsetDateTime resolutionDateTime;
     private Float storyPoint;
     private String subType;
     private String priority;

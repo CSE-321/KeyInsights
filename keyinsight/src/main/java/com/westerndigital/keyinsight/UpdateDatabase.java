@@ -25,6 +25,7 @@ import io.github.cdimascio.dotenv.Dotenv;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.stream.StreamSupport;
@@ -177,6 +178,20 @@ public class UpdateDatabase {
                         }
                         // ---------------------------------------------------------------------------
 
+                        // This block of code is just getting
+                        // the resolution date and time for each issue
+                        // Currently, some values are null;
+                        // so I need to use if statements to handle that
+                        // ---------------------------------------------------------------------------
+                        String resolvedDateTimeField = fieldValues.get("Resolved");
+                        OffsetDateTime resolutionDateTime = null;
+                        if(singleIssue.getField(resolvedDateTimeField).getValue() != null){
+                            String resolutionDateTimeString = singleIssue.getField(resolvedDateTimeField).getValue().toString();
+                            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+                            resolutionDateTime = OffsetDateTime.parse(resolutionDateTimeString,formatter);
+                        }
+                        //----------------------------------------------------------------------------
+                        
                         // This block of code is grabbing the story points per issue if they have them
                         // This is one location where the hashmap comes back from earlier
                         // ------------------------------------------------------------------------
@@ -241,6 +256,7 @@ public class UpdateDatabase {
                         issue.setCreatedDateTime(creationDateTime);
                         issue.setUpdatedDateTime(updatedDateTime);
                         issue.setDueDateTime(dueDateTime);
+                        issue.setResolutionDateTime(resolutionDateTime);
                         issue.setStoryPoint(storyPointInfo);
                         issue.setSubType(subType);
                         issue.setResolution(resolution);
