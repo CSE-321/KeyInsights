@@ -129,7 +129,7 @@ const HomePage = () => {
         )}
         {!isUserSignedIn && (
           <Fragment>
-            <div className="grow h-50v w-5/6 md:h-1/3 md:w-1/2">
+            <div className="grow h-50v w-5/6 md:h-1/3 md:w-1/2 md:px-10 lg:px-20 xl:px-32">
               <LoginCard />
             </div>
           </Fragment>
