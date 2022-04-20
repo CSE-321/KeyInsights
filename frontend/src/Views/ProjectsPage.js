@@ -86,7 +86,7 @@ const ProjectsPage = () => {
 
         {isViewGrid ? (
           <>
-            <div className="flex flex-col sm:grid sm:grid-flow-row gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
+            <div className="flex flex-col sm:grid sm:grid-flow-row gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4">
               {data.map((project) => (
                 <ProjectCard key={project.id} project={project} />
               ))}
