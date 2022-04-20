@@ -1,37 +1,40 @@
 package com.westerndigital.keyinsight.Login;
 
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.Collection;
+
+import com.westerndigital.keyinsight.JiraUser.JiraUser;
+import com.westerndigital.keyinsight.security.CustomAuthenticationToken;
+
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-
-import com.westerndigital.keyinsight.User.User;
-
-import com.westerndigital.keyinsight.Login.LoginService;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/login")
 public class LoginController {
-
-    // @Autowired
-    // private LoginService loginService;
     
-    @PostMapping("/login")
-    public ResponseEntity<User> login(@RequestBody User user) {
-        // process POST request
+    private final AuthenticationManager authenticationManager;
 
-        String email = user.getEmail();
-        String serverUrl = user.getServerUrl();
-
-        System.out.println("Email: " + email + ", Server URL: " + serverUrl);
-
-        System.out.println(ResponseEntity.ok(user));
-
-        // loginService.getLogin();
-
-
-        
-        return ResponseEntity.ok(user);
+    public LoginController(AuthenticationManager authenticationManager) {
+        this.authenticationManager = authenticationManager;
     }
-    
+
+    @PostMapping
+    public void login(@RequestBody JiraUser jiraUser) {
+        String username = jiraUser.getUsername();
+        String password = jiraUser.getPassword();
+        String serverUrl = jiraUser.getServerUrl();
+        Collection<? extends GrantedAuthority> authorities = 
+            jiraUser.getAuthorities();
+
+        authenticationManager.authenticate(
+            new CustomAuthenticationToken(username, password, serverUrl, authorities)
+        );
+
+        System.out.println("AUTHENTICATION MANAGER SUCCESSFULLY AUTHENTICATED USER");
+    }
 }

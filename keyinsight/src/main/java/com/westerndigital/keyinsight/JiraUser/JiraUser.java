@@ -1,51 +1,57 @@
-package com.westerndigital.keyinsight.User;
+package com.westerndigital.keyinsight.JiraUser;
+
+import java.util.Collection;
+import java.util.HashSet;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import lombok.Data;
 
 @Entity
 @Table(name = "Users")
-public class User {
-    
-    // automatically generate an ID
+@Data
+public class JiraUser implements UserDetails {
+
     @Id
-    @SequenceGenerator(
-        name = "user_sequence",
-        sequenceName = "user_sequence",
-        allocationSize = 1)
-    @GeneratedValue(
-        generator = "user_sequence",
-        strategy = GenerationType.SEQUENCE)
-    private Long id;
-    private String email;
+    private String id;
+    private String username;
+    private String password;
     private String serverUrl;
 
-    public User() {
+    public JiraUser() {}
 
-    }
+    public JiraUser(String id, String username, String password, 
+        String serverUrl) {
 
-    public User(String email, String serverUrl) {
-        this.email = email;
+        this.username = username;
+        this.password = password;
         this.serverUrl = serverUrl;
     }
 
-    public String getEmail() {
-        return email;
+    public boolean isEnabled() {
+        return true;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public boolean isCredentialsNonExpired() {
+        return true;
     }
 
-    public String getServerUrl() {
-        return serverUrl;
+    public boolean isAccountNonExpired() {
+        return true;
     }
 
-    public void setServerUrl(String serverUrl) {
-        this.serverUrl = serverUrl;
+    public boolean isAccountNonLocked() {
+        return true;
     }
+
+    @Override
+    public Collection<SimpleGrantedAuthority> getAuthorities() {
+        return new HashSet<SimpleGrantedAuthority>();
+    }
+
 }
