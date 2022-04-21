@@ -6,7 +6,6 @@ import com.westerndigital.keyinsight.security.filter.CustomAuthorizationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders
     .AuthenticationManagerBuilder;
@@ -16,6 +15,8 @@ import org.springframework.security.config.annotation.web.configuration
 import org.springframework.security.config.annotation.web.configuration
     .WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication
     .UsernamePasswordAuthenticationFilter;
 
@@ -28,6 +29,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     
     @Autowired
     CustomAuthenticationProvider customAuthenticationProvider;
+
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
     // get the authentication manager to authenticate in the controller
     @Override @Bean
@@ -78,7 +85,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
             .authorizeRequests()
             .anyRequest()
-            .authenticated()
+            // temporarily disable authentication for all back-end endpoints
+            .permitAll()        
+            // .authenticated()
             .and()
             .httpBasic().disable();
     }
