@@ -1,0 +1,13 @@
+.toggle-bg:after {
+  content: '';
+  @apply absolute top-0.5 left-0.5 bg-white border border-gray-300 rounded-full h-8 w-8 transition duration-200 shadow-sm;
+}
+
+input:checked + .toggle-bg:after {
+  transform: translateX(85%);
+  @apply border-white;
+}
+
+input:checked + .toggle-bg {
+  @apply bg-purple-700 border-purple-700;
+}

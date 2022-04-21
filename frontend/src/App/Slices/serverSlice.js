@@ -16,12 +16,6 @@ export const serverSlice = createSlice({
         url: 'http://jira.cloud-stm.com:8080',
         port: '8080',
       },
-      {
-        id: '2',
-        name: 'Cloud-MKT',
-        url: 'http://jira.cloud-mkt.com:8080',
-        port: '8080',
-      },
     ],
     projects: [
       {
@@ -37,7 +31,7 @@ export const serverSlice = createSlice({
   },
   reducers: {
     setActiveServer: (state, action) => {
-      state.activeServer.url = action.payload;
+      state.activeServer = action.payload;
     },
     addServer(state, action) {
       state.servers.push(action.payload);
