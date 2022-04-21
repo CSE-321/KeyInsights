@@ -6,8 +6,7 @@ import java.net.URISyntaxException;
 import com.atlassian.jira.rest.client.api.JiraRestClient;
 import com.atlassian.jira.rest.client.api.JiraRestClientFactory;
 import com.atlassian.jira.rest.client.api.domain.User;
-import com.atlassian.jira.rest.client.internal.async
-    .AsynchronousJiraRestClientFactory;
+import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClientFactory;
 import com.westerndigital.keyinsight.JiraUser.JiraUser;
 import com.westerndigital.keyinsight.JiraUser.JiraUserService;
 
@@ -20,27 +19,25 @@ public class JiraAuthenticatorImplementation implements JiraAuthenticator {
 
     private JiraUserService jiraUserService;
 
-    public boolean authenticate(String username, String password, 
-        String serverUrl) {
+    public boolean authenticate(String username, String password,
+            String serverUrl) {
 
         serverUrl = "http://jira.cloud-stm.com:8080/";
 
         try {
             URI jiraServerUri = new URI(serverUrl);
 
-            JiraRestClientFactory jiraRestClientFactory = 
-                new AsynchronousJiraRestClientFactory();
+            JiraRestClientFactory jiraRestClientFactory = new AsynchronousJiraRestClientFactory();
 
             JiraRestClient jiraRestClient = jiraRestClientFactory
-                .createWithBasicHttpAuthentication(
-                    jiraServerUri, username, password);
+                    .createWithBasicHttpAuthentication(
+                            jiraServerUri, username, password);
 
             try {
-                User jiraUser =  jiraRestClient.getUserClient()
-                    .getUser(username).get();
+                User jiraUser = jiraRestClient.getUserClient()
+                        .getUser(username).get();
 
-                BCryptPasswordEncoder bCryptPasswordEncoder = 
-                    new BCryptPasswordEncoder();
+                BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
                 // save the authenticated user to the database
                 String jiraId = jiraUser.getAccountId();
@@ -48,18 +45,18 @@ public class JiraAuthenticatorImplementation implements JiraAuthenticator {
                 String jiraPassword = bCryptPasswordEncoder.encode(password);
                 String jiraServerUrl = jiraUser.getSelf().toString();
 
-                JiraUser user = new JiraUser(jiraId, jiraUsername, 
-                    jiraPassword, jiraServerUrl);
+                // JiraUser user = new JiraUser(jiraId, jiraUsername,
+                // jiraPassword, jiraServerUrl);
 
-                saveUserToDatabase(user);
+                // saveUserToDatabase(user);
 
                 return true;
 
-            } catch(Exception e) {
+            } catch (Exception e) {
                 throw new UsernameNotFoundException(
-                    "Username not found");
+                        "Username not found");
             }
-            
+
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
