@@ -4,8 +4,6 @@ import '../CSS/BodyHeader.css';
 import Modal from './Modal';
 import Dropdown from './Dropdown';
 
-
-
 /**
  * The body header component is used to display the header of the body. It contains the title,
  * subtitle, and drop down option.The bar is mobile responsive.
@@ -15,7 +13,6 @@ import Dropdown from './Dropdown';
  * @returns {JSX} black bar with title and subtext
  */
 const BodyHeader = ({ title, subtext, showButton, setModalOn }) => {
-
   const [headerTitle, setHeaderTitle] = React.useState(title);
   const [headerSubtext, setHeaderSubtext] = React.useState(subtext);
 
