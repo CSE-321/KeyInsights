@@ -32,7 +32,7 @@ const NotificationsPage = () => {
   const [isSettingsChanged, setIsSettingsChanged] = useState(false);
 
   // List of projects for testing
-  const projects = ['BBX8'];
+  const projects = ['B8X4'];
 
   // Variable to hold current user
   const user = useSelector((state) => state.user.user.name);
@@ -46,6 +46,7 @@ const NotificationsPage = () => {
     let obj = {
       server: server,
       user: user,
+      project: project,
       toggle1: [toggled, val],
       toggle2: [toggled2, val2],
       toggle3: [toggled3],
