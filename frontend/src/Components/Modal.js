@@ -10,49 +10,25 @@ const Modal = ({
 }) => {
   return (
     <>
-      <div className="bg-zinc-200 opacity-70 fixed inset-0">
-        <div className="flex h-screen justify-center items-center">
-          <div className="flex z-60 justify-center bg-white w-[400px] h-[500px] py-12 px-24 border-4 rounded-xl">
-            <div className="flex-col text-2xl text-zinc-600">
-              Select A Project
-              <br></br>
-              <br></br>
-              <div className="flex-col justify-left">
-                <ul>
-                  <li>
-                    <button
-                      onClick={() => {
-                        setModalOn(false);
-                        setProject(listOfProjects[0]);
-                        setIsProjectSelected(true);
-                      }}>
-                      {listOfProjects[0]}
-                    </button>
-                  </li>
-                  <li>
-                    <button
-                      onClick={() => {
-                        setModalOn(false);
-                        setProject(listOfProjects[1]);
-                        setIsProjectSelected(true);
-                      }}>
-                      {listOfProjects[1]}
-                    </button>
-                  </li>
-                  <li>
-                    <button
-                      onClick={() => {
-                        setModalOn(false);
-                        setProject(listOfProjects[2]);
-                        setIsProjectSelected(true);
-                      }}>
-                      {listOfProjects[2]}
-                    </button>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
+      <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
+        <div className="bg-white w-[400px] h-[450px] p-5 rounded-lg">
+          <h1 className="font-bold text-2xl text-primary-purple">
+            Select a Project
+          </h1>
+          <br></br>
+          <ul>
+            <li>
+              <button
+                className="text-2xl transition duration-500 hover:scale-125 transform-gpu"
+                onClick={() => {
+                  setModalOn(false);
+                  setProject(listOfProjects[0]);
+                  setIsProjectSelected(true);
+                }}>
+                {listOfProjects[0]}
+              </button>
+            </li>
+          </ul>
         </div>
       </div>
     </>
