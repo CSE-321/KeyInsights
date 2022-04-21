@@ -5,7 +5,6 @@ import BodyHeader from '../Components/BodyHeader';
 import Modal from '../Components/Modal';
 
 const NotificationsPage = () => {
-
   // Values for toggle switches in topdown order
   const [toggled, setToggled] = useState(false);
   const [toggled2, setToggled2] = useState(false);
@@ -134,7 +133,6 @@ const NotificationsPage = () => {
             disabled={!toggled}
             pattern="[0-9]*"
             value={val}
-
             onChange={(e) => {
               setVal((v) => (e.target.validity.valid ? e.target.value : v));
               setIsSettingsChanged(true);
@@ -186,7 +184,6 @@ const NotificationsPage = () => {
 
           <h1 className="inline text-md sm:text-lg md:text-xl lg:text-2xl">
             Notify me if ticket(s) unfinished at end of sprint.{' '}
-
           </h1>
           <br></br>
 
