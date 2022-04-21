@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import '../CSS/ToggleSwitch.css';
 
-const ToggleSwitch = ({ onChange, label }) => {
+const ToggleSwitch = ({ onChange, label, isProjectSelected }) => {
   return (
     <>
       <label
@@ -10,6 +10,7 @@ const ToggleSwitch = ({ onChange, label }) => {
         className="inline-block items-center cursor-pointer relative mr-3 mb-7">
         <input
           type="checkbox"
+          disabled={!isProjectSelected}
           onChange={onChange}
           id={label}
           className="sr-only"></input>
@@ -20,8 +21,9 @@ const ToggleSwitch = ({ onChange, label }) => {
 };
 
 ToggleSwitch.propTypes = {
-  onChange: PropTypes.bool,
+  onChange: PropTypes.func,
   label: PropTypes.string,
+  isProjectSelected: PropTypes.bool,
 };
 
 export default ToggleSwitch;
