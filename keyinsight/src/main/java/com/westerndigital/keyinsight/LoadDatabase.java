@@ -1,6 +1,5 @@
 package com.westerndigital.keyinsight;
 
-import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -27,7 +26,9 @@ import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.stream.StreamSupport;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -65,12 +66,12 @@ public class LoadDatabase implements CommandLineRunner {
         // This block of code underneath just deletes every entry in the database during
         // startup
         // ------------------------------------------
-        userRepository.deleteAll();
-        serverRepository.deleteAll();
-        notificationSettingsRepository.deleteAll();
-        projectRepository.deleteAll();
-        issueRepository.deleteAll();
-        notificationSettingsRepository.deleteAll();
+        // userRepository.deleteAll();
+        // serverRepository.deleteAll();
+        // notificationSettingsRepository.deleteAll();
+        // projectRepository.deleteAll();
+        // issueRepository.deleteAll();
+        // notificationSettingsRepository.deleteAll();
         // -------------------------------------------
 
         // This block of code attempts to use the username, password, and server url to
