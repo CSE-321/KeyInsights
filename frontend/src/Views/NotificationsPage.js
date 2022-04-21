@@ -70,7 +70,7 @@ const NotificationsPage = () => {
         setModalOn={setModalOn}
       />
       <br></br>
-      <div className="flex w-full overflow-x-hidden m-0 p-0 mb-5 gap-x-[125px] sm:gap-x-[160px] md:gap-x-[300px] lg:gap-x-[465px]">
+      <div className="flex w-full overflow-x-hidden m-0 p-0 mb-5 gap-x-[87px] sm:gap-x-[160px] md:gap-x-[300px] lg:gap-x-[455px]">
         {/* Show Error Message if Project not selected or show Project Name */}
         {!isProjectSelected && (
           <>
@@ -82,7 +82,7 @@ const NotificationsPage = () => {
         )}
         {isProjectSelected && (
           <>
-            <p className="ml-7 mt-2 text-md sm:text-lg md:text-xl lg:text-2xl w-[217px] sm:w-[250px]">
+            <p className="ml-7 mt-2 text-md sm:text-lg md:text-xl lg:text-2xl w-[215px]">
               {project}
             </p>
             <br></br>
@@ -92,7 +92,10 @@ const NotificationsPage = () => {
           <>
             <button
               className="static rounded-lg bg-primary-purple text-white h-10 w-32 text-xs sm:w-32 sm:h-12 md:h-12 md:w-64 lg:h-12 lg:w-60 sm:text-sm md:text-md lg:text-lg"
-              onClick={createJSON}>
+              onClick={() => {
+                createJSON();
+                setIsSettingsChanged(false);
+              }}>
               {' '}
               Save Changes
             </button>
@@ -102,7 +105,7 @@ const NotificationsPage = () => {
           <>
             <button
               className="static opacity-50 rounded-lg bg-primary-purple text-white h-10 w-32 text-xs sm:w-32 sm:h-12 md:h-12 md:w-64 lg:h-12 lg:w-60 sm:text-sm md:text-md lg:text-lg"
-              onClick={createJSON}>
+              disabled={true}>
               {' '}
               Save Changes
             </button>
@@ -120,7 +123,7 @@ const NotificationsPage = () => {
             label="toggle1"
             isProjectSelected={isProjectSelected}
           />
-          <h1 className="inline text-sm sm:text-lg md:text-xl lg:text-2xl">
+          <h1 className="inline text-md sm:text-lg md:text-xl lg:text-2xl">
             Notify me if ticket status critical/unchanged after{' '}
           </h1>
           <input
@@ -133,7 +136,7 @@ const NotificationsPage = () => {
               setVal((v) => (e.target.validity.valid ? e.target.value : v));
               setIsSettingsChanged(true);
             }}></input>
-          <h1 className="inline text-sm sm:text-lg md:text-xl lg:text-2xl">
+          <h1 className="inline text-md sm:text-lg md:text-xl lg:text-2xl">
             {' '}
             days.{' '}
           </h1>
@@ -148,7 +151,7 @@ const NotificationsPage = () => {
             label="toggle2"
             isProjectSelected={isProjectSelected}
           />
-          <h1 className="inline text-sm sm:text-lg md:text-xl lg:text-2xl">
+          <h1 className="inline text-md sm:text-lg md:text-xl lg:text-2xl">
             Notify me if sprint status unchanged after{' '}
           </h1>
           <input
@@ -161,7 +164,7 @@ const NotificationsPage = () => {
               setVal2((v) => (e.target.validity.valid ? e.target.value : v));
               setIsSettingsChanged(true);
             }}></input>
-          <h1 className="inline text-sm sm:text-lg md:text-xl lg:text-2xl">
+          <h1 className="inline text-md sm:text-lg md:text-xl lg:text-2xl">
             {' '}
             days.{' '}
           </h1>
@@ -176,7 +179,7 @@ const NotificationsPage = () => {
             label="toggle3"
             isProjectSelected={isProjectSelected}
           />
-          <h1 className="inline text-sm sm:text-lg md:text-xl lg:text-2xl">
+          <h1 className="inline text-md sm:text-lg md:text-xl lg:text-2xl">
             Notify me if ticket(s) unfinished at end of sprint.{' '}
           </h1>
           <br></br>
@@ -190,7 +193,7 @@ const NotificationsPage = () => {
             label="toggle4"
             isProjectSelected={isProjectSelected}
           />
-          <h1 className="inline text-sm sm:text-lg md:text-xl lg:text-2xl">
+          <h1 className="inline text-md sm:text-lg md:text-xl lg:text-2xl">
             Send me a project digest report every{' '}
           </h1>
           <input
@@ -203,7 +206,7 @@ const NotificationsPage = () => {
               setVal4((v) => (e.target.validity.valid ? e.target.value : v));
               setIsProjectSelected(true);
             }}></input>
-          <h1 className="inline text-sm sm:text-lg md:text-xl lg:text-2xl">
+          <h1 className="inline text-md sm:text-lg md:text-xl lg:text-2xl">
             {' '}
             days.{' '}
           </h1>
@@ -218,7 +221,7 @@ const NotificationsPage = () => {
             label="toggle5"
             isProjectSelected={isProjectSelected}
           />
-          <h1 className="inline text-sm sm:text-lg md:text-xl lg:text-2xl">
+          <h1 className="inline text-md sm:text-lg md:text-xl lg:text-2xl">
             Send me a workload digest report every{' '}
           </h1>
           <input
@@ -231,7 +234,7 @@ const NotificationsPage = () => {
               setVal5((v) => (e.target.validity.valid ? e.target.value : v));
               setIsProjectSelected(true);
             }}></input>
-          <h1 className="inline text-sm sm:text-lg md:text-xl lg:text-2xl">
+          <h1 className="inline text-md sm:text-lg md:text-xl lg:text-2xl">
             {' '}
             days.{' '}
           </h1>

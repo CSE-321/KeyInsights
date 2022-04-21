@@ -99,6 +99,11 @@ const NavBar = () => {
                 <a href={isUserSignedIn ? '/projects' : '/'}>Projects</a>
               </li>
               <li>
+                <a href={isUserSignedIn ? '/notifications' : '/'}>
+                  Notifications
+                </a>
+              </li>
+              <li>
                 <a href="#" onClick={signout}>
                   {isUserSignedIn ? signedInText : signedOutText}
                 </a>
@@ -116,6 +121,11 @@ const NavBar = () => {
               </li>
               <li>
                 <a href={isUserSignedIn ? '/projects' : '/'}>Projects</a>
+              </li>
+              <li>
+                <a href={isUserSignedIn ? '/notifications' : '/'}>
+                  Notifications
+                </a>
               </li>
               <li>
                 <a href="#" onClick={signout}>

@@ -10,11 +10,12 @@ const Modal = ({
 }) => {
   return (
     <>
-      <div className="bg-zinc-200 opacity-70 fixed inset-0 z-500">
+      <div className="bg-zinc-200 opacity-70 fixed inset-0">
         <div className="flex h-screen justify-center items-center">
-          <div className="flex justify-center bg-white w-[400px] h-[500px] py-12 px-24 border-4 rounded-xl">
-            <div className="flex-col text-2xl text-zinc-600 mb-10">
+          <div className="flex z-60 justify-center bg-white w-[400px] h-[500px] py-12 px-24 border-4 rounded-xl">
+            <div className="flex-col text-2xl text-zinc-600">
               Select A Project
+              <br></br>
               <br></br>
               <div className="flex-col justify-left">
                 <ul>
