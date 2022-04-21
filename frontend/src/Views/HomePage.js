@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import BodyHeader from '../Components/BodyHeader';
 import Lottie from 'lottie-web';
 import GraphData from '../Assets/home_page_graph.json';
-import LoginCard from '../Components/LoginCard';
+import LoginCard from '../Features/Authentication/LoginCard';
 
 /**
  * HomePage component is the main page of the application. It contains the
@@ -52,7 +52,7 @@ const HomePage = () => {
       <div className="flex flex-col items-center space-y-5 md:space-y-0 md:flex-row md:space-x-5">
         <div
           id="graph-logo"
-          className="flex flex-col text-center shrink h-52 w-screen bg-primary-purple md:h-96 md:max-w-lg md: md:w-50v md:text-left">
+          className="flex flex-col text-center shrink h-52 w-screen bg-primary-purple md:h-full md:max-w-lg md: md:w-full md:text-left">
           <p className="text-white font-bold text-xl md:pl-7 md:text-2xl">
             Key Insights
           </p>
@@ -129,7 +129,7 @@ const HomePage = () => {
         )}
         {!isUserSignedIn && (
           <Fragment>
-            <div className="grow h-50v w-5/6 md:h-1/3 md:w-1/2">
+            <div className="grow h-50v w-5/6 md:h-1/3 md:w-1/2 md:px-10 lg:px-20 xl:px-32">
               <LoginCard />
             </div>
           </Fragment>

@@ -1,6 +1,6 @@
 import React, { Fragment, useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { signoutUser } from '../Components/Auth/userSlice';
+import { signoutUser } from '../App/Slices/userSlice';
 import { useNavigate } from 'react-router';
 
 import css from '../CSS/NavBar.css';
