@@ -1,9 +1,11 @@
 package com.westerndigital.keyinsight.JiraUser;
 
-import java.util.Collection;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -18,14 +20,17 @@ import lombok.Data;
 public class JiraUser implements UserDetails {
 
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.AUTO) 
+    private Long id;
     private String username;
     private String password;
     private String serverUrl;
+    private List<SimpleGrantedAuthority> authorities = 
+        new ArrayList<SimpleGrantedAuthority>();
 
     public JiraUser() {}
 
-    public JiraUser(String id, String username, String password, 
+    public JiraUser(String username, String password, 
         String serverUrl) {
 
         this.username = username;
@@ -50,8 +55,9 @@ public class JiraUser implements UserDetails {
     }
 
     @Override
-    public Collection<SimpleGrantedAuthority> getAuthorities() {
-        return new HashSet<SimpleGrantedAuthority>();
+    public List<SimpleGrantedAuthority> getAuthorities() {
+        // return new HashSet<SimpleGrantedAuthority>();
+        return authorities;
     }
 
 }
