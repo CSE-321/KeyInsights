@@ -70,7 +70,7 @@ const NotificationsPage = () => {
         setModalOn={setModalOn}
       />
       <br></br>
-      <div className="flex w-full overflow-x-hidden m-0 p-0 mb-5 gap-x-[87px] sm:gap-x-[160px] md:gap-x-[300px] lg:gap-x-[455px]">
+      <div className="flex w-full overflow-x-hidden m-0 p-0 mb-5 gap-x-[87px] sm:gap-x-[175px] md:gap-x-[235px] lg:gap-x-[465px]">
         {/* Show Error Message if Project not selected or show Project Name */}
         {!isProjectSelected && (
           <>
