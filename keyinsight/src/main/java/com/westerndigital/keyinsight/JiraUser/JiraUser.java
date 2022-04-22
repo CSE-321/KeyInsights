@@ -3,6 +3,7 @@ package com.westerndigital.keyinsight.JiraUser;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -25,8 +26,9 @@ public class JiraUser implements UserDetails {
     private String username;
     private String password;
     private String serverUrl;
-    private List<SimpleGrantedAuthority> authorities = 
-        new ArrayList<SimpleGrantedAuthority>();
+    
+    @ElementCollection(targetClass = String.class)
+    private List<String> roles = new ArrayList<String>();
 
     public JiraUser() {}
 
@@ -36,6 +38,11 @@ public class JiraUser implements UserDetails {
         this.username = username;
         this.password = password;
         this.serverUrl = serverUrl;
+    }
+
+    public void addRole(String role) {
+        System.out.println("Role: " + role);
+        roles.add(role);
     }
 
     public boolean isEnabled() {
@@ -56,8 +63,14 @@ public class JiraUser implements UserDetails {
 
     @Override
     public List<SimpleGrantedAuthority> getAuthorities() {
-        // return new HashSet<SimpleGrantedAuthority>();
+        List<SimpleGrantedAuthority> authorities = 
+            new ArrayList<SimpleGrantedAuthority>();
+
+        roles.forEach(role -> {
+            System.out.println(role);
+            authorities.add(new SimpleGrantedAuthority(role));
+        });
+
         return authorities;
     }
-
 }

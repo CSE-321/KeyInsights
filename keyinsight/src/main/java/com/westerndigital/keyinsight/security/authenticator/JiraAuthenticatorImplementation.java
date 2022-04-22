@@ -57,21 +57,15 @@ public class JiraAuthenticatorImplementation implements JiraAuthenticator {
                 JiraUser user = new JiraUser(jiraUsername, 
                     jiraPassword, jiraServerUrl);
 
-                Collection<SimpleGrantedAuthority> authorities = 
-                    user.getAuthorities();
-
                 jiraUser.getGroups().getItems().forEach(group -> {
-                    if (group == "jira-administrators") {
-                        authorities.add(new SimpleGrantedAuthority(
-                            JiraRole.ROLE_ADMIN));
+                    if (group.equals("jira-administrators")) {
+                        user.addRole(JiraRole.ROLE_ADMIN);
                     } 
 
-                    if (group == "jira-users") {
-                        authorities.add(new SimpleGrantedAuthority(
-                            JiraRole.ROLE_USER));
+                    if (group.equals("jira-users")) {
+                        user.addRole(JiraRole.ROLE_USER);
                     }
                 });
-
 
                 jiraUserRepository.save(user);
                     
