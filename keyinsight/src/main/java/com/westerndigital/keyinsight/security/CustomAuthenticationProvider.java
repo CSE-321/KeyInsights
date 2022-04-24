@@ -1,18 +1,20 @@
 package com.westerndigital.keyinsight.security;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.westerndigital.keyinsight.JiraUser.JiraUser;
+import com.westerndigital.keyinsight.JiraUser.JiraUserRepository;
 import com.westerndigital.keyinsight.security.authenticator.JiraAuthenticator;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 public class CustomAuthenticationProvider implements 
@@ -22,9 +24,13 @@ public class CustomAuthenticationProvider implements
     private JiraAuthenticator jiraAuthenticator;
 
     @Autowired
+    private JiraUserRepository jiraUserRepository;
+
+    @Autowired
     private HttpServletRequest request;
 
     @Override
+    @Transactional
     public Authentication authenticate(Authentication authentication) throws 
         AuthenticationException {
 
@@ -34,15 +40,23 @@ public class CustomAuthenticationProvider implements
         String username = authentication.getName();
         String password = authentication.getCredentials().toString();         
 
-        if (jiraAuthenticator.authenticate(username, password, serverUrl)) {
-            List<GrantedAuthority> authorities = 
-                new ArrayList<GrantedAuthority>();
+        // attempt to retrieve the user from the database of previously 
+        // authenticated users
+        JiraUser user = (JiraUser) jiraUserRepository.findByUsername(username);
 
-            return new CustomAuthenticationToken(username, password, 
-                serverUrl, authorities);
+        // authenticate with JIRA if the user is not in the database
+        if (user == null) {
+            jiraAuthenticator.authenticate(username, password, serverUrl);
+            user = (JiraUser) jiraUserRepository.findByUsername(username);
         }
 
-        return null;
+        String jiraUsername = user.getUsername();
+        String jiraPassword = user.getPassword();
+        String jiraServerUrl = user.getServerUrl();
+        List<SimpleGrantedAuthority> authorities = user.getAuthorities();
+
+        return new CustomAuthenticationToken(jiraUsername, jiraPassword, 
+            jiraServerUrl, authorities);
     }
 
     @Override

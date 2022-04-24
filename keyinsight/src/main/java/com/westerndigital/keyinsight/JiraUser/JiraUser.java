@@ -41,7 +41,6 @@ public class JiraUser implements UserDetails {
     }
 
     public void addRole(String role) {
-        System.out.println("Role: " + role);
         roles.add(role);
     }
 

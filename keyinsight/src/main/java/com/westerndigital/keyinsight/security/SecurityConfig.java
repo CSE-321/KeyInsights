@@ -15,6 +15,7 @@ import org.springframework.security.config.annotation.web.configuration
 import org.springframework.security.config.annotation.web.configuration
     .WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication
@@ -26,10 +27,14 @@ import lombok.RequiredArgsConstructor;
 @EnableWebSecurity(debug = true)
 @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    
-    @Autowired
-    CustomAuthenticationProvider customAuthenticationProvider;
 
+    @Autowired
+    private final CustomAuthenticationProvider customAuthenticationProvider;
+
+    @Bean
+    public UserDetailsService userDetailsService() {
+        return super.userDetailsService();
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -46,9 +51,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(AuthenticationManagerBuilder auth) 
         throws Exception {
 
-        auth
-            .authenticationProvider(customAuthenticationProvider);
-
+        auth.authenticationProvider(customAuthenticationProvider);
     }
 
     @Override
@@ -78,7 +81,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         // add the custom authorization filter to validate the JWT tokens
         // before the custom authentication filter
         http
-            .addFilterAt(new CustomAuthorizationFilter(),
+            .addFilterBefore(new CustomAuthorizationFilter(),
                 CustomAuthenticationFilter.class);
 
         // require that all requests to the API to be authenticated
@@ -86,8 +89,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .authorizeRequests()
             .anyRequest()
             // temporarily disable authentication for all back-end endpoints
-            .permitAll()        
-            // .authenticated()
+            // .permitAll()        
+            .authenticated()
             .and()
             .httpBasic().disable();
     }

@@ -17,24 +17,24 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/login")
 public class LoginController {
     
-    private final AuthenticationManager authenticationManager;
+    // private final AuthenticationManager authenticationManager;
 
-    public LoginController(AuthenticationManager authenticationManager) {
-        this.authenticationManager = authenticationManager;
-    }
+    // public LoginController(AuthenticationManager authenticationManager) {
+    //     this.authenticationManager = authenticationManager;
+    // }
 
     @PostMapping
     public void login(@RequestBody JiraUser jiraUser) {
-        String username = jiraUser.getUsername();
-        String password = jiraUser.getPassword();
-        String serverUrl = jiraUser.getServerUrl();
-        Collection<? extends GrantedAuthority> authorities = 
-            jiraUser.getAuthorities();
+        // String username = jiraUser.getUsername();
+        // String password = jiraUser.getPassword();
+        // String serverUrl = jiraUser.getServerUrl();
+        // Collection<? extends GrantedAuthority> authorities = 
+        //     jiraUser.getAuthorities();
 
-        authenticationManager.authenticate(
-            new CustomAuthenticationToken(username, password, serverUrl, authorities)
-        );
+        // authenticationManager.authenticate(
+        //     new CustomAuthenticationToken(username, password, serverUrl, authorities)
+        // );
 
-        System.out.println("AUTHENTICATION MANAGER SUCCESSFULLY AUTHENTICATED USER");
+        // System.out.println("AUTHENTICATION MANAGER SUCCESSFULLY AUTHENTICATED USER");
     }
 }
