@@ -40,15 +40,9 @@ public class CustomAuthenticationProvider implements
         String username = authentication.getName();
         String password = authentication.getCredentials().toString();         
 
-        // attempt to retrieve the user from the database of previously 
-        // authenticated users
-        JiraUser user = (JiraUser) jiraUserRepository.findByUsername(username);
-
         // authenticate with JIRA if the user is not in the database
-        if (user == null) {
-            jiraAuthenticator.authenticate(username, password, serverUrl);
-            user = (JiraUser) jiraUserRepository.findByUsername(username);
-        }
+        jiraAuthenticator.authenticate(username, password, serverUrl);
+        JiraUser user = (JiraUser) jiraUserRepository.findByUsername(username);
 
         String jiraUsername = user.getUsername();
         String jiraPassword = user.getPassword();

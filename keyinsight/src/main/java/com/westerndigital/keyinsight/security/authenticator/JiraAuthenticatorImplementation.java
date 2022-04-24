@@ -49,25 +49,29 @@ public class JiraAuthenticatorImplementation implements JiraAuthenticator {
                 User jiraUser =  jiraRestClient.getUserClient()
                     .getUser(username).get();
 
-                // save the authenticated user to the database
-                String jiraUsername = jiraUser.getName();
-                String jiraPassword = passwordEncoder.encode(password);
-                String jiraServerUrl = jiraUser.getSelf().toString();
+                // save the authenticated user to the database if they are not 
+                // in the database
+                if (jiraUserRepository.findByUsername(username) == null) {
+                    // save the authenticated user to the database
+                    String jiraUsername = jiraUser.getName();
+                    String jiraPassword = passwordEncoder.encode(password);
+                    String jiraServerUrl = jiraUser.getSelf().toString();
 
-                JiraUser user = new JiraUser(jiraUsername, 
-                    jiraPassword, jiraServerUrl);
+                    JiraUser user = new JiraUser(jiraUsername, 
+                        jiraPassword, jiraServerUrl);
 
-                jiraUser.getGroups().getItems().forEach(group -> {
-                    if (group.equals("jira-administrators")) {
-                        user.addRole(JiraRole.ROLE_ADMIN);
-                    } 
+                    jiraUser.getGroups().getItems().forEach(group -> {
+                        if (group.equals("jira-administrators")) {
+                            user.addRole(JiraRole.ROLE_ADMIN);
+                        } 
 
-                    if (group.equals("jira-users")) {
-                        user.addRole(JiraRole.ROLE_USER);
-                    }
-                });
+                        if (group.equals("jira-users")) {
+                            user.addRole(JiraRole.ROLE_USER);
+                        }
+                    });
 
-                jiraUserRepository.save(user);
+                    jiraUserRepository.save(user);
+                }
                     
                 return true;
 
