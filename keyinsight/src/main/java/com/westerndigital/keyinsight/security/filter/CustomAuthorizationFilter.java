@@ -1,6 +1,8 @@
 package com.westerndigital.keyinsight.security.filter;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -12,8 +14,10 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 
-import org.springframework.boot.autoconfigure.jersey.JerseyProperties.Servlet;
 import org.springframework.http.HttpHeaders;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -64,7 +68,23 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
             // extract user data from the token
             String username = decodedToken.getSubject();
 
+            // extract the user roles from the token
+            List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+            decodedToken.getClaim("role")
+                .asList(String.class)
+                .forEach(role -> {
+                    authorities.add(new SimpleGrantedAuthority(role));
+                });
+
+            UsernamePasswordAuthenticationToken authenticationToken = 
+                new UsernamePasswordAuthenticationToken(username, 
+                    null, authorities);
+
             
+            SecurityContextHolder.getContext()
+                .setAuthentication(authenticationToken);
+
+            filterChain.doFilter(request, response);
         }
     }
 }
