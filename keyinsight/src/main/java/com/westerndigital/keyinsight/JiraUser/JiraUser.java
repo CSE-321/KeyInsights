@@ -1,9 +1,12 @@
 package com.westerndigital.keyinsight.JiraUser;
 
-import java.util.Collection;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -18,19 +21,27 @@ import lombok.Data;
 public class JiraUser implements UserDetails {
 
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.AUTO) 
+    private Long id;
     private String username;
     private String password;
     private String serverUrl;
+    
+    @ElementCollection(targetClass = String.class)
+    private List<String> roles = new ArrayList<String>();
 
     public JiraUser() {}
 
-    public JiraUser(String id, String username, String password, 
+    public JiraUser(String username, String password, 
         String serverUrl) {
 
         this.username = username;
         this.password = password;
         this.serverUrl = serverUrl;
+    }
+
+    public void addRole(String role) {
+        roles.add(role);
     }
 
     public boolean isEnabled() {
@@ -50,8 +61,15 @@ public class JiraUser implements UserDetails {
     }
 
     @Override
-    public Collection<SimpleGrantedAuthority> getAuthorities() {
-        return new HashSet<SimpleGrantedAuthority>();
-    }
+    public List<SimpleGrantedAuthority> getAuthorities() {
+        List<SimpleGrantedAuthority> authorities = 
+            new ArrayList<SimpleGrantedAuthority>();
 
+        roles.forEach(role -> {
+            System.out.println(role);
+            authorities.add(new SimpleGrantedAuthority(role));
+        });
+
+        return authorities;
+    }
 }
