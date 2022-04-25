@@ -1,6 +1,7 @@
 package com.westerndigital.keyinsight.SpringEmail;
 
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 
@@ -14,7 +15,7 @@ import org.springframework.core.io.FileSystemResource;
 @Component
 public class SpringEmailSender implements SpringEmailService{
     @Autowired
-    public MailSender mailSender;
+    public JavaMailSender mailSender;
 
     public void sendSimpleMessage(String to, String subject, String text){
         SimpleMailMessage message = new SimpleMailMessage();
@@ -27,7 +28,8 @@ public class SpringEmailSender implements SpringEmailService{
 
     @Override
     public void sendMessageWithAttatchment(String to, String subject, String text, String pathToAttatchment){
-            MimeMessage message = emailSender.createMimeMessage();
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
 
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
             
@@ -39,6 +41,11 @@ public class SpringEmailSender implements SpringEmailService{
             helper.addAttachment("Invoice", file);
 
             mailSender.send(message);
+        } catch (Exception e) {
+            //TODO: handle exception
+            e.printStackTrace();
+        }
+           
             
         }
 

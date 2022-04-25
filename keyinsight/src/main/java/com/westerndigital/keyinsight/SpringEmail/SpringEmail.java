@@ -7,18 +7,22 @@ import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
+
+import io.github.cdimascio.dotenv.Dotenv;
 
 import java.util.Properties;
 
 public class SpringEmail {
     @Bean
     public MailSender getMailSender(){
-        MailSenderImp mailSender = new MailSenderImp;
-        mailSender.setHost();
+        Dotenv dotenv = Dotenv.load();
+        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+        mailSender.setHost("smtp.gmail.com");
         mailSender.setPort(587);
 
-        mailSender.setUserName(my.gmail@gmail.com);
-        mailSender.setPassword();
+        mailSender.setUsername(dotenv.get("GMAIL_USER"));
+        mailSender.setPassword(dotenv.get("GMAIL_PASSWORD"));
 
         Properties propts = mailSender.getJavaMailProperties();
         propts.put("mail.transport.protocol", "smtp");
