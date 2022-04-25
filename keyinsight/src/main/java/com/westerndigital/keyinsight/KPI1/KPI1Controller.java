@@ -27,9 +27,4 @@ public class KPI1Controller {
     public ResponseEntity<List<KPI1>> getKPI1PerTeam() {
         return new ResponseEntity<>(kpi1Service.getKPI1PerTeam(), HttpStatus.OK);
     }
-
-    @GetMapping
-    public ResponseEntity<KPI1> getKPI1Overview() {
-        return new ResponseEntity<>(kpi1Service.getKPI1Overview(), HttpStatus.OK);
-    }
 }
