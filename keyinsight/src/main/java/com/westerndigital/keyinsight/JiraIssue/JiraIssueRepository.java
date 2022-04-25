@@ -1,6 +1,7 @@
 package com.westerndigital.keyinsight.JiraIssue;
 
 import java.util.Optional;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -40,6 +41,50 @@ public interface JiraIssueRepository extends JpaRepository<JiraIssue, Integer> {
 
     @Query(value = "SELECT COUNT(j.id) FROM JiraIssue j WHERE j.projectName = :projectName AND j.teamType = :teamType AND j.resolution = :resolution")
     Integer totalTeamTypeJiraResolutionIssueCount(@Param("projectName") String projectName, @Param("teamType") String teamType, @Param("resolution") String resolution);
+
+    @Query(value = "SELECT EXTRACT(DAY FROM j.resolutionDateTime - j.createdDateTime) as intervalDays FROM JiraIssue j WHERE j.projectName = :projectName AND j.resolutionDateTime is not null AND j.status in (:status1) ORDER BY intervalDays ASC")
+    ArrayList<Integer> medianOfOpenResolvedJiraIssues(@Param("projectName") String projectName, @Param("status1") String status1);
+
+    /* This calculates the median between jira starting and jira ending
+WITH cse AS (
+SELECT EXTRACT(DAY FROM resolution_date_time - created_date_time) as intervalDays
+FROM issues
+WHERE project_name = 'B8X4' AND resolution_date_time is not null
+)
+
+SELECT PERCENTILE_DISC(0.5) WITHIN GROUP(ORDER BY intervalDays)
+FROM cse
+    */
+
+    /* this query finds issues created between 2 dates
+SELECT *
+FROM issues
+WHERE project_name = 'B8X4' AND created_date_time >= '2020-11-01' AND created_date_time < '2021-12-31'
+    */
+
+    /* Count for jira issues resolved within last 7 days
+SELECT COUNT(id)
+FROM issues
+WHERE project_name = 'B8X4'
+AND status in ('Resolved')
+AND resolution_date_time > current_date - interval '7 days'
+    */
+
+    /*Count for jira issues resolved
+SELECT COUNT(id)
+FROM issues
+WHERE project_name = 'B8X4'
+AND status in ('Resolved')
+    */
+
+    /*Story point sfor jira issue solved
+SELECT SUM(story_point)
+FROM issues
+WHERE project_name = 'B8X4'
+AND status in ('Resolved')
+    */
+
+
 
 
 }

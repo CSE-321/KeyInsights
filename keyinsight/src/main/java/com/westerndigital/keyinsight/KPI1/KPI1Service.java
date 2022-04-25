@@ -145,4 +145,15 @@ public class KPI1Service {
 
         return listofKPI1;
     }
+
+    public void tmp(){
+        ArrayList<Integer> listOfMedianValues = issueRepository.medianOfOpenResolvedJiraIssues("B8X4", "Resolved");
+        double median = 0;
+        if(listOfMedianValues.size() % 2 != 0){
+            median = (double)listOfMedianValues.get(listOfMedianValues.size() / 2);
+        }else{
+            median = (double)(listOfMedianValues.get((listOfMedianValues.size()-1) / 2) + listOfMedianValues.get(listOfMedianValues.size() / 2)) / 2.0;
+        }
+        System.out.println(median);
+    }
 }
