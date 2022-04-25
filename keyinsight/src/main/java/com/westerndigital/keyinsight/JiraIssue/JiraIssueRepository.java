@@ -12,6 +12,35 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface JiraIssueRepository extends JpaRepository<JiraIssue, Integer> {
 
+    //no teamtype queries
+    @Query(value = "SELECT COUNT(j.id) FROM JiraIssue j WHERE j.projectName = :projectName")
+    Integer totalJiraIssueCount(@Param("projectName") String projectName);
+
+    @Query(value = "SELECT SUM(j.storyPoint) FROM JiraIssue j WHERE j.projectName = :projectName")
+    Optional<Float> totalJiraIssueStoryPoint(@Param("projectName") String projectName);
+
+    @Query(value = "SELECT COUNT(j.id) FROM JiraIssue j WHERE j.projectName = :projectName AND j.status = :status")
+    Integer totalJiraStatusIssueCount(@Param("projectName") String projectName, @Param("status") String status);
+
+    @Query(value = "SELECT SUM(j.storyPoint) FROM JiraIssue j WHERE j.projectName = :projectName AND j.status = :status")
+    Optional<Float> totalJiraStatusIssueStoryPoint(@Param("projectName") String projectName, @Param("status") String status);
+
+    @Query(value = "SELECT COUNT(j.id) FROM JiraIssue j WHERE j.projectName = :projectName AND j.subType = :subType")
+    Integer totalJiraSubTypeIssueCount(@Param("projectName") String projectName, @Param("subType") String subType);
+
+    @Query(value = "SELECT COUNT(j.id) FROM JiraIssue j WHERE j.projectName = :projectName AND j.priority = :priority")
+    Integer totalJiraPriorityIssueCount(@Param("projectName") String projectName, @Param("priority") String priority);
+
+    @Query(value = "SELECT COUNT(j.id) FROM JiraIssue j WHERE j.projectName = :projectName AND j.priority = :priority AND j.resolution = :resolution")
+    Integer totalJiraPriorityResolutionIssueCount(@Param("projectName") String projectName, @Param("priority") String priority, @Param("resolution") String resolution);
+
+    @Query(value = "SELECT COUNT(j.id) FROM JiraIssue j WHERE j.projectName = :projectName AND j.priority = :priority AND (j.resolution NOT IN(:resolution1, :resolution2, :resolution3) OR j.resolution is null)")
+    Integer totalJiraPriorityOppositeResolutionIssueCount(@Param("projectName") String projectName, @Param("priority") String priority, @Param("resolution1") String resolution1,@Param("resolution2") String resolution2,@Param("resolution3") String resolution3);
+
+    @Query(value = "SELECT COUNT(j.id) FROM JiraIssue j WHERE j.projectName = :projectName AND j.resolution = :resolution")
+    Integer totalJiraResolutionIssueCount(@Param("projectName") String projectName, @Param("resolution") String resolution);
+
+    //with teamtype queries
     @Query(value = "SELECT DISTINCT(j.teamType) FROM JiraIssue j WHERE j.projectName = :projectName")
     List<String> getAllTeamType(@Param("projectName") String projectName);
 
