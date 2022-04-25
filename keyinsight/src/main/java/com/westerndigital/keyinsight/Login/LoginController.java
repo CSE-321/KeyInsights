@@ -35,6 +35,8 @@ public class LoginController {
             new CustomAuthenticationToken(username, password, serverUrl, authorities)
         );
 
+        
+
         System.out.println("AUTHENTICATION MANAGER SUCCESSFULLY AUTHENTICATED USER");
     }
 }

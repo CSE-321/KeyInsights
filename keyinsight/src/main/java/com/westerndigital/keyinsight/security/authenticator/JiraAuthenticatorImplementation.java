@@ -2,22 +2,33 @@ package com.westerndigital.keyinsight.security.authenticator;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Collection;
 
 import com.atlassian.jira.rest.client.api.JiraRestClient;
 import com.atlassian.jira.rest.client.api.JiraRestClientFactory;
 import com.atlassian.jira.rest.client.api.domain.User;
-import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClientFactory;
-import com.westerndigital.keyinsight.JiraUser.JiraUser;
-import com.westerndigital.keyinsight.JiraUser.JiraUserService;
 
+import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClientFactory;
+import com.westerndigital.keyinsight.JiraRole.JiraRole;
+import com.westerndigital.keyinsight.JiraUser.JiraUser;
+import com.westerndigital.keyinsight.JiraUser.JiraUserRepository;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
 public class JiraAuthenticatorImplementation implements JiraAuthenticator {
 
-    private JiraUserService jiraUserService;
+    @Autowired
+    private JiraUserRepository jiraUserRepository;
+
+    @Lazy
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public boolean authenticate(String username, String password,
             String serverUrl) {
@@ -37,18 +48,29 @@ public class JiraAuthenticatorImplementation implements JiraAuthenticator {
                 User jiraUser = jiraRestClient.getUserClient()
                         .getUser(username).get();
 
-                BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+                // save the authenticated user to the database if they are not
+                // in the database
+                if (jiraUserRepository.findByUsername(username) == null) {
+                    // save the authenticated user to the database
+                    String jiraUsername = jiraUser.getName();
+                    String jiraPassword = passwordEncoder.encode(password);
+                    String jiraServerUrl = jiraUser.getSelf().toString();
 
-                // save the authenticated user to the database
-                String jiraId = jiraUser.getAccountId();
-                String jiraUsername = jiraUser.getName();
-                String jiraPassword = bCryptPasswordEncoder.encode(password);
-                String jiraServerUrl = jiraUser.getSelf().toString();
+                    JiraUser user = new JiraUser(jiraUsername,
+                            jiraPassword, jiraServerUrl);
 
-                // JiraUser user = new JiraUser(jiraId, jiraUsername,
-                // jiraPassword, jiraServerUrl);
+                    jiraUser.getGroups().getItems().forEach(group -> {
+                        if (group.equals("jira-administrators")) {
+                            user.addRole(JiraRole.ROLE_ADMIN);
+                        }
 
-                // saveUserToDatabase(user);
+                        if (group.equals("jira-users")) {
+                            user.addRole(JiraRole.ROLE_USER);
+                        }
+                    });
+
+                    jiraUserRepository.save(user);
+                }
 
                 return true;
 
@@ -62,9 +84,5 @@ public class JiraAuthenticatorImplementation implements JiraAuthenticator {
         }
 
         return false;
-    }
-
-    public void saveUserToDatabase(JiraUser user) {
-        System.out.println("Saving user to the database");
     }
 }

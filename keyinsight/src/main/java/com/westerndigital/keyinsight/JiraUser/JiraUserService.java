@@ -1,19 +1,31 @@
 package com.westerndigital.keyinsight.JiraUser;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.List;
 
-public class JiraUserService {
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.stereotype.Service;
+
+@Service
+public class JiraUserService implements UserDetailsService {
 
     @Autowired
     private JiraUserRepository jiraUserRepository;
 
+    @Override
+    public JiraUser loadUserByUsername(String username) {
+        return jiraUserRepository.findByUsername(username);
+    }
+    
     public void saveUser(JiraUser jiraUser) {
         jiraUserRepository.save(jiraUser);
     }
 
-    public long getCount() {
-        return jiraUserRepository.count();
+    public List<JiraUser> getJiraUsers() {
+        return jiraUserRepository.findAll();
     }
+
+
 
 }
 

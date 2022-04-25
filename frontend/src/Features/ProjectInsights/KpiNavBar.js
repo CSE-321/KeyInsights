@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
+import PropType from 'prop-types';
 
-const KpiNavBar = () => {
+const KpiNavBar = ({ completionHandler }) => {
   const barRef = useRef();
   const rowOneRef = useRef();
   const rowTwoRef = useRef();
@@ -34,6 +35,7 @@ const KpiNavBar = () => {
           ref={rowOneRef}
           onClick={() => {
             handleRowSelected(rowOneRef);
+            completionHandler(0);
           }}>
           <div
             className={'bg-[#5DD39E] transition-all w-1 h-10'}
@@ -59,6 +61,7 @@ const KpiNavBar = () => {
           ref={rowTwoRef}
           onClick={() => {
             handleRowSelected(rowTwoRef);
+            completionHandler(1);
           }}>
           {rowSelectedForRef === rowTwoRef ? (
             <>
@@ -79,6 +82,7 @@ const KpiNavBar = () => {
           ref={rowThreeRef}
           onClick={() => {
             handleRowSelected(rowThreeRef);
+            completionHandler(2);
           }}>
           {rowSelectedForRef === rowThreeRef ? (
             <>
@@ -99,6 +103,7 @@ const KpiNavBar = () => {
           ref={rowFourRef}
           onClick={() => {
             handleRowSelected(rowFourRef);
+            completionHandler(3);
           }}>
           {rowSelectedForRef === rowFourRef ? (
             <>
@@ -120,6 +125,7 @@ const KpiNavBar = () => {
           ref={rowFiveRef}
           onClick={() => {
             handleRowSelected(rowFiveRef);
+            completionHandler(4);
           }}>
           {rowSelectedForRef === rowFiveRef ? (
             <>
@@ -139,6 +145,10 @@ const KpiNavBar = () => {
       </div>
     </>
   );
+};
+
+KpiNavBar.propTypes = {
+  completionHandler: PropType.func.isRequired,
 };
 
 export default KpiNavBar;
