@@ -22,7 +22,13 @@ import com.atlassian.jira.rest.client.api.domain.IssueField;
 
 import io.github.cdimascio.dotenv.Dotenv;
 
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.Instant;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.stream.StreamSupport;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -60,12 +66,12 @@ public class LoadDatabase implements CommandLineRunner {
         // This block of code underneath just deletes every entry in the database during
         // startup
         // ------------------------------------------
-        userRepository.deleteAll();
-        serverRepository.deleteAll();
-        notificationSettingsRepository.deleteAll();
-        projectRepository.deleteAll();
-        issueRepository.deleteAll();
-        notificationSettingsRepository.deleteAll();
+        // userRepository.deleteAll();
+        // serverRepository.deleteAll();
+        // notificationSettingsRepository.deleteAll();
+        // projectRepository.deleteAll();
+        // issueRepository.deleteAll();
+        // notificationSettingsRepository.deleteAll();
         // -------------------------------------------
 
         // This block of code attempts to use the username, password, and server url to
@@ -105,6 +111,7 @@ public class LoadDatabase implements CommandLineRunner {
                 String projectKey = basicProject.getKey();
                 Project singleProject = myJiraClient.getProject(projectKey);
                 String projectName = singleProject.getName();
+                projectName = projectName.trim();
                 String productLeadName = singleProject.getLead().getName();
                 User projectLead = myJiraClient.getUser(productLeadName);
                 String projectLeadDisplayName = projectLead.getDisplayName();
@@ -137,9 +144,6 @@ public class LoadDatabase implements CommandLineRunner {
                     // issues stored in the Iterable
                     for (Issue singleIssue : allIssues) {
 
-                        JiraIssue issue = new JiraIssue(); // creates a Java Issue Object that allows us to store the
-                                                           // Jira Issue information using the setters
-
                         // This block of code is just grabbing the issueNumber after the dash
                         // Example B8X4-10282,this block of code just grabs 10282
                         // ------------------------------------------------------------------
@@ -147,6 +151,10 @@ public class LoadDatabase implements CommandLineRunner {
                         issueNumber = issueNumber.substring(issueNumber.indexOf('-') + 1);
                         System.out.println(issueNumber);
                         // ------------------------------------------------------------------
+
+                        JiraIssue issue = issueRepository.findById(Integer.parseInt(issueNumber))
+                                .orElse(new JiraIssue()); // finds an issue in the database with that issueNumber
+                                                          // if it doesn't exist, create a new Java Issue Object
 
                         // Only needs to run on the FIRST iteration, we need to grab all the fields that
                         // an issue could potentially have and store it in the hashmap to use later
@@ -159,34 +167,22 @@ public class LoadDatabase implements CommandLineRunner {
                         }
                         // ----------------------------------------------------------------
 
-                        // This block of code is just formatting
+                        // This block of code is just getting the
                         // the creation date and time for each issue
                         // Currently, these values are never null;
                         // However, I am not sure if that is always the case
                         // -----------------------------------------------------
-                        String createCreationDate = String.format("%d-%d-%d",
-                                singleIssue.getCreationDate().getYear(),
-                                singleIssue.getCreationDate().getMonthOfYear(),
-                                singleIssue.getCreationDate().getDayOfMonth());
-
-                        String createCreationTime = String.format("%d:%d",
-                                singleIssue.getCreationDate().getHourOfDay(),
-                                singleIssue.getCreationDate().getMinuteOfHour());
+                        Instant creationInstant = Instant.ofEpochMilli(singleIssue.getCreationDate().getMillis());
+			            OffsetDateTime creationDateTime = OffsetDateTime.ofInstant(creationInstant, ZoneId.of(singleIssue.getCreationDate().getZone().getID()));
                         // -------------------------------------------------------
 
-                        // This block of code is just formatting
+                        // This block of code is just getting
                         // the updated date and time for each issue
                         // Currently, these values are never null;
                         // However, I am not sure if that is always the case
                         // -------------------------------------------------------
-                        String updatedDate = String.format("%d-%d-%d",
-                                singleIssue.getUpdateDate().getYear(),
-                                singleIssue.getUpdateDate().getMonthOfYear(),
-                                singleIssue.getUpdateDate().getDayOfMonth());
-
-                        String updatedTime = String.format("%d:%d",
-                                singleIssue.getUpdateDate().getHourOfDay(),
-                                singleIssue.getUpdateDate().getMinuteOfHour());
+                        Instant updatedInstant = Instant.ofEpochMilli(singleIssue.getUpdateDate().getMillis());
+			            OffsetDateTime updatedDateTime = OffsetDateTime.ofInstant(updatedInstant, ZoneId.of(singleIssue.getUpdateDate().getZone().getID()));
                         // -------------------------------------------------------
 
                         // This block of code is just formatting
@@ -194,17 +190,26 @@ public class LoadDatabase implements CommandLineRunner {
                         // Currently, some values are null;
                         // so I need to use if statements to handle that
                         // ---------------------------------------------------------------------------
-                        String dueDate = null;
-                        String dueTime = null;
+                        OffsetDateTime dueDateTime = null;
                         if (singleIssue.getDueDate() != null) {
-                            dueDate = String.format("%d-%d-%d", singleIssue.getDueDate().getYear(),
-                                    singleIssue.getDueDate().getMonthOfYear(),
-                                    singleIssue.getDueDate().getDayOfMonth());
-
-                            dueTime = String.format("%d:%d", singleIssue.getDueDate().getHourOfDay(),
-                                    singleIssue.getDueDate().getMinuteOfHour());
+                            Instant dueInstant = Instant.ofEpochMilli(singleIssue.getDueDate().getMillis());
+                            dueDateTime = OffsetDateTime.ofInstant(dueInstant, ZoneId.of(singleIssue.getDueDate().getZone().getID()));
                         }
                         // ---------------------------------------------------------------------------
+
+                        // This block of code is just getting
+                        // the resolution date and time for each issue
+                        // Currently, some values are null;
+                        // so I need to use if statements to handle that
+                        // ---------------------------------------------------------------------------
+                        String resolvedDateTimeField = fieldValues.get("Resolved");
+                        OffsetDateTime resolutionDateTime = null;
+                        if(singleIssue.getField(resolvedDateTimeField).getValue() != null){
+                            String resolutionDateTimeString = singleIssue.getField(resolvedDateTimeField).getValue().toString();
+                            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+                            resolutionDateTime = OffsetDateTime.parse(resolutionDateTimeString,formatter);
+                        }
+                        //----------------------------------------------------------------------------
 
                         // This block of code is grabbing the story points per issue if they have them
                         // This is one location where the hashmap comes back from earlier
@@ -268,12 +273,10 @@ public class LoadDatabase implements CommandLineRunner {
                         issue.setProjectName(projectName);
                         issue.setTeamType(singleIssue.getIssueType().getName());
                         issue.setStatus(singleIssue.getStatus().getName());
-                        issue.setCreationDate(createCreationDate);
-                        issue.setCreationTime(createCreationTime);
-                        issue.setUpdatedDate(updatedDate);
-                        issue.setUpdatedTime(updatedTime);
-                        issue.setDueDate(dueDate);
-                        issue.setDueTime(dueTime);
+                        issue.setCreatedDateTime(creationDateTime);
+                        issue.setUpdatedDateTime(updatedDateTime);
+                        issue.setDueDateTime(dueDateTime);
+                        issue.setResolutionDateTime(resolutionDateTime);
                         issue.setStoryPoint(storyPointInfo);
                         issue.setSubType(subType);
                         issue.setResolution(resolution);
@@ -296,7 +299,7 @@ public class LoadDatabase implements CommandLineRunner {
                         // as that value
                         // ----------------------------------------------------
                         if (Integer.parseInt(issueNumber) == 1) {
-                            project.setCreatedDate(createCreationDate);
+                            project.setCreatedDate(creationDateTime);
                         }
                         // ----------------------------------------------------
                     }
@@ -322,6 +325,7 @@ public class LoadDatabase implements CommandLineRunner {
             }
 
             System.out.println("finished");
+            myJiraClient.getRestClient().close();
 
         } catch (RestClientException e) {
             System.out.println(e.getLocalizedMessage());
