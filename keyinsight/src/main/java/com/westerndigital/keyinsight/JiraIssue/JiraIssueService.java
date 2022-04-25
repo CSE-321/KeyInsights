@@ -13,8 +13,7 @@ public class JiraIssueService {
         this.issueRepository = issueRepository;
     }
 
-    public void addIssue(JiraIssue issue) {
-        issueRepository.save(issue);
-    }
-
+    //public void addIssue(JiraIssue issue) {
+        //issueRepository.save(issue);
+    //}
 }

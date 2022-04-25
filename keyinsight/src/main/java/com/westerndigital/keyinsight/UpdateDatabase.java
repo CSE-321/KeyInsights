@@ -1,5 +1,6 @@
 package com.westerndigital.keyinsight;
 
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -22,6 +23,10 @@ import com.atlassian.jira.rest.client.api.domain.IssueField;
 
 import io.github.cdimascio.dotenv.Dotenv;
 
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.stream.StreamSupport;
 
@@ -143,52 +148,50 @@ public class UpdateDatabase {
                         }
                         // ----------------------------------------------------------------
 
-                        // This block of code is just formatting
+                        // This block of code is just getting the
                         // the creation date and time for each issue
                         // Currently, these values are never null;
                         // However, I am not sure if that is always the case
                         // -----------------------------------------------------
-                        String createCreationDate = String.format("%d-%d-%d",
-                                singleIssue.getCreationDate().getYear(),
-                                singleIssue.getCreationDate().getMonthOfYear(),
-                                singleIssue.getCreationDate().getDayOfMonth());
-
-                        String createCreationTime = String.format("%d:%d",
-                                singleIssue.getCreationDate().getHourOfDay(),
-                                singleIssue.getCreationDate().getMinuteOfHour());
+                        Instant creationInstant = Instant.ofEpochMilli(singleIssue.getCreationDate().getMillis());
+			            OffsetDateTime creationDateTime = OffsetDateTime.ofInstant(creationInstant, ZoneId.of(singleIssue.getCreationDate().getZone().getID()));
                         // -------------------------------------------------------
 
-                        // This block of code is just formatting
+                        // This block of code is just getting
                         // the updated date and time for each issue
                         // Currently, these values are never null;
                         // However, I am not sure if that is always the case
                         // -------------------------------------------------------
-                        String updatedDate = String.format("%d-%d-%d",
-                                singleIssue.getUpdateDate().getYear(),
-                                singleIssue.getUpdateDate().getMonthOfYear(),
-                                singleIssue.getUpdateDate().getDayOfMonth());
-
-                        String updatedTime = String.format("%d:%d",
-                                singleIssue.getUpdateDate().getHourOfDay(),
-                                singleIssue.getUpdateDate().getMinuteOfHour());
+                        Instant updatedInstant = Instant.ofEpochMilli(singleIssue.getUpdateDate().getMillis());
+			            OffsetDateTime updatedDateTime = OffsetDateTime.ofInstant(updatedInstant, ZoneId.of(singleIssue.getUpdateDate().getZone().getID()));
                         // -------------------------------------------------------
 
                         // This block of code is just formatting
                         // the due date and time for each issue
-                        // Currently, I know that some issues could have this be null
+                        // Currently, some values are null;
                         // so I need to use if statements to handle that
                         // ---------------------------------------------------------------------------
-                        String dueDate = null;
-                        String dueTime = null;
+                        OffsetDateTime dueDateTime = null;
                         if (singleIssue.getDueDate() != null) {
-                            dueDate = String.format("%d-%d-%d", singleIssue.getDueDate().getYear(),
-                                    singleIssue.getDueDate().getMonthOfYear(),
-                                    singleIssue.getDueDate().getDayOfMonth());
-
-                            dueTime = String.format("%d:%d", singleIssue.getDueDate().getHourOfDay(),
-                                    singleIssue.getDueDate().getMinuteOfHour());
+                            Instant dueInstant = Instant.ofEpochMilli(singleIssue.getDueDate().getMillis());
+                            dueDateTime = OffsetDateTime.ofInstant(dueInstant, ZoneId.of(singleIssue.getDueDate().getZone().getID()));
                         }
+                        // ---------------------------------------------------------------------------
 
+                        // This block of code is just getting
+                        // the resolution date and time for each issue
+                        // Currently, some values are null;
+                        // so I need to use if statements to handle that
+                        // ---------------------------------------------------------------------------
+                        String resolvedDateTimeField = fieldValues.get("Resolved");
+                        OffsetDateTime resolutionDateTime = null;
+                        if(singleIssue.getField(resolvedDateTimeField).getValue() != null){
+                            String resolutionDateTimeString = singleIssue.getField(resolvedDateTimeField).getValue().toString();
+                            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+                            resolutionDateTime = OffsetDateTime.parse(resolutionDateTimeString,formatter);
+                        }
+                        //----------------------------------------------------------------------------
+                        
                         // This block of code is grabbing the story points per issue if they have them
                         // This is one location where the hashmap comes back from earlier
                         // ------------------------------------------------------------------------
@@ -250,12 +253,10 @@ public class UpdateDatabase {
                         issue.setProjectName(basicProject.getName());
                         issue.setTeamType(singleIssue.getIssueType().getName());
                         issue.setStatus(singleIssue.getStatus().getName());
-                        issue.setCreationDate(createCreationDate);
-                        issue.setCreationTime(createCreationTime);
-                        issue.setUpdatedDate(updatedDate);
-                        issue.setUpdatedTime(updatedTime);
-                        issue.setDueDate(dueDate);
-                        issue.setDueTime(dueTime);
+                        issue.setCreatedDateTime(creationDateTime);
+                        issue.setUpdatedDateTime(updatedDateTime);
+                        issue.setDueDateTime(dueDateTime);
+                        issue.setResolutionDateTime(resolutionDateTime);
                         issue.setStoryPoint(storyPointInfo);
                         issue.setSubType(subType);
                         issue.setResolution(resolution);
@@ -273,8 +274,14 @@ public class UpdateDatabase {
                         issueCount += 1;
                         // ---------------------------
 
-                        // No need to update the project creation date as this is just updating recent
-                        // issues
+                        // In our project table, we have a created date column
+                        // We decided to use the earlist issue creation date
+                        // as that value
+                        // ----------------------------------------------------
+                        if (Integer.parseInt(issueNumber) == 1) {
+                            project.setCreatedDate(creationDateTime);
+                        }
+                        // ----------------------------------------------------
                     }
 
                     // Outside the while loop means we haev iterated through all the issues in the
@@ -306,6 +313,7 @@ public class UpdateDatabase {
                 System.out.println("Had " + newlyCreatedIssueCount + " newly Issues Created");
             }
             System.out.println("finished, please wait 30 minutes for the next update");
+            myJiraClient.getRestClient().close();
 
         } catch (RestClientException e) {
             System.out.println(e.getLocalizedMessage());
