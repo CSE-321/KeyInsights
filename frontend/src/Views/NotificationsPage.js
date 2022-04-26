@@ -3,7 +3,10 @@ import { useSelector } from 'react-redux';
 import ToggleSwitch from '../Components/ToggleSwitch';
 import BodyHeader from '../Components/BodyHeader';
 import Modal from '../Components/Modal';
-import { getNotificationsFromApiAsync } from '../Features/Notifications/NotificationsNetworking';
+import {
+  getNotificationsFromApiAsync,
+  sendSettingsDataToBackend,
+} from '../Features/Notifications/NotificationsNetworking';
 
 const NotificationsPage = () => {
   // Values for toggle switches in topdown order
@@ -113,7 +116,7 @@ const NotificationsPage = () => {
             <button
               className="static rounded-lg bg-primary-purple text-white h-10 w-32 text-xs sm:w-32 sm:h-12 md:h-12 md:w-64 lg:h-12 lg:w-60 sm:text-sm md:text-md lg:text-lg"
               onClick={() => {
-                createJSON();
+                sendSettingsDataToBackend(createJSON());
                 setIsSettingsChanged(false);
               }}>
               {' '}
@@ -269,6 +272,7 @@ const NotificationsPage = () => {
         </div>
       </div>
       <br></br>
+      {/* Displays modal only if modalOn is set to true which happens when Select Project button is clicked */}
       {modalOn && (
         <Modal
           setModalOn={setModalOn}
