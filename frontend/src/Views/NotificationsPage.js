@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import ToggleSwitch from '../Components/ToggleSwitch';
 import BodyHeader from '../Components/BodyHeader';
 import Modal from '../Components/Modal';
+import { getNotificationsFromApiAsync } from '../Features/Notifications/NotificationsNetworking';
 
 const NotificationsPage = () => {
   // Values for toggle switches in topdown order
@@ -55,6 +56,7 @@ const NotificationsPage = () => {
     };
 
     console.log(obj);
+    return obj;
   };
 
   // fetch api/v1/NotificationSettings
@@ -65,7 +67,9 @@ const NotificationsPage = () => {
     [toggled, toggled2, toggled3, toggled4, toggled5];*/
 
   // Change toggle switches and textbox values after project is selected
+  // This will read in value from the backend to show previous notification settings
   const setDefaultValues = () => {
+    const prevSettings = getNotificationsFromApiAsync(createJSON());
     setToggled(true);
     setToggled2(true);
     setToggled3();
