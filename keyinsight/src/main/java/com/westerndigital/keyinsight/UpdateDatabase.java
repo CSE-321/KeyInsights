@@ -90,9 +90,20 @@ public class UpdateDatabase {
 
             for (BasicProject basicProject : allProjects) {
 
-                JiraProject project = projectRepository.findByName(basicProject.getName());// Finds the information from
-                                                                                           // the database that pertains
-                                                                                           // to this projectname
+                // This block of code is just extracting projectName from the Project
+                // using getters from the class and JRJC
+                // ------------------------------------------------------------
+                String projectKey = basicProject.getKey();
+                Project singleProject = myJiraClient.getProject(projectKey);
+                String projectName = singleProject.getName();
+                projectName = projectName.trim();
+                //-------------------------------------------------------------
+
+                //this line of code attempts to locate a project with that name 
+                //or else just creates a new jiraproject object
+                //----------------------------------------------------------------------------------------
+                JiraProject project = projectRepository.findByName(projectName).orElse(new JiraProject());
+                //----------------------------------------------------------------------------------------
 
                 // This block of code is to get ready to go through all the issues that the Jira
                 // Project has
@@ -103,7 +114,7 @@ public class UpdateDatabase {
                 int issueCount = 0;
                 int newlyCreatedIssueCount = 0;
                 HashMap<String, String> fieldValues = new HashMap<String, String>();
-                allIssues = myJiraClient.getAllNewCreatedOrUpdatedLast30MinutesIssues(basicProject.getName(),
+                allIssues = myJiraClient.getAllNewCreatedOrUpdatedLast30MinutesIssues(projectName,
                         issueCount);// if I have issueCount = 0, the first
                 // Issue that I grab is B8X4-10282 not
                 // B8X4-1
@@ -289,7 +300,7 @@ public class UpdateDatabase {
                     // Now we continue to grab the next set of issues using the issueCount as the
                     // starting point
                     // -----------------------------------------------------------------------------
-                    allIssues = myJiraClient.getAllNewCreatedOrUpdatedLast30MinutesIssues(basicProject.getName(),
+                    allIssues = myJiraClient.getAllNewCreatedOrUpdatedLast30MinutesIssues(projectName,
                             issueCount);
                     allIssuesCount = StreamSupport.stream(allIssues.spliterator(), false).count();
                     // -----------------------------------------------------------------------------

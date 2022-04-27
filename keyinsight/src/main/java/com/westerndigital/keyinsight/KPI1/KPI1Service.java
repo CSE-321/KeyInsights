@@ -65,7 +65,7 @@ public class KPI1Service {
                 int totalJiraIssueCount = issueRepository.totalJiraIssueCount(projectName);
                 Float totalJiraIssueStoryPoint = issueRepository
                                 .totalJiraIssueStoryPoint(projectName)
-                                .orElse(0.0f);
+                                .orElse(1.0f);
                 // ----------------------------------------------------------------------------------------------------
 
                 // Block of code for Closed Jira# and story points and % of total story points
@@ -181,7 +181,7 @@ public class KPI1Service {
                                         teamType);
                         Float totalTeamTypeJiraIssueStoryPoint = issueRepository
                                         .totalTeamTypeJiraIssueStoryPoint(projectName, teamType)
-                                        .orElse(0.0f);
+                                        .orElse(1.0f);
                         // ----------------------------------------------------------------------------------------------------
 
                         // Block of code for Closed Jira# and story points and % of total story points

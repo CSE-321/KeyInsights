@@ -26,9 +26,7 @@ import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.stream.StreamSupport;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -102,9 +100,6 @@ public class LoadDatabase implements CommandLineRunner {
             // Iterating through all the projects that was grabbed in the line of code above
             for (BasicProject basicProject : allProjects) {
 
-                JiraProject project = new JiraProject();// creates a Java Project Object that allows us to store the
-                                                        // Jira Project information using the setters
-
                 // This block of code is just extracting information from the Project
                 // using getters from the class and JRJC
                 // ------------------------------------------------------------
@@ -116,6 +111,12 @@ public class LoadDatabase implements CommandLineRunner {
                 User projectLead = myJiraClient.getUser(productLeadName);
                 String projectLeadDisplayName = projectLead.getDisplayName();
                 // ------------------------------------------------------------
+
+                //this line of code attempts to locate a project with that name 
+                //or else just creates a new jiraproject object
+                //----------------------------------------------------------------------------------------
+                JiraProject project = projectRepository.findByName(projectName).orElse(new JiraProject());
+                //----------------------------------------------------------------------------------------
 
                 // This block of code is setting all the information from the code above
                 // and storing it in the Java Project Object
