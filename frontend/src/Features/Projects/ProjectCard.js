@@ -3,6 +3,11 @@ import propType from 'prop-types';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 
+/**
+ * A component that renders a card cell for a project.
+ * @param {Project} A project object containing the project data
+ * @returns
+ */
 const ProjectCard = ({ project }) => {
   const [activeProject, setActiveProject] = useState(project);
 
@@ -53,11 +58,13 @@ const ProjectCard = ({ project }) => {
           <p className="col-span-2"> Created at</p>
           <p className="col-span-2">Issues</p>
           <img
-            src={project.image}
+            src={activeProject.image}
             className="w-10 h-10 rounded-full col-span-1 object-cover"></img>
-          <p className="col-span-3 self-center truncate">{project.lead}</p>
-          <p className="col-span-2 truncate">{project.created}</p>
-          <p className="col-span-2 truncate">{project.issues}</p>
+          <p className="col-span-3 self-center truncate ml-2">
+            {activeProject.lead}
+          </p>
+          <p className="col-span-2 truncate">{activeProject.created}</p>
+          <p className="col-span-2 truncate">{activeProject.issues}</p>
         </div>
       </div>
     </>

@@ -1,6 +1,6 @@
 import React, { Fragment, useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { signoutUser } from '../Components/Auth/userSlice';
+import { signoutUser } from '../App/Slices/userSlice';
 import { useNavigate } from 'react-router';
 
 import css from '../CSS/NavBar.css';
@@ -99,6 +99,11 @@ const NavBar = () => {
                 <a href={isUserSignedIn ? '/projects' : '/'}>Projects</a>
               </li>
               <li>
+                <a href={isUserSignedIn ? '/notifications' : '/'}>
+                  Notifications
+                </a>
+              </li>
+              <li>
                 <a href="#" onClick={signout}>
                   {isUserSignedIn ? signedInText : signedOutText}
                 </a>
@@ -116,6 +121,11 @@ const NavBar = () => {
               </li>
               <li>
                 <a href={isUserSignedIn ? '/projects' : '/'}>Projects</a>
+              </li>
+              <li>
+                <a href={isUserSignedIn ? '/notifications' : '/'}>
+                  Notifications
+                </a>
               </li>
               <li>
                 <a href="#" onClick={signout}>
