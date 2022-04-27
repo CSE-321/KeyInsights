@@ -11,19 +11,28 @@ import NotificationsPage from './Views/NotificationsPage';
 function App() {
   return (
     <Router>
-      <div className="App">
-        <NavBar isUserSignedIn={false} />
+      <div className="App flex flex-col justify-between h-screen">
+        <div className="PageBody ">
+          <NavBar isUserSignedIn={false} />
+          <Routes>
+            <Route exact path="/" element={<HomePage />} />
+            <Route exact path="/projects" element={<ProjectsPage />} />
+            <Route
+              exact
+              path="/projects/:id"
+              element={<ProjectInsightsPage />}
+            />
+            <Route
+              exact
+              path="/notifications"
+              element={<NotificationsPage />}
+            />
+          </Routes>
+        </div>
+        <div>
+          <Footer />
+        </div>
       </div>
-
-      <div className="PageBody">
-        <Routes>
-          <Route exact path="/" element={<HomePage />} />
-          <Route exact path="/projects" element={<ProjectsPage />} />
-          <Route exact path="/projects/:id" element={<ProjectInsightsPage />} />
-          <Route exact path="/notifications" element={<NotificationsPage />} />
-        </Routes>
-      </div>
-      <Footer />
     </Router>
   );
 }

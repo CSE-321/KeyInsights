@@ -1,14 +1,8 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import '../CSS/BodyHeader.css';
+import Modal from './Modal';
 import Dropdown from './Dropdown';
-import {
-  useTable,
-  useFilters,
-  useGlobalFilter,
-  useSortBy,
-  usePagination,
-} from 'react-table';
 
 /**
  * The body header component is used to display the header of the body. It contains the title,
@@ -18,14 +12,11 @@ import {
  * @param {bool} showButton
  * @returns {JSX} black bar with title and subtext
  */
-const BodyHeader = ({ title, subtext, showButton }) => {
-  //internal states
+const BodyHeader = ({ title, subtext, showButton, setModalOn }) => {
   const [headerTitle, setHeaderTitle] = React.useState(title);
   const [headerSubtext, setHeaderSubtext] = React.useState(subtext);
 
   const [isButtonActive, setIsButtonActive] = React.useState(false);
-  const [showModal, setShowModal] = React.useState(false);
-
 
   //monitors changes in props and updates internal states
   React.useEffect(() => {
@@ -47,14 +38,11 @@ const BodyHeader = ({ title, subtext, showButton }) => {
         </div>
 
         {isButtonActive && (
-
-    
           <button
             className="rounded-lg bg-primary-purple text-white ml-2 h-10 w-32 text-xs sm:w-28 sm:h-12 md:h-12 md:w-24 lg:h-12 lg:w-32 sm:text-sm md:text-md lg:text-lg"
-            onClick={() => setShowModal(true)}>
+            onClick={() => setModalOn(true)}>
             {' '}
             Select Project
-
           </button>
         )}
       </div>
@@ -66,6 +54,7 @@ BodyHeader.propTypes = {
   title: PropTypes.string,
   subtext: PropTypes.string,
   showButton: PropTypes.bool,
+  setModalOn: PropTypes.func,
 };
 
 export default BodyHeader;
