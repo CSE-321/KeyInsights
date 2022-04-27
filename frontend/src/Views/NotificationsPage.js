@@ -3,9 +3,12 @@ import { useSelector } from 'react-redux';
 import ToggleSwitch from '../Components/ToggleSwitch';
 import BodyHeader from '../Components/BodyHeader';
 import Modal from '../Components/Modal';
+import {
+  getNotificationsFromApiAsync,
+  sendSettingsDataToBackend,
+} from '../Features/Notifications/NotificationsNetworking';
 
 const NotificationsPage = () => {
-
   // Values for toggle switches in topdown order
   const [toggled, setToggled] = useState(false);
   const [toggled2, setToggled2] = useState(false);
@@ -56,12 +59,30 @@ const NotificationsPage = () => {
     };
 
     console.log(obj);
+    return obj;
   };
+
+  // fetch api/v1/NotificationSettings
 
   /*useEffect(() => {
     createJSON();
   }),
     [toggled, toggled2, toggled3, toggled4, toggled5];*/
+
+  // Change toggle switches and textbox values after project is selected
+  // This will read in value from the backend to show previous notification settings
+  const setDefaultValues = () => {
+    const prevSettings = getNotificationsFromApiAsync(createJSON());
+    setToggled(true);
+    setToggled2(true);
+    setToggled3();
+    setToggled4();
+    setToggled5();
+    setVal();
+    setVal2();
+    setVal4();
+    setVal5();
+  };
 
   return (
     <>
@@ -95,7 +116,7 @@ const NotificationsPage = () => {
             <button
               className="static rounded-lg bg-primary-purple text-white h-10 w-32 text-xs sm:w-32 sm:h-12 md:h-12 md:w-64 lg:h-12 lg:w-60 sm:text-sm md:text-md lg:text-lg"
               onClick={() => {
-                createJSON();
+                sendSettingsDataToBackend(createJSON());
                 setIsSettingsChanged(false);
               }}>
               {' '}
@@ -123,6 +144,7 @@ const NotificationsPage = () => {
               setIsSettingsChanged(true);
             }}
             label="toggle1"
+            checked={toggled}
             isProjectSelected={isProjectSelected}
           />
           <h1 className="inline text-md sm:text-lg md:text-xl lg:text-2xl">
@@ -134,7 +156,6 @@ const NotificationsPage = () => {
             disabled={!toggled}
             pattern="[0-9]*"
             value={val}
-
             onChange={(e) => {
               setVal((v) => (e.target.validity.valid ? e.target.value : v));
               setIsSettingsChanged(true);
@@ -152,6 +173,7 @@ const NotificationsPage = () => {
               setIsSettingsChanged(true);
             }}
             label="toggle2"
+            checked={toggled2}
             isProjectSelected={isProjectSelected}
           />
           <h1 className="inline text-md sm:text-lg md:text-xl lg:text-2xl">
@@ -181,12 +203,12 @@ const NotificationsPage = () => {
               setIsSettingsChanged(true);
             }}
             label="toggle3"
+            checked={toggled3}
             isProjectSelected={isProjectSelected}
           />
 
           <h1 className="inline text-md sm:text-lg md:text-xl lg:text-2xl">
             Notify me if ticket(s) unfinished at end of sprint.{' '}
-
           </h1>
           <br></br>
 
@@ -197,6 +219,7 @@ const NotificationsPage = () => {
               setIsSettingsChanged(true);
             }}
             label="toggle4"
+            checked={toggled4}
             isProjectSelected={isProjectSelected}
           />
           <h1 className="inline text-md sm:text-lg md:text-xl lg:text-2xl">
@@ -226,6 +249,7 @@ const NotificationsPage = () => {
               setIsSettingsChanged(true);
             }}
             label="toggle5"
+            checked={toggled5}
             isProjectSelected={isProjectSelected}
           />
           <h1 className="inline text-md sm:text-lg md:text-xl lg:text-2xl">
@@ -248,12 +272,14 @@ const NotificationsPage = () => {
         </div>
       </div>
       <br></br>
+      {/* Displays modal only if modalOn is set to true which happens when Select Project button is clicked */}
       {modalOn && (
         <Modal
           setModalOn={setModalOn}
           setProject={setProject}
           setIsProjectSelected={setIsProjectSelected}
           listOfProjects={projects}
+          setDefaultValues={setDefaultValues}
         />
       )}
     </>
