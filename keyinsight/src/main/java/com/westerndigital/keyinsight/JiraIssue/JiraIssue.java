@@ -18,7 +18,6 @@ import lombok.ToString;
 public class JiraIssue {
     @Id
     private Integer id;
-    
     private String name;
     private String projectName;
     private String teamType;
@@ -33,9 +32,4 @@ public class JiraIssue {
     private String resolution;
     private String assignee;
     private String assigneeAvatarUrl;
-
-    public JiraIssue() {
-
-    }
-
 }

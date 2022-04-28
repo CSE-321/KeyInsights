@@ -27,9 +27,4 @@ public class JiraProject {
     private String teamLeadAvatarUrl;
     private OffsetDateTime createdDate; // uses the create date of the first issue
     private Integer numIssues;
-
-    public JiraProject() {
-
-    }
-
 }
