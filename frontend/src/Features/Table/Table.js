@@ -18,7 +18,7 @@ import {
  * @param {Array} data
  * @returns {JSX} react-table
  */
-function Table({ columns, data }) {
+function Table({ columns, data, onRowClick }) {
   // UseTable returns props that can be used to build the table UI
   const {
     getTableProps,
@@ -53,10 +53,10 @@ function Table({ columns, data }) {
     <>
       <div
         id="table-root"
-        className="bg-white shadow drop-shadow-md text-xl sm:rounded-lg my-5 border-b border-gray-500">
+        className="bg-white shadow drop-shadow-md text-xl sm:rounded-lg border-b border-gray-500 block overflow-auto">
         <div
           id="Filter-options-root"
-          className="flex flex-row justify-start b-0 space-x-3">
+          className="flex flex-row justify-center m-5 items-baseline space-x-20">
           <GlobalFilter
             preGlobalFilteredRows={preGlobalFilteredRows}
             globalFilter={state.globalFilter}
@@ -137,6 +137,7 @@ function Table({ columns, data }) {
               prepareRow(row);
               return (
                 <tr
+                  onClick={() => onRowClick(row.original.id)}
                   {...row.getRowProps()}
                   className=" border-2 border-b-slate-100">
                   {row.cells.map((cell) => {
@@ -200,6 +201,7 @@ function Table({ columns, data }) {
 Table.propTypes = {
   columns: propType.array,
   data: propType.array,
+  onRowClick: propType.func,
 };
 
 export default Table;
