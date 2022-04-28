@@ -24,7 +24,6 @@ const KpiNavBar = ({ completionHandler }) => {
     setBarYOffset(barYOffset + y);
     const height = rowSelectedForRef.current.getBoundingClientRect().height;
     //setBarHeight(height);
-    console.log(height);
   }, [rowSelectedForRef]);
 
   return (
