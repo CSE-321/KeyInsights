@@ -70,8 +70,8 @@ const OverivewBody = () => {
                 <p>
                   This project has completed{' '}
                   <span className="text-[#5DD39E]">
-                    {getPercentageJiraClosed(kpi1_List) || <Skeleton />} %
-                  </span>
+                    {getPercentageJiraClosed(kpi1_List) || <Skeleton />}%
+                  </span>{' '}
                   of all active issues.
                   <br />
                 </p>

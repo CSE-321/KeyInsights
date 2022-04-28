@@ -80,8 +80,8 @@ public class LoadDatabase implements CommandLineRunner {
                 // The authenication doesn't happen until the client attempts grab some kind of
                 // information
                 // --------------------------------------------------------------------
+                Dotenv dotenv = Dotenv.load();
                 try {
-                        Dotenv dotenv = Dotenv.load();
                         myJiraClient = new JiraRestJavaClient(dotenv.get("JIRA_USERNAME"),
                                         dotenv.get("JIRA_PASSWORD"), dotenv.get("JIRA_URL"));
                         User user = myJiraClient.getUser(dotenv.get("JIRA_USERNAME"));
@@ -101,10 +101,6 @@ public class LoadDatabase implements CommandLineRunner {
                         // Iterating through all the projects that was grabbed in the line of code above
                         for (BasicProject basicProject : allProjects) {
 
-                                JiraProject project = new JiraProject();// creates a Java Project Object that allows us
-                                                                        // to store the
-                                                                        // Jira Project information using the setters
-
                                 // This block of code is just extracting information from the Project
                                 // using getters from the class and JRJC
                                 // ------------------------------------------------------------
@@ -115,14 +111,27 @@ public class LoadDatabase implements CommandLineRunner {
                                 String productLeadName = singleProject.getLead().getName();
                                 User projectLead = myJiraClient.getUser(productLeadName);
                                 String projectLeadDisplayName = projectLead.getDisplayName();
+                                Long projectId = basicProject.getId();
+                                String projectUniqueId = dotenv.get("JIRA_URL") + projectId;
                                 // ------------------------------------------------------------
+
+                                // this line of code attempts to locate a project with that name
+                                // or else just creates a new jiraproject object
+                                // ----------------------------------------------------------------------------------------
+                                // JiraProject project = projectRepository.findByName(projectName).orElse(new
+                                // JiraProject());
+                                JiraProject project = projectRepository.findById(projectUniqueId)
+                                                .orElse(new JiraProject());
+                                // ----------------------------------------------------------------------------------------
 
                                 // This block of code is setting all the information from the code above
                                 // and storing it in the Java Project Object
                                 // -------------------------------------------------------------------
+                                project.setId(projectUniqueId);
                                 project.setName(projectName);
                                 project.setTeamLead(projectLeadDisplayName);
                                 project.setTeamLeadAvatarUrl(projectLead.getAvatarUri().toString());
+                                projectRepository.save(project);
                                 // -------------------------------------------------------------------
 
                                 // This block of code is to get ready to go through all the issues that the Jira
@@ -183,9 +192,10 @@ public class LoadDatabase implements CommandLineRunner {
                                                 // -----------------------------------------------------
                                                 Instant creationInstant = Instant.ofEpochMilli(
                                                                 singleIssue.getCreationDate().getMillis());
-                                                OffsetDateTime creationDateTime = OffsetDateTime
-                                                                .ofInstant(creationInstant, ZoneId.of(singleIssue
-                                                                                .getCreationDate().getZone().getID()));
+                                                OffsetDateTime creationDateTime = OffsetDateTime.ofInstant(
+                                                                creationInstant,
+                                                                ZoneId.of(singleIssue.getCreationDate().getZone()
+                                                                                .getID()));
                                                 // -------------------------------------------------------
 
                                                 // This block of code is just getting
@@ -195,9 +205,10 @@ public class LoadDatabase implements CommandLineRunner {
                                                 // -------------------------------------------------------
                                                 Instant updatedInstant = Instant
                                                                 .ofEpochMilli(singleIssue.getUpdateDate().getMillis());
-                                                OffsetDateTime updatedDateTime = OffsetDateTime
-                                                                .ofInstant(updatedInstant, ZoneId.of(singleIssue
-                                                                                .getUpdateDate().getZone().getID()));
+                                                OffsetDateTime updatedDateTime = OffsetDateTime.ofInstant(
+                                                                updatedInstant,
+                                                                ZoneId.of(singleIssue.getUpdateDate().getZone()
+                                                                                .getID()));
                                                 // -------------------------------------------------------
 
                                                 // This block of code is just formatting
@@ -209,8 +220,9 @@ public class LoadDatabase implements CommandLineRunner {
                                                 if (singleIssue.getDueDate() != null) {
                                                         Instant dueInstant = Instant.ofEpochMilli(
                                                                         singleIssue.getDueDate().getMillis());
-                                                        dueDateTime = OffsetDateTime.ofInstant(dueInstant, ZoneId.of(
-                                                                        singleIssue.getDueDate().getZone().getID()));
+                                                        dueDateTime = OffsetDateTime.ofInstant(dueInstant,
+                                                                        ZoneId.of(singleIssue.getDueDate().getZone()
+                                                                                        .getID()));
                                                 }
                                                 // ---------------------------------------------------------------------------
 
@@ -269,7 +281,6 @@ public class LoadDatabase implements CommandLineRunner {
                                                 if (singleIssue.getResolution() != null) {
                                                         resolution = singleIssue.getResolution().getName();
                                                 }
-                                                // ------------------------------------------------------
 
                                                 // Block of code just grabbing the priority per issue
                                                 // ---------------------------------------------------
@@ -298,6 +309,7 @@ public class LoadDatabase implements CommandLineRunner {
                                                 issue.setId(Integer.parseInt(issueNumber));
                                                 issue.setName(singleIssue.getKey());
                                                 issue.setProjectName(projectName);
+                                                issue.setProjectUniqueId(projectUniqueId);
                                                 issue.setTeamType(singleIssue.getIssueType().getName());
                                                 issue.setStatus(singleIssue.getStatus().getName());
                                                 issue.setCreatedDateTime(creationDateTime);
@@ -342,9 +354,8 @@ public class LoadDatabase implements CommandLineRunner {
                                 }
                                 project.setNumIssues(issueCount);
                                 projectRepository.save(project);
-                                // --------------------------------------------------------------------
                         }
-                        System.out.println("finished");
+                        System.out.println("finished, please wait 30 minutes for the initial update");
                         myJiraClient.getRestClient().close();
 
                 } catch (RestClientException e) {

@@ -130,13 +130,13 @@ const KpiNavBar = ({ completionHandler }) => {
             <>
               <h1 className="ml-5 text-[#5DD39E] cursor-pointer">
                 {' '}
-                Requests over time{' '}
+                Requests Over Time{' '}
               </h1>
             </>
           ) : (
             <>
               <h1 className="ml-5 hover:text-[#5DD39E] cursor-pointer">
-                Requests over time{' '}
+                Requests Over Time{' '}
               </h1>
             </>
           )}

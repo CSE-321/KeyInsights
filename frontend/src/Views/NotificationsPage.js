@@ -42,23 +42,38 @@ const NotificationsPage = () => {
   const user = useSelector((state) => state.user.user.name);
 
   // Variabble to hold current server
-  const server = 'server';
+  const server =
+    'http://jira.cloud-stm.com:8080/rest/api/2/user?username=ucm-cse-321';
   //const server = useSelector((state) => state.server.name);
 
   // Create JSON object for backend
   const createJSON = () => {
     let obj = {
-      server: server,
-      user: user,
-      project: project,
-      toggle1: [toggled, val],
-      toggle2: [toggled2, val2],
-      toggle3: [toggled3],
-      toggle4: [toggled4, val4],
-      toggled5: [toggled5, val5],
+      userId: user,
+      serverId: server,
+      projectId: project,
+      ticketStatusSetting: {
+        notifyUser: toggled,
+        notificationFrequency: val,
+      },
+      sprintStatusSetting: {
+        notifyUser: toggled2,
+        notificationFrequency: val2,
+      },
+      unfinishedTicketSetting: {
+        notifyUser: toggled3,
+      },
+      projectDigestReportSetting: {
+        notifyUser: toggled4,
+        notificationFrequency: val4,
+      },
+      workloadDigestReportSetting: {
+        notifyUser: toggled5,
+        notificationFrequency: val5,
+      },
     };
 
-    console.log(obj);
+    console.log(JSON.stringify(obj));
     return obj;
   };
 

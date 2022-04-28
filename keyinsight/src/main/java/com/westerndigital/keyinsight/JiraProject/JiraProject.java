@@ -19,9 +19,7 @@ import lombok.Setter;
 public class JiraProject {
 
     @Id
-    @SequenceGenerator(name = "project_sequence", sequenceName = "project_sequence", allocationSize = 1)
-    @GeneratedValue(generator = "project_sequence", strategy = GenerationType.SEQUENCE)
-    private Integer id;
+    private String id;
     private String name;
     private String teamLead;
     private String teamLeadAvatarUrl;
