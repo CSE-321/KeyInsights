@@ -1,15 +1,20 @@
 /* eslint-disable react/prop-types */
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import BodyHeader from '../Components/BodyHeader';
 import ProjectCard from '../Features/Projects/ProjectCard';
 import SwitchButton from '../Features/Projects/SwitchButton';
 import Table from '../Features/Table/Table';
+import { useNavigate } from 'react-router';
 import SelectColumnFilter from '../Features/Table/SelectColumnFilter';
+import { getAllProjects } from '../Features/Projects/Networking';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 
 const ProjectsPage = () => {
   const activeServer = useSelector((state) => state.server.activeServer);
-
+  const navigate = useNavigate();
+  const [projects, setProjects] = useState([]);
   const [isViewGrid, setIsViewGrid] = useState(true);
   console.log(activeServer);
   let arrayOfProjects = [];
@@ -18,34 +23,31 @@ const ProjectsPage = () => {
     setIsViewGrid(gridIsChosen);
   };
 
-  const data = useMemo((arrayOfProjects) => [
-    {
-      id: Math.floor(Math.random() * 9999),
-      name: `BBX${Math.floor(Math.random() * 10)}`,
-      type: 'Software',
-      lead: 'John Doe',
-      image:
-        'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80 ',
+  useEffect(() => {
+    getAllProjects().then((data) => {
+      console.log(data);
+      setProjects(data);
+    });
+  }, []);
 
-      created: '2020-01-01',
-      issues: Math.floor(Math.random() * 1000),
-      server: 'cloud-stm',
-    },
-  ]);
+  const data = useMemo(() => projects, [projects]);
+  const onTableRowClick = (id) => {
+    navigate('/projects/id=' + id, { replace: true });
+  };
 
   const columns = React.useMemo(
     () => [
       {
         Header: 'Lead',
-        accessor: 'lead',
+        accessor: 'teamLead',
         // eslint-disable-next-line react/prop-types
         Cell: (tableProps) => (
           <div className="flex">
             <img
-              src={tableProps.row.original.image}
+              src={tableProps.row.original.teamLeadAvatarUrl}
               className="h-10 w-10 rounded-full object-cover"
             />
-            <div className="ml-4">{tableProps.row.original.lead}</div>
+            <div className="ml-4">{tableProps.row.original.teamLead}</div>
           </div>
         ),
       },
@@ -53,16 +55,14 @@ const ProjectsPage = () => {
         Header: 'Project Name',
         accessor: 'name',
       },
-      {
-        Header: 'Type',
-        accessor: 'type',
-        Filter: SelectColumnFilter,
-        filter: 'includes',
-      },
+
       {
         Header: 'Issues',
-        accessor: 'issues',
-        Filter: SelectColumnFilter,
+        accessor: 'numIssues',
+      },
+      {
+        Header: 'Created At',
+        accessor: 'createdDate',
       },
     ],
     [],
@@ -87,14 +87,20 @@ const ProjectsPage = () => {
         {isViewGrid ? (
           <>
             <div className="flex flex-col sm:grid sm:grid-flow-row gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4">
-              {data.map((project) => (
+              {projects.map((project) => (
                 <ProjectCard key={project.id} project={project} />
               ))}
             </div>
           </>
         ) : (
           <>
-            <Table columns={columns} data={data} />
+            {(
+              <Table
+                columns={columns}
+                data={data}
+                onRowClick={onTableRowClick}
+              />
+            ) || <Skeleton></Skeleton>}
           </>
         )}
       </div>
