@@ -26,9 +26,4 @@ public class KPI1 {
     private Float percentageCriticalIssues;
     private Float percentageCriticalIssuesNotCompleted;
     private Float percentageCancelledIssues;
-
-    public KPI1(){
-        
-    }
-
 }

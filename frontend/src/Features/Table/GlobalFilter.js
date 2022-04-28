@@ -24,14 +24,13 @@ const GlobalFilter = ({
   return (
     <span className="">
       <input
-        className="w-full h-10 rounded-lg drop-shadow-md"
+        className="w-full h-10 rounded-lg border-[1px] border-gray-300 bg-no-repeat bg-start focus:outline-none focus:border-blue-500 focus:shadow-outline-blue pl-10"
         value={value || ''}
         onChange={(e) => {
           setValue(e.target.value);
           onChange(e.target.value);
         }}
-        placeholder={`${count} Projects...`}
-      />
+        placeholder={`Search ${count} Projects...`}></input>
     </span>
   );
 };
