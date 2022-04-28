@@ -340,6 +340,8 @@ public class LoadDatabase implements CommandLineRunner {
                                         allIssuesCount = StreamSupport.stream(allIssues.spliterator(), false).count();
                                         // -----------------------------------------------------------------------------
                                 }
+                                project.setNumIssues(issueCount);
+                                projectRepository.save(project);
                                 // --------------------------------------------------------------------
                         }
                         System.out.println("finished");
