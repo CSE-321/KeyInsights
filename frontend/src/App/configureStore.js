@@ -1,6 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import userReducer from './Slices/userSlice';
 import serverReducer from './Slices/serverSlice';
+import tokensReducer from './Slices/tokensSlice';
 import storage from 'redux-persist/lib/storage';
 import { combineReducers } from 'redux';
 import {
@@ -18,7 +19,11 @@ const persistConfig = {
   storage,
 };
 
-const reducers = combineReducers({ user: userReducer, server: serverReducer });
+const reducers = combineReducers({
+  user: userReducer,
+  server: serverReducer,
+  tokens: tokensReducer,
+});
 const persistedReducer = persistReducer(persistConfig, reducers);
 
 export default configureStore({

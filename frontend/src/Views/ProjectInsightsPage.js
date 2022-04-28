@@ -1,9 +1,16 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useParams } from 'react-router';
 import BodyHeader from '../Components/BodyHeader';
 import KpiNavBar from '../Features/ProjectInsights/KpiNavBar';
-
+import OverivewBody from '../Features/ProjectInsights/OverviewBody';
 const ProjectInsightsPage = () => {
+  const [activeInsights, setActiveInsights] = React.useState(0);
+  const [kpi1_List, setKpi1_List] = React.useState([]);
+
+  const onInsightsTypeChanged = (index) => {
+    setActiveInsights(index);
+  };
+
   let { id } = useParams();
   return (
     <div>
@@ -13,12 +20,15 @@ const ProjectInsightsPage = () => {
         showButton={false}
       />
       <div className="flex flex-col p-5 md:flex-row md:space-x-5">
-        <div className="w-85v md:w-20v">
-          <KpiNavBar className="" />
+        <div className="w-85v md:w-20v flex-grow-0">
+          <KpiNavBar completionHandler={onInsightsTypeChanged} />
         </div>
-        <div>
-          <h1>Project Insights Page</h1>
-          <p>Project ID: {id}</p>
+        <div className="w-[80%] flex-grow-1">
+          {activeInsights === 0 && (
+            <>
+              <OverivewBody />
+            </>
+          )}
         </div>
       </div>
     </div>

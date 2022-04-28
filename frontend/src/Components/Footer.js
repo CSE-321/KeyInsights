@@ -8,7 +8,7 @@ const Footer = () => {
   return (
     <>
       <footer className="bg-black w-screen border-t-1 border-white text-white flex flex-col text-xs relative  h-10v">
-        <div className="flex flex-row justify-start space-x-2">
+        <div className="flex flex-row justify-center space-x-2">
           <a href="#">
             <p> Privacy Policy </p>
           </a>
@@ -19,7 +19,7 @@ const Footer = () => {
             <p> Site Map </p>
           </a>
         </div>
-        <div>
+        <div className="flex flex-row justify-center">
           <p>
             © 2022 Western Digital Corporation or its affiliates, All Rights
             Reserved

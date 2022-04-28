@@ -30,24 +30,25 @@ public class JiraAuthenticatorImplementation implements JiraAuthenticator {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public boolean authenticate(String username, String password, 
-        String serverUrl) {
+    
+
+    public boolean authenticate(String username, String password,
+            String serverUrl) {
 
         serverUrl = "http://jira.cloud-stm.com:8080/";
 
         try {
             URI jiraServerUri = new URI(serverUrl);
 
-            JiraRestClientFactory jiraRestClientFactory = 
-                new AsynchronousJiraRestClientFactory();
+            JiraRestClientFactory jiraRestClientFactory = new AsynchronousJiraRestClientFactory();
 
             JiraRestClient jiraRestClient = jiraRestClientFactory
-                .createWithBasicHttpAuthentication(
-                    jiraServerUri, username, password);
+                    .createWithBasicHttpAuthentication(
+                            jiraServerUri, username, password);
 
             try {
-                User jiraUser =  jiraRestClient.getUserClient()
-                    .getUser(username).get();
+                User jiraUser = jiraRestClient.getUserClient()
+                        .getUser(username).get();
 
                 // save the authenticated user to the database if they are not 
                 // in the database
@@ -75,11 +76,11 @@ public class JiraAuthenticatorImplementation implements JiraAuthenticator {
                     
                 return true;
 
-            } catch(Exception e) {
+            } catch (Exception e) {
                 throw new UsernameNotFoundException(
-                    "Username not found");
+                        "Username not found");
             }
-            
+
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }

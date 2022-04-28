@@ -114,12 +114,13 @@ public class LoadDatabase implements CommandLineRunner {
                 String projectUniqueId = dotenv.get("JIRA_URL") + projectId;
                 // ------------------------------------------------------------
 
-                //this line of code attempts to locate a project with that name 
-                //or else just creates a new jiraproject object
-                //----------------------------------------------------------------------------------------
-                //JiraProject project = projectRepository.findByName(projectName).orElse(new JiraProject());
+                // this line of code attempts to locate a project with that name
+                // or else just creates a new jiraproject object
+                // ----------------------------------------------------------------------------------------
+                // JiraProject project = projectRepository.findByName(projectName).orElse(new
+                // JiraProject());
                 JiraProject project = projectRepository.findById(projectUniqueId).orElse(new JiraProject());
-                //----------------------------------------------------------------------------------------
+                // ----------------------------------------------------------------------------------------
 
                 // This block of code is setting all the information from the code above
                 // and storing it in the Java Project Object
@@ -179,7 +180,8 @@ public class LoadDatabase implements CommandLineRunner {
                         // However, I am not sure if that is always the case
                         // -----------------------------------------------------
                         Instant creationInstant = Instant.ofEpochMilli(singleIssue.getCreationDate().getMillis());
-			            OffsetDateTime creationDateTime = OffsetDateTime.ofInstant(creationInstant, ZoneId.of(singleIssue.getCreationDate().getZone().getID()));
+                        OffsetDateTime creationDateTime = OffsetDateTime.ofInstant(creationInstant,
+                                ZoneId.of(singleIssue.getCreationDate().getZone().getID()));
                         // -------------------------------------------------------
 
                         // This block of code is just getting
@@ -188,7 +190,8 @@ public class LoadDatabase implements CommandLineRunner {
                         // However, I am not sure if that is always the case
                         // -------------------------------------------------------
                         Instant updatedInstant = Instant.ofEpochMilli(singleIssue.getUpdateDate().getMillis());
-			            OffsetDateTime updatedDateTime = OffsetDateTime.ofInstant(updatedInstant, ZoneId.of(singleIssue.getUpdateDate().getZone().getID()));
+                        OffsetDateTime updatedDateTime = OffsetDateTime.ofInstant(updatedInstant,
+                                ZoneId.of(singleIssue.getUpdateDate().getZone().getID()));
                         // -------------------------------------------------------
 
                         // This block of code is just formatting
@@ -199,7 +202,8 @@ public class LoadDatabase implements CommandLineRunner {
                         OffsetDateTime dueDateTime = null;
                         if (singleIssue.getDueDate() != null) {
                             Instant dueInstant = Instant.ofEpochMilli(singleIssue.getDueDate().getMillis());
-                            dueDateTime = OffsetDateTime.ofInstant(dueInstant, ZoneId.of(singleIssue.getDueDate().getZone().getID()));
+                            dueDateTime = OffsetDateTime.ofInstant(dueInstant,
+                                    ZoneId.of(singleIssue.getDueDate().getZone().getID()));
                         }
                         // ---------------------------------------------------------------------------
 
@@ -210,12 +214,13 @@ public class LoadDatabase implements CommandLineRunner {
                         // ---------------------------------------------------------------------------
                         String resolvedDateTimeField = fieldValues.get("Resolved");
                         OffsetDateTime resolutionDateTime = null;
-                        if(singleIssue.getField(resolvedDateTimeField).getValue() != null){
-                            String resolutionDateTimeString = singleIssue.getField(resolvedDateTimeField).getValue().toString();
+                        if (singleIssue.getField(resolvedDateTimeField).getValue() != null) {
+                            String resolutionDateTimeString = singleIssue.getField(resolvedDateTimeField).getValue()
+                                    .toString();
                             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-                            resolutionDateTime = OffsetDateTime.parse(resolutionDateTimeString,formatter);
+                            resolutionDateTime = OffsetDateTime.parse(resolutionDateTimeString, formatter);
                         }
-                        //----------------------------------------------------------------------------
+                        // ----------------------------------------------------------------------------
 
                         // This block of code is grabbing the story points per issue if they have them
                         // This is one location where the hashmap comes back from earlier
@@ -251,7 +256,6 @@ public class LoadDatabase implements CommandLineRunner {
                         if (singleIssue.getResolution() != null) {
                             resolution = singleIssue.getResolution().getName();
                         }
-                        // ------------------------------------------------------
 
                         // Block of code just grabbing the priority per issue
                         // ---------------------------------------------------
@@ -320,24 +324,15 @@ public class LoadDatabase implements CommandLineRunner {
                     allIssuesCount = StreamSupport.stream(allIssues.spliterator(), false).count();
                     // -----------------------------------------------------------------------------
                 }
-                // Outside of the while loop means we have iterated through all the issues
-                // within that project
-                // Just have to set the number of issues to issueCount and save the Java Project
-                // Object
-                // with the saved values to the repository
-                // --------------------------------
                 project.setNumIssues(issueCount);
                 projectRepository.save(project);
-                // ---------------------------------
             }
-
-            System.out.println("finished");
+            System.out.println("finished, please wait 30 minutes for the initial update");
             myJiraClient.getRestClient().close();
 
         } catch (RestClientException e) {
             System.out.println(e.getLocalizedMessage());
         }
-        // --------------------------------------------------------------------------------
 
     }
 }

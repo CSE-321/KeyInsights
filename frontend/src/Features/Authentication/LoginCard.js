@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
 import { signIn } from './Networking';
+import { setAccessToken, setRefreshToken } from '../../App/Slices/tokensSlice';
 import { signinUser } from '../../App/Slices/userSlice';
 import { setActiveServer } from '../../App/Slices/serverSlice';
 
@@ -50,17 +51,20 @@ const LoginCard = () => {
     }
 
     signIn(usernameText, passwordText, serverURL)
-      .then((user) => {
-        setSignInRejected(false);
-        setInvalidUsername(false);
-        dispatch(signinUser(user));
-        dispatch(setActiveServer(server));
+      .then((response) => response.json())
+      .then((result) => {
+        if (result.error) {
+          setSignInRejected(true);
+          setSignInError(result.error);
+          return;
+        }
+        dispatch(signinUser());
+        dispatch(setAccessToken(result.access_token));
+        dispatch(setRefreshToken(result.refresh_token));
         navigate('/projects', { replace: true });
+        console.log(result);
       })
-      .catch((error) => {
-        setSignInRejected(true);
-        setSignInError(error.message);
-      });
+      .catch((error) => console.log('error', error));
   };
 
   return (
@@ -108,7 +112,7 @@ const LoginCard = () => {
           </form>
           <button
             onClick={onSubmit}
-            className="bg-black h-10 w-1/2 text-white rounded-xl self-end hover:text-primary-purple sm:w-2/5 sm:center md:1/4">
+            className="bg-black h-10 w-1/2 text-white rounded-xl self-end hover:text-[#5DD39E] sm:w-2/5 sm:center md:1/4">
             Login
           </button>
         </div>
