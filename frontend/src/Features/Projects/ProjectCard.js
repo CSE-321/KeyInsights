@@ -58,13 +58,13 @@ const ProjectCard = ({ project }) => {
           <p className="col-span-2"> Created at</p>
           <p className="col-span-2">Issues</p>
           <img
-            src={activeProject.image}
+            src={activeProject.teamLeadAvatarUrl}
             className="w-10 h-10 rounded-full col-span-1 object-cover"></img>
           <p className="col-span-3 self-center truncate ml-2">
-            {activeProject.lead}
+            {activeProject.teamLead}
           </p>
-          <p className="col-span-2 truncate">{activeProject.created}</p>
-          <p className="col-span-2 truncate">{activeProject.issues}</p>
+          <p className="col-span-2 truncate">{activeProject.createdDate}</p>
+          <p className="col-span-2 truncate">{activeProject.numIssues}</p>
         </div>
       </div>
     </>
