@@ -7,8 +7,8 @@ import java.util.Collection;
 import com.atlassian.jira.rest.client.api.JiraRestClient;
 import com.atlassian.jira.rest.client.api.JiraRestClientFactory;
 import com.atlassian.jira.rest.client.api.domain.User;
-
-import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClientFactory;
+import com.atlassian.jira.rest.client.internal.async
+    .AsynchronousJiraRestClientFactory;
 import com.westerndigital.keyinsight.JiraRole.JiraRole;
 import com.westerndigital.keyinsight.JiraUser.JiraUser;
 import com.westerndigital.keyinsight.JiraUser.JiraUserRepository;
@@ -30,6 +30,8 @@ public class JiraAuthenticatorImplementation implements JiraAuthenticator {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    
+
     public boolean authenticate(String username, String password,
             String serverUrl) {
 
@@ -48,7 +50,7 @@ public class JiraAuthenticatorImplementation implements JiraAuthenticator {
                 User jiraUser = jiraRestClient.getUserClient()
                         .getUser(username).get();
 
-                // save the authenticated user to the database if they are not
+                // save the authenticated user to the database if they are not 
                 // in the database
                 if (jiraUserRepository.findByUsername(username) == null) {
                     // save the authenticated user to the database
@@ -56,13 +58,13 @@ public class JiraAuthenticatorImplementation implements JiraAuthenticator {
                     String jiraPassword = passwordEncoder.encode(password);
                     String jiraServerUrl = jiraUser.getSelf().toString();
 
-                    JiraUser user = new JiraUser(jiraUsername,
-                            jiraPassword, jiraServerUrl);
+                    JiraUser user = new JiraUser(jiraUsername, 
+                        jiraPassword, jiraServerUrl);
 
                     jiraUser.getGroups().getItems().forEach(group -> {
                         if (group.equals("jira-administrators")) {
                             user.addRole(JiraRole.ROLE_ADMIN);
-                        }
+                        } 
 
                         if (group.equals("jira-users")) {
                             user.addRole(JiraRole.ROLE_USER);
@@ -71,7 +73,7 @@ public class JiraAuthenticatorImplementation implements JiraAuthenticator {
 
                     jiraUserRepository.save(user);
                 }
-
+                    
                 return true;
 
             } catch (Exception e) {

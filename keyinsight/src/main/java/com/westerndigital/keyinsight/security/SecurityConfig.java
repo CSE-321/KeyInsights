@@ -12,11 +12,11 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication
+    .UsernamePasswordAuthenticationFilter;
 
 import lombok.RequiredArgsConstructor;
 
@@ -50,7 +50,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             throws Exception {
 
         auth.authenticationProvider(customAuthenticationProvider);
-
     }
 
     @Override
@@ -79,7 +78,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         // add the custom authorization filter to validate the JWT tokens
         // before the custom authentication filter
         http
-
             .addFilterBefore(new CustomAuthorizationFilter(),
                 CustomAuthenticationFilter.class);
 
@@ -90,6 +88,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             // temporarily disable authentication for all back-end endpoints
             .permitAll();
             // .authenticated();
-
     }
 }

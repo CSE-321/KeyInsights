@@ -40,6 +40,4 @@ frontend/node_modules
 ehthumbs.db
 Thumbs.db
 *.properties
-
-# application properties
-./keyinsight/src/main/resources/application.properties
+keyinsight/src/main/resources/application.properties
