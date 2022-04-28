@@ -80,8 +80,8 @@ public class LoadDatabase implements CommandLineRunner {
         // The authenication doesn't happen until the client attempts grab some kind of
         // information
         // --------------------------------------------------------------------
+        Dotenv dotenv = Dotenv.load();
         try {
-            Dotenv dotenv = Dotenv.load();
             myJiraClient = new JiraRestJavaClient(dotenv.get("JIRA_USERNAME"),
                     dotenv.get("JIRA_PASSWORD"), dotenv.get("JIRA_URL"));
             User user = myJiraClient.getUser(dotenv.get("JIRA_USERNAME"));
@@ -110,20 +110,25 @@ public class LoadDatabase implements CommandLineRunner {
                 String productLeadName = singleProject.getLead().getName();
                 User projectLead = myJiraClient.getUser(productLeadName);
                 String projectLeadDisplayName = projectLead.getDisplayName();
+                Long projectId = basicProject.getId();
+                String projectUniqueId = dotenv.get("JIRA_URL") + projectId;
                 // ------------------------------------------------------------
 
                 //this line of code attempts to locate a project with that name 
                 //or else just creates a new jiraproject object
                 //----------------------------------------------------------------------------------------
-                JiraProject project = projectRepository.findByName(projectName).orElse(new JiraProject());
+                //JiraProject project = projectRepository.findByName(projectName).orElse(new JiraProject());
+                JiraProject project = projectRepository.findById(projectUniqueId).orElse(new JiraProject());
                 //----------------------------------------------------------------------------------------
 
                 // This block of code is setting all the information from the code above
                 // and storing it in the Java Project Object
                 // -------------------------------------------------------------------
+                project.setId(projectUniqueId);
                 project.setName(projectName);
                 project.setTeamLead(projectLeadDisplayName);
                 project.setTeamLeadAvatarUrl(projectLead.getAvatarUri().toString());
+                projectRepository.save(project);
                 // -------------------------------------------------------------------
 
                 // This block of code is to get ready to go through all the issues that the Jira
@@ -272,6 +277,7 @@ public class LoadDatabase implements CommandLineRunner {
                         issue.setId(Integer.parseInt(issueNumber));
                         issue.setName(singleIssue.getKey());
                         issue.setProjectName(projectName);
+                        issue.setProjectUniqueId(projectUniqueId);
                         issue.setTeamType(singleIssue.getIssueType().getName());
                         issue.setStatus(singleIssue.getStatus().getName());
                         issue.setCreatedDateTime(creationDateTime);

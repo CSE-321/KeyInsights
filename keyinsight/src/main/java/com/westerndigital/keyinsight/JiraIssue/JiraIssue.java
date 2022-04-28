@@ -20,6 +20,7 @@ public class JiraIssue {
     private Integer id;
     private String name;
     private String projectName;
+    private String projectUniqueId;
     private String teamType;
     private String status;
     private OffsetDateTime createdDateTime;
