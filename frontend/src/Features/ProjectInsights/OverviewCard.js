@@ -1,35 +1,26 @@
 import React, { useMemo } from 'react';
 import { ResponsiveLine } from '@nivo/line';
 import { ResponsivePie } from '@nivo/pie';
-
-const OverviewCard = () => {
-  const [title, setTitle] = React.useState('What is Lorem Ipsum?');
-  const [subtext, setSubtext] = React.useState(
-    'View keyinsights for projectssssssssssssssssssssssssss',
-  );
-  const [priority, setPriority] = React.useState(false);
-
-  const data = useMemo(() => [
-    {
-      id: 'Total',
-      label: 'java',
-      value: 100,
-      color: 'hsl(90, 70%, 50%)',
-    },
-    {
-      id: 'Closed',
-      label: 'Closed Issues',
-      value: 67,
-      color: 'hsl(56, 70%, 50%)',
-    },
-  ]);
+import { ResponsiveBar } from '@nivo/bar';
+import PropTypes from 'prop-types';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
+const OverviewCard = ({
+  cardTitle,
+  cardText,
+  graphData,
+  graphType,
+  graphKeys,
+  forIndexBy,
+}) => {
+  const data = useMemo(() => graphData, [graphData]);
 
   return (
     <>
       <div className="bg-white shadow-lg drop-shadow-lg rounded-lg">
         <div className="grid grid-flow-row grid-cols-6 p-5">
           <div className="col-span-5">
-            <h1 className="text-xl font-bold"> Issue Completion </h1>
+            <h1 className="text-xl font-bold">{cardTitle}</h1>
           </div>
           <div className="col-span-1 text-gray-400 justify-self-end flex flex-row items-center">
             <span> See More</span>
@@ -52,25 +43,53 @@ const OverviewCard = () => {
               />
             </svg>
           </div>
-          <div className="col-span-3">
-            <p>
-              The current ticket completion status. An increase of{' '}
-              <span className="text-emerald-500">+10%</span> since last week.
-            </p>
-          </div>
-          <div className="col-span-3 w-full h-32 justify-self-center self-center">
-            <ResponsivePie
-              data={data}
-              margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
-              innerRadius={0.5}
-              arcLinkLabelsStraightLength={10}
-              arcLinkLabelsDiagonalLength={0}
-            />
+          <div className="col-span-2">{cardText}</div>
+          <div className="col-span-4 w-full h-32 justify-self-center self-center">
+            {graphType === 'Pie' && graphData.length != 0 && (
+              <>
+                {(
+                  <ResponsivePie
+                    data={data}
+                    colors={['#F3A582', '#5DD39E']}
+                    margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
+                    innerRadius={0.5}
+                    arcLinkLabelsStraightLength={10}
+                    arcLinkLabelsDiagonalLength={0}
+                  />
+                ) || <Skeleton circle={true} />}
+              </>
+            )}
+            {graphType === 'Bar' && (
+              <>
+                <ResponsiveBar
+                  data={data}
+                  keys={graphKeys}
+                  indexBy={forIndexBy}
+                  margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
+                  padding={0.3}
+                  colors={['#F3A582', '#5DD39E']}
+                  borderRadius={5}
+                  enableGridX={false}
+                  enableGridY={false}
+                  layout="vertical"
+                  axisLeft={false}
+                />
+              </>
+            )}
           </div>
         </div>
       </div>
     </>
   );
+};
+
+OverviewCard.propTypes = {
+  cardTitle: PropTypes.string.isRequired,
+  cardText: PropTypes.object.isRequired,
+  graphType: PropTypes.string.isRequired,
+  graphData: PropTypes.array,
+  graphKeys: PropTypes.array,
+  forIndexBy: PropTypes.string,
 };
 
 export default OverviewCard;
