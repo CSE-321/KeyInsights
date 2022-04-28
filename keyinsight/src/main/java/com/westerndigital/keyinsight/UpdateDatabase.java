@@ -70,8 +70,8 @@ public class UpdateDatabase {
         // The authenication doesn't happen until the client attempts grab some kind of
         // information
         // --------------------------------------------------------------------
+        Dotenv dotenv = Dotenv.load();
         try {
-            Dotenv dotenv = Dotenv.load();
             myJiraClient = new JiraRestJavaClient(dotenv.get("JIRA_USERNAME"),
                     dotenv.get("JIRA_PASSWORD"), dotenv.get("JIRA_URL"));
             User user = myJiraClient.getUser(dotenv.get("JIRA_USERNAME"));
@@ -97,12 +97,16 @@ public class UpdateDatabase {
                 Project singleProject = myJiraClient.getProject(projectKey);
                 String projectName = singleProject.getName();
                 projectName = projectName.trim();
+                Long projectId = basicProject.getId();
+                String projectUniqueId = dotenv.get("JIRA_URL") + projectId;
                 //-------------------------------------------------------------
 
                 //this line of code attempts to locate a project with that name 
                 //or else just creates a new jiraproject object
                 //----------------------------------------------------------------------------------------
-                JiraProject project = projectRepository.findByName(projectName).orElse(new JiraProject());
+                //JiraProject project = projectRepository.findByName(projectName).orElse(new JiraProject());
+                JiraProject project = projectRepository.findById(projectUniqueId).orElse(new JiraProject());
+
                 //----------------------------------------------------------------------------------------
 
                 // This block of code is to get ready to go through all the issues that the Jira
@@ -261,7 +265,8 @@ public class UpdateDatabase {
                         // Object
                         // --------------------------------------------------------
                         issue.setName(singleIssue.getKey());
-                        issue.setProjectName(basicProject.getName());
+                        issue.setProjectName(projectName);
+                        issue.setProjectUniqueId(projectUniqueId);
                         issue.setTeamType(singleIssue.getIssueType().getName());
                         issue.setStatus(singleIssue.getStatus().getName());
                         issue.setCreatedDateTime(creationDateTime);
