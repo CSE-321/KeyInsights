@@ -7,6 +7,7 @@ import ProjectsPage from './Views/ProjectsPage';
 import ProjectInsightsPage from './Views/ProjectInsightsPage';
 import Footer from './Components/Footer';
 import NotificationsPage from './Views/NotificationsPage';
+import { requireAuth } from './Features/Authentication/Networking';
 
 function App() {
   return (
@@ -16,16 +17,23 @@ function App() {
           <NavBar isUserSignedIn={false} />
           <Routes>
             <Route exact path="/" element={<HomePage />} />
-            <Route exact path="/projects" element={<ProjectsPage />} />
+            <Route
+              exact
+              path="/projects"
+              element={<ProjectsPage />}
+              onEnter={requireAuth}
+            />
             <Route
               exact
               path="/projects/:id"
               element={<ProjectInsightsPage />}
+              onEnter={requireAuth}
             />
             <Route
               exact
               path="/notifications"
               element={<NotificationsPage />}
+              onEnter={requireAuth}
             />
           </Routes>
         </div>
