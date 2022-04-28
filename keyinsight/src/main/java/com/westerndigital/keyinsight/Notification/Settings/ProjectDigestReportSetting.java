@@ -25,6 +25,8 @@ public class ProjectDigestReportSetting {
 
     private boolean notifyUser = false;
     private int notifyFrequency = 0;
+
+    public ProjectDigestReportSetting() {}
     
     public ProjectDigestReportSetting(boolean notifyUser,
         int notifyFrequency) {

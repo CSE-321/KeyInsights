@@ -26,6 +26,7 @@ public class TicketStatusSetting {
     private boolean notifyUser = false;
     private int notifyFrequency = 0;
 
+    public TicketStatusSetting() {}
 
     public TicketStatusSetting(boolean notifyUser, int notifyFrequency) {
         this.notifyUser = notifyUser;

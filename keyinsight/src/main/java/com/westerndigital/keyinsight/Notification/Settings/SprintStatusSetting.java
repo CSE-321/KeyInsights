@@ -25,6 +25,8 @@ public class SprintStatusSetting {
 
     private boolean notifyUser = false;
     private int notifyFrequency = 0;
+
+    public SprintStatusSetting() {};
     
     public SprintStatusSetting(boolean notifyUser, int notifyFrequency) {
         this.notifyUser = notifyUser;

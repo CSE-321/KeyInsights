@@ -47,6 +47,8 @@ public class JiraUser implements UserDetails {
         this.username = username;
         this.password = password;
         this.serverUrl = serverUrl;
+
+        notification = new Notification(this, serverUrl, null);
     }
 
     public void addRole(String role) {

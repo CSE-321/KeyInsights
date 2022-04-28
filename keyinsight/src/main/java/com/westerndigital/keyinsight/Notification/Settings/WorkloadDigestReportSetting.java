@@ -25,6 +25,8 @@ public class WorkloadDigestReportSetting {
 
     private boolean notifyUser = false;
     private int notifyFrequency = 0;
+
+    public WorkloadDigestReportSetting() {}
     
     public WorkloadDigestReportSetting(boolean notifyUser, 
         int notifyFrequency) {

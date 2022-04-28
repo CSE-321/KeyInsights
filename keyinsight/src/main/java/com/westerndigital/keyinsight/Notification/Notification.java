@@ -11,11 +11,14 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.westerndigital.keyinsight.JiraUser.JiraUser;
-import com.westerndigital.keyinsight.Notification.Settings.ProjectDigestReportSetting;
+import com.westerndigital.keyinsight.Notification.Settings
+    .ProjectDigestReportSetting;
 import com.westerndigital.keyinsight.Notification.Settings.SprintStatusSetting;
 import com.westerndigital.keyinsight.Notification.Settings.TicketStatusSetting;
-import com.westerndigital.keyinsight.Notification.Settings.UnfinishedTicketSetting;
-import com.westerndigital.keyinsight.Notification.Settings.WorkloadDigestReportSetting;
+import com.westerndigital.keyinsight.Notification.Settings
+    .UnfinishedTicketSetting;
+import com.westerndigital.keyinsight.Notification.Settings
+    .WorkloadDigestReportSetting;
 
 import lombok.Data;
 
@@ -37,7 +40,7 @@ public class Notification {
     @OneToOne
     private JiraUser jiraUser;
 
-    private String serverURL;
+    private String serverUrl;
     private String projectName;
 
     @OneToOne(cascade = CascadeType.ALL)
@@ -59,4 +62,18 @@ public class Notification {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn
     private WorkloadDigestReportSetting workloadDigestReportSetting;
+
+    public Notification(JiraUser jiraUser, String serverUrl, 
+        String projectName) {
+
+        this.jiraUser = jiraUser;
+        this.serverUrl = serverUrl;
+        this.projectName = projectName;
+
+        ticketStatusSetting = new TicketStatusSetting();
+        sprintStatusSetting = new SprintStatusSetting();
+        unfinishedTicketSetting = new UnfinishedTicketSetting();
+        projectDigestReportSetting = new ProjectDigestReportSetting();
+        workloadDigestReportSetting = new WorkloadDigestReportSetting();
+    }
 }

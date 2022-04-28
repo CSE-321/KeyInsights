@@ -25,6 +25,8 @@ public class UnfinishedTicketSetting {
 
     private boolean notifyUser = false;
 
+    public UnfinishedTicketSetting() {}
+
     public UnfinishedTicketSetting(boolean notifyUser) {
         this.notifyUser = notifyUser;
     }
