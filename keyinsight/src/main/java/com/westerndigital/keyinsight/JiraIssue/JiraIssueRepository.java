@@ -99,21 +99,10 @@ AND status in ('Resolved')
 AND resolution_date_time > current_date - interval '7 days'
     */
 
-    /*Count for jira issues resolved
-SELECT COUNT(id)
+/* grab issues that are not finished past the due date
+SELECT *
 FROM issues
-WHERE project_name = 'B8X4'
-AND status in ('Resolved')
-    */
-
-    /*Story point sfor jira issue solved
-SELECT SUM(story_point)
-FROM issues
-WHERE project_name = 'B8X4'
-AND status in ('Resolved')
-    */
-
-
-
-
+WHERE due_date_time <= now() AND resolution is null
+ORDER BY id asc
+*/
 }
