@@ -14,7 +14,7 @@ import {
 } from './KPIService';
 import Skeleton from 'react-loading-skeleton';
 
-const OverivewBody = () => {
+const OverviewBody = () => {
   const [kpi1_List, setKpi1_List] = React.useState([]);
   const [topTeamsList, setTopTeamsList] = React.useState([]);
   const [needsAttentionList, setNeedsAttentionList] = React.useState([]);
@@ -175,4 +175,4 @@ const OverivewBody = () => {
   );
 };
 
-export default OverivewBody;
+export default OverviewBody;

@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useParams } from 'react-router';
 import BodyHeader from '../Components/BodyHeader';
 import KpiNavBar from '../Features/ProjectInsights/KpiNavBar';
-import OverivewBody from '../Features/ProjectInsights/OverviewBody';
+import OverviewBody from '../Features/ProjectInsights/OverviewBody';
 const ProjectInsightsPage = () => {
   const [activeInsights, setActiveInsights] = React.useState(0);
   const [kpi1_List, setKpi1_List] = React.useState([]);
@@ -26,7 +26,7 @@ const ProjectInsightsPage = () => {
         <div className="w-[80%] flex-grow-1">
           {activeInsights === 0 && (
             <>
-              <OverivewBody />
+              <OverviewBody />
             </>
           )}
         </div>
