@@ -76,6 +76,9 @@ public interface JiraIssueRepository extends JpaRepository<JiraIssue, Integer> {
 
     @Query(value = "SELECT EXTRACT(DAY FROM j.resolutionDateTime - j.createdDateTime) as intervalDays FROM JiraIssue j WHERE j.projectName = :projectName AND j.resolutionDateTime is not null ORDER BY intervalDays ASC")
     ArrayList<Integer> daysNeededToCompleteTotalJiraIssues(@Param("projectName") String projectName);
+
+    @Query(value = "SELECT COUNT(j.id) FROM JiraIssue j WHERE j.projectName = :projectName AND dueDateTime <= CURRENT_TIMESTAMP and j.resolution is null")
+    Integer unfinishedJiraIssuesByToday(@Param("projectName") String projectName);
     /* This calculates the median between jira starting and jira ending
 WITH cse AS (
 SELECT EXTRACT(DAY FROM resolution_date_time - created_date_time) as intervalDays
