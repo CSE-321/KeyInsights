@@ -8,4 +8,9 @@ import lombok.ToString;
 @Setter
 @ToString
 public class KPI2 {
+    private String teamType;
+    private Double averageDayToCompleteIssue;
+    private Double medianDayToCompleteIssues;
+    private Integer minimumDayToCompleteIssues;
+    private Integer maximumDayToCompleteIssues;
 }

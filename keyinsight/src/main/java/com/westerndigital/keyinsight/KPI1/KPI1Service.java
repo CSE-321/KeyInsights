@@ -22,8 +22,8 @@ public class KPI1Service {
         public List<KPI1> getKPI1PerTeam(String projectName) {
                 ArrayList<KPI1> listofKPI1 = new ArrayList<KPI1>();
                 //String projectName = "B8X4";
-                List<String> teamtypes = issueRepository.getAllTeamType(projectName);
-                System.out.print(teamtypes);
+                List<String> teamTypes = issueRepository.getAllTeamType(projectName);
+                System.out.print(teamTypes);
 
                 String closed = "Closed";
                 String wip = "In Progress";
@@ -156,7 +156,7 @@ public class KPI1Service {
                 
                 listofKPI1.add(OverviewKPI1);
 
-                for (String teamType : teamtypes) {
+                for (String teamType : teamTypes) {
                         OverviewKPI1 = new KPI1();
 
                         // --------------------------------------
@@ -287,16 +287,16 @@ public class KPI1Service {
                 return listofKPI1;
         }
 
-        public void tmp() {
-                ArrayList<Integer> listOfMedianValues = issueRepository.medianOfOpenResolvedJiraIssues("B8X4",
-                                "Resolved");
-                double median = 0;
-                if (listOfMedianValues.size() % 2 != 0) {
-                        median = (double) listOfMedianValues.get(listOfMedianValues.size() / 2);
-                } else {
-                        median = (double) (listOfMedianValues.get((listOfMedianValues.size() - 1) / 2)
-                                        + listOfMedianValues.get(listOfMedianValues.size() / 2)) / 2.0;
-                }
-                System.out.println(median);
-        }
+        // public void tmp() {
+        //         ArrayList<Integer> listOfMedianValues = issueRepository.medianOfOpenResolvedJiraIssues("B8X4",
+        //                         "Resolved");
+        //         double median = 0;
+        //         if (listOfMedianValues.size() % 2 != 0) {
+        //                 median = (double) listOfMedianValues.get(listOfMedianValues.size() / 2);
+        //         } else {
+        //                 median = (double) (listOfMedianValues.get((listOfMedianValues.size() - 1) / 2)
+        //                                 + listOfMedianValues.get(listOfMedianValues.size() / 2)) / 2.0;
+        //         }
+        //         System.out.println(median);
+        // }
 }
