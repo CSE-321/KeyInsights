@@ -54,12 +54,12 @@
 			<version>5.3.19</version>
 			<scope>compile</scope>
 		</dependency>
-		<!--dependency>
+		<dependency>
 			<groupId>com.sun.mail</groupId>
 			<artifactId>jakarta.mail</artifactId>
 			<version>1.6.7</version>
 			<scope>compile</scope>
-		</dependency!--> <!--added three dependencies supposedly used to make email work-->
+		</dependency> <!--added three dependencies supposedly used to make email work-->
 		<dependency>
     		<groupId>org.springframework.boot</groupId>
     		<artifactId>spring-boot-starter-mail</artifactId>

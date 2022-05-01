@@ -23,6 +23,7 @@ public class SpringEmail {
 
         mailSender.setUsername(dotenv.get("GMAIL_USER"));
         mailSender.setPassword(dotenv.get("GMAIL_PASSWORD"));
+        //as of now, takes an env file and sets the username and password to login to an email in order to send the email
 
         Properties propts = mailSender.getJavaMailProperties();
         propts.put("mail.transport.protocol", "smtp");
