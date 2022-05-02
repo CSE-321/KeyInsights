@@ -61,6 +61,7 @@ public class LoadDatabase implements CommandLineRunner {
 
         @Override
         public void run(String... args) throws Exception {
+                Dotenv dotenv = Dotenv.load();
                 // This block of code underneath just deletes every entry in the database during
                 // startup
                 // ------------------------------------------
@@ -79,21 +80,12 @@ public class LoadDatabase implements CommandLineRunner {
                 // we need
                 // The authenication doesn't happen until the client attempts grab some kind of
                 // information
-                // --------------------------------------------------------------------
-                Dotenv dotenv = Dotenv.load();
-                try {
-                        myJiraClient = new JiraRestJavaClient(dotenv.get("JIRA_USERNAME"),
-                                        dotenv.get("JIRA_PASSWORD"), dotenv.get("JIRA_URL"));
-                        User user = myJiraClient.getUser(dotenv.get("JIRA_USERNAME"));
-                } catch (RestClientException e) {
-                        System.out.println(e.getLocalizedMessage());
-                }
-                // --------------------------------------------------------------------
-
                 // This whole try catch block is in case an exeception occurs
                 // when extracting the information into the PostgreSQL database
                 // -------------------------------------------------------------------------------
                 try {
+                        myJiraClient = new JiraRestJavaClient(dotenv.get("JIRA_USERNAME"),
+                                        dotenv.get("JIRA_PASSWORD"), dotenv.get("JIRA_URL"));
 
                         allProjects = myJiraClient.getAllProject(); // grabs all the projects that are within the Jira
                                                                     // Server
