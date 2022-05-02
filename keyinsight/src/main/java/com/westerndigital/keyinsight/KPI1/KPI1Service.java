@@ -45,7 +45,7 @@ public class KPI1Service {
 
                 String cancelled = "Project cancelled";
 
-                KPI1 OverviewKPI1 = new KPI1();
+                KPI1 OverviewKPI1 = kpi1Repository.findByTeamType("All Jira Issues").orElse(new KPI1());
 
                 // --------------------------------------
 
@@ -161,7 +161,7 @@ public class KPI1Service {
                 listofKPI1.add(OverviewKPI1);
 
                 for (String teamType : teamTypes) {
-                        OverviewKPI1 = new KPI1();
+                        OverviewKPI1 = kpi1Repository.findByTeamType(teamType).orElse(new KPI1());
 
                         // --------------------------------------
 

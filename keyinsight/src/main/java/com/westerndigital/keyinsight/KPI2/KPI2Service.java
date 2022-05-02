@@ -27,7 +27,7 @@ public class KPI2Service {
         List<String> teamTypes = issueRepository.getAllTeamType(projectName);
         System.out.print(teamTypes);
 
-        KPI2 daysToCompleteIssueKPI2 = new KPI2();
+        KPI2 daysToCompleteIssueKPI2 = kpi2Repository.findByTeamType("All Jira Issues").orElse(new KPI2());
         ArrayList<Integer> daysNeedToCompleteTotal = issueRepository.daysNeededToCompleteTotalJiraIssues(projectName);
 
         double median = -1.0;
@@ -51,7 +51,7 @@ public class KPI2Service {
         listofKPI2.add(daysToCompleteIssueKPI2);
 
         for(String teamType : teamTypes){
-            daysToCompleteIssueKPI2 = new KPI2();
+            daysToCompleteIssueKPI2 = kpi2Repository.findByTeamType(teamType).orElse(new KPI2());
             ArrayList<Integer> daysNeedToCompleteTeamType = issueRepository.daysNeededToCompleteTeamTypeJiraIssues(projectName, teamType);
             median = -1.0;
             size = daysNeedToCompleteTeamType.size();
