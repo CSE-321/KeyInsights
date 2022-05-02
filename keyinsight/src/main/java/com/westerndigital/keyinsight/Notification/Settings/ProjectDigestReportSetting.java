@@ -9,7 +9,9 @@ import javax.persistence.Table;
 
 import com.westerndigital.keyinsight.Notification.Notification;
 
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Getter;
 
 @Data
 @Entity
@@ -20,6 +22,7 @@ public class ProjectDigestReportSetting {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Getter(value = AccessLevel.NONE)
     @OneToOne
     private Notification notification;
 

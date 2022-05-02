@@ -20,7 +20,9 @@ import com.westerndigital.keyinsight.Notification.Settings
 import com.westerndigital.keyinsight.Notification.Settings
     .WorkloadDigestReportSetting;
 
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Getter;
 
 @Entity
 @Data
@@ -37,9 +39,13 @@ public class Notification {
         strategy = GenerationType.SEQUENCE)
     private Long id;
 
+    // remove the auto generated getter otherwise there will be a loop in the
+    // query result
+    @Getter(value = AccessLevel.NONE)
     @OneToOne
     private JiraUser jiraUser;
 
+    private String jiraUsername;
     private String serverUrl;
     private String projectName;
 
@@ -63,6 +69,8 @@ public class Notification {
     @JoinColumn
     private WorkloadDigestReportSetting workloadDigestReportSetting;
 
+    public Notification() {}
+
     public Notification(JiraUser jiraUser, String serverUrl, 
         String projectName) {
 
@@ -70,10 +78,28 @@ public class Notification {
         this.serverUrl = serverUrl;
         this.projectName = projectName;
 
+        // initialize the default values for each of the settings
         ticketStatusSetting = new TicketStatusSetting();
         sprintStatusSetting = new SprintStatusSetting();
         unfinishedTicketSetting = new UnfinishedTicketSetting();
         projectDigestReportSetting = new ProjectDigestReportSetting();
         workloadDigestReportSetting = new WorkloadDigestReportSetting();
+    }
+
+    public Notification(String jiraUsername, String serverUrl, String projectName,
+        TicketStatusSetting ticketStatusSetting,
+        SprintStatusSetting sprintStatusSetting,
+        UnfinishedTicketSetting unfinishedTicketSetting,
+        ProjectDigestReportSetting projectDigestReportSetting,
+        WorkloadDigestReportSetting workloadDigestReportSetting) {
+
+        this.jiraUsername = jiraUsername;
+        this.serverUrl = serverUrl;
+        this.projectName = projectName;
+        this.ticketStatusSetting = ticketStatusSetting;
+        this.sprintStatusSetting = sprintStatusSetting;
+        this.unfinishedTicketSetting = unfinishedTicketSetting;
+        this.projectDigestReportSetting = projectDigestReportSetting;
+        this.workloadDigestReportSetting = workloadDigestReportSetting;
     }
 }
