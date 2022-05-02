@@ -13,8 +13,12 @@ public class KPI2Service {
     @Autowired
     private final JiraIssueRepository issueRepository;
 
-    public KPI2Service(JiraIssueRepository issueRepository) {
+    @Autowired
+    private final KPI2Repository kpi2Repository;
+
+    public KPI2Service(JiraIssueRepository issueRepository, KPI2Repository kpi2Repository) {
         this.issueRepository = issueRepository;
+        this.kpi2Repository = kpi2Repository;
     }
 
     public List<KPI2> getKPI2PerTeam(String projectName) {
@@ -43,6 +47,7 @@ public class KPI2Service {
         daysToCompleteIssueKPI2.setMinimumDayToCompleteIssues(daysNeedToCompleteTotal.stream().mapToInt(val -> val).min().orElse(0));
         daysToCompleteIssueKPI2.setMedianDayToCompleteIssues(median);
         
+        kpi2Repository.save(daysToCompleteIssueKPI2);
         listofKPI2.add(daysToCompleteIssueKPI2);
 
         for(String teamType : teamTypes){
@@ -65,6 +70,7 @@ public class KPI2Service {
             daysToCompleteIssueKPI2.setMinimumDayToCompleteIssues(daysNeedToCompleteTeamType.stream().mapToInt(val -> val).min().orElse(0));
             daysToCompleteIssueKPI2.setMedianDayToCompleteIssues(median);
             
+            kpi2Repository.save(daysToCompleteIssueKPI2);
             listofKPI2.add(daysToCompleteIssueKPI2);
 
         }

@@ -14,9 +14,12 @@ public class KPI1Service {
         @Autowired
         private final JiraIssueRepository issueRepository;
 
-        public KPI1Service(JiraIssueRepository issueRepository) {
-                this.issueRepository = issueRepository;
+        @Autowired
+        private final KPI1Repository kpi1Repository;
 
+        public KPI1Service(JiraIssueRepository issueRepository, KPI1Repository kpi1Repository) {
+                this.issueRepository = issueRepository;
+                this.kpi1Repository = kpi1Repository;
         }
 
         public List<KPI1> getKPI1PerTeam(String projectName) {
@@ -154,6 +157,7 @@ public class KPI1Service {
                 OverviewKPI1.setPercentageCancelledIssues(
                                 ((float) totalJiraCancelledIssueCount / totalJiraIssueCount) * 100);
                 
+                kpi1Repository.save(OverviewKPI1);
                 listofKPI1.add(OverviewKPI1);
 
                 for (String teamType : teamTypes) {
@@ -280,6 +284,7 @@ public class KPI1Service {
                                         ((float) totalTeamTypeJiraCancelledIssueCount / totalTeamTypeJiraIssueCount)
                                                         * 100);
 
+                        kpi1Repository.save(OverviewKPI1);
                         listofKPI1.add(OverviewKPI1);
 
                 }
