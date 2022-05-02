@@ -32,6 +32,13 @@ import java.util.stream.StreamSupport;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/*
+JSON object should include 
+totalJiraIssue and story points
+totalClosedJiraIssue and story points
+separated by month and team
+
+*/
 @Component
 public class LoadDatabase implements CommandLineRunner {
 
