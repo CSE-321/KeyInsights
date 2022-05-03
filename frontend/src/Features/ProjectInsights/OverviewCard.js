@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect } from 'react';
 import { ResponsiveLine } from '@nivo/line';
 import { ResponsivePie } from '@nivo/pie';
 import { ResponsiveBar } from '@nivo/bar';
@@ -14,7 +14,13 @@ const OverviewCard = ({
   forIndexBy,
 }) => {
   const data = useMemo(() => graphData, [graphData]);
+  const [isLoading, setIsLoading] = React.useState(false);
 
+  useEffect(() => {
+    if (data) {
+      setIsLoading(true);
+    }
+  }, []);
   return (
     <>
       <div className="bg-white shadow-lg drop-shadow-lg rounded-lg">
@@ -22,42 +28,18 @@ const OverviewCard = ({
           <div className="col-span-5">
             <h1 className="text-xl font-bold">{cardTitle}</h1>
           </div>
-          <div className="col-span-1 text-gray-400 justify-self-end flex flex-row items-center">
-            <span> See More</span>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              aria-hidden="true"
-              role="img"
-              width="30"
-              height="30"
-              preserveAspectRatio="xMidYMid meet"
-              viewBox="0 0 16 16"
-              className="flex-shrink-0">
-              <path
-                fill="none"
-                stroke="#5DD39E"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="1.5"
-                d="m8.75 3.25l4.5 4.5l-4.5 4.5m-6-4.5h10.5"
-              />
-            </svg>
-          </div>
+          <div className="col-span-1 text-gray-400 justify-self-end flex flex-row items-center"></div>
           <div className="col-span-2">{cardText}</div>
           <div className="col-span-4 w-full h-32 justify-self-center self-center">
-            {graphType === 'Pie' && graphData.length != 0 && (
-              <>
-                {(
-                  <ResponsivePie
-                    data={data}
-                    colors={['#F3A582', '#5DD39E']}
-                    margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
-                    innerRadius={0.5}
-                    arcLinkLabelsStraightLength={10}
-                    arcLinkLabelsDiagonalLength={0}
-                  />
-                ) || <Skeleton circle={true} />}
-              </>
+            {graphType === 'Pie' && (
+              <ResponsivePie
+                data={data}
+                colors={['#F3A582', '#5DD39E']}
+                margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
+                innerRadius={0.5}
+                arcLinkLabelsStraightLength={10}
+                arcLinkLabelsDiagonalLength={0}
+              />
             )}
             {graphType === 'Bar' && (
               <>
