@@ -17,23 +17,16 @@ function App() {
           <NavBar isUserSignedIn={false} />
           <Routes>
             <Route exact path="/" element={<HomePage />} />
+            <Route exact path="/projects" element={<ProjectsPage />} />
             <Route
               exact
-              path="/projects"
-              element={<ProjectsPage />}
-              onEnter={requireAuth}
-            />
-            <Route
-              exact
-              path="/projects/:id"
+              path="/projects/:name"
               element={<ProjectInsightsPage />}
-              onEnter={requireAuth}
             />
             <Route
               exact
               path="/notifications"
               element={<NotificationsPage />}
-              onEnter={requireAuth}
             />
           </Routes>
         </div>

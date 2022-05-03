@@ -2,6 +2,7 @@ import React, { useEffect, useMemo } from 'react';
 import OverviewCard from './OverviewCard';
 import Table from '../Table/Table';
 import SelectColumnFilter from '../Table/SelectColumnFilter';
+import PropTypes from 'prop-types';
 import {
   getKPI_1,
   getTopJiraClosedTeam,
@@ -14,19 +15,19 @@ import {
 } from './KPIService';
 import Skeleton from 'react-loading-skeleton';
 
-const OverviewBody = () => {
+const OverviewBody = ({ projectName }) => {
   const [kpi1_List, setKpi1_List] = React.useState([]);
   const [topTeamsList, setTopTeamsList] = React.useState([]);
   const [needsAttentionList, setNeedsAttentionList] = React.useState([]);
   const [tableColumns, setTableColumns] = React.useState([]);
   //make api call
   useEffect(() => {
-    getKPI_1().then((data) => {
+    getKPI_1(projectName).then((data) => {
       setKpi1_List(data);
       setTopTeamsList(getTopTeamsByJiraClosed(data));
       setNeedsAttentionList(getCriticalNotCompleted(data));
       var cols = [];
-      console.log(data[0]);
+
       for (var key in data[0]) {
         if (key !== 'teamType') {
           cols.push({
@@ -43,6 +44,7 @@ const OverviewBody = () => {
       }
 
       setTableColumns(cols);
+      console.log(data);
     });
   }, []);
 
@@ -173,6 +175,10 @@ const OverviewBody = () => {
       </div>
     </>
   );
+};
+
+OverviewBody.propTypes = {
+  projectName: PropTypes.string.isRequired,
 };
 
 export default OverviewBody;
