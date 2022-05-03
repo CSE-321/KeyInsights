@@ -71,9 +71,14 @@ public interface JiraIssueRepository extends JpaRepository<JiraIssue, Integer> {
     @Query(value = "SELECT COUNT(j.id) FROM JiraIssue j WHERE j.projectName = :projectName AND j.teamType = :teamType AND j.resolution = :resolution")
     Integer totalTeamTypeJiraResolutionIssueCount(@Param("projectName") String projectName, @Param("teamType") String teamType, @Param("resolution") String resolution);
 
-    @Query(value = "SELECT EXTRACT(DAY FROM j.resolutionDateTime - j.createdDateTime) as intervalDays FROM JiraIssue j WHERE j.projectName = :projectName AND j.resolutionDateTime is not null AND j.status in (:status1) ORDER BY intervalDays ASC")
-    ArrayList<Integer> medianOfOpenResolvedJiraIssues(@Param("projectName") String projectName, @Param("status1") String status1);
+    @Query(value = "SELECT EXTRACT(DAY FROM j.resolutionDateTime - j.createdDateTime) as intervalDays FROM JiraIssue j WHERE j.projectName = :projectName AND j.resolutionDateTime is not null AND j.teamType = :teamType ORDER BY intervalDays ASC")
+    ArrayList<Integer> daysNeededToCompleteTeamTypeJiraIssues(@Param("projectName") String projectName, @Param("teamType") String teamType);
 
+    @Query(value = "SELECT EXTRACT(DAY FROM j.resolutionDateTime - j.createdDateTime) as intervalDays FROM JiraIssue j WHERE j.projectName = :projectName AND j.resolutionDateTime is not null ORDER BY intervalDays ASC")
+    ArrayList<Integer> daysNeededToCompleteTotalJiraIssues(@Param("projectName") String projectName);
+
+    @Query(value = "SELECT COUNT(j.id) FROM JiraIssue j WHERE j.projectName = :projectName AND dueDateTime <= CURRENT_TIMESTAMP and j.resolution is null")
+    Integer unfinishedJiraIssuesByToday(@Param("projectName") String projectName);
     /* This calculates the median between jira starting and jira ending
 WITH cse AS (
 SELECT EXTRACT(DAY FROM resolution_date_time - created_date_time) as intervalDays
