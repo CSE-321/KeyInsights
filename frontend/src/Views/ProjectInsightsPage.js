@@ -5,13 +5,13 @@ import KpiNavBar from '../Features/ProjectInsights/KpiNavBar';
 import OverviewBody from '../Features/ProjectInsights/OverviewBody';
 const ProjectInsightsPage = () => {
   const [activeInsights, setActiveInsights] = React.useState(0);
-  const [kpi1_List, setKpi1_List] = React.useState([]);
+  //const [kpi1_List, setKpi1_List] = React.useState([]);
 
   const onInsightsTypeChanged = (index) => {
     setActiveInsights(index);
   };
 
-  let { id } = useParams();
+  let { name } = useParams();
   return (
     <div>
       <BodyHeader
@@ -24,9 +24,10 @@ const ProjectInsightsPage = () => {
           <KpiNavBar completionHandler={onInsightsTypeChanged} />
         </div>
         <div className="w-[80%] flex-grow-1">
+          <p>{name}</p>
           {activeInsights === 0 && (
             <>
-              <OverviewBody />
+              <OverviewBody projectName={name} />
             </>
           )}
         </div>
