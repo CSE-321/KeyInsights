@@ -24,6 +24,7 @@ import java.util.stream.StreamSupport;
 import com.atlassian.jira.rest.client.api.domain.BasicProject;
 import com.atlassian.jira.rest.client.api.domain.Project;
 import com.atlassian.jira.rest.client.api.domain.User;
+import com.atlassian.jira.rest.client.api.domain.Version;
 import com.atlassian.jira.rest.client.api.domain.Issue;
 import com.atlassian.jira.rest.client.api.domain.IssueField;
 
@@ -71,26 +72,32 @@ public class KeyinsightApplication {
 
 			int projectCount = 0;
 			int issueCount = 9000;
-			Issue singleIssue = myJiraClient.getSingleIssue("B8X4-3");
-			Iterable<IssueField> allIssueFields = singleIssue.getFields();
-			for (IssueField issueField : allIssueFields) {
-				fieldValues.put(issueField.getName(), issueField.getId());
-				System.out.println(issueField.getName() + " : " + issueField.getId());
-			}
-			String resolutionDateTimeString = singleIssue.getField(fieldValues.get("Resolved")).getValue().toString();
-			System.out.println(resolutionDateTimeString);
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-			OffsetDateTime resolutionDateTime = OffsetDateTime.parse(resolutionDateTimeString,formatter);
-			System.out.println(resolutionDateTime.format(formatter));
-			Instant instant = Instant.ofEpochMilli(singleIssue.getCreationDate().getMillis());
-			OffsetDateTime offsetDateTime = OffsetDateTime.ofInstant(instant, ZoneId.of(singleIssue.getCreationDate().getZone().getID()));
-			// System.out.println(singleIssue.getCreationDate());
-			// System.out.println(singleIssue.getCreationDate().toLocalDateTime());
-			System.out.println(offsetDateTime);
-			// // Iterable<BasicProject> allProjects = myJiraClient.getAllProject();
+			// Issue singleIssue = myJiraClient.getSingleIssue("B8X4-3");
+			// Iterable<IssueField> allIssueFields = singleIssue.getFields();
+			// for (IssueField issueField : allIssueFields) {
+			// 	fieldValues.put(issueField.getName(), issueField.getId());
+			// 	System.out.println(issueField.getName() + " : " + issueField.getId());
+			// }
+			// String resolutionDateTimeString = singleIssue.getField(fieldValues.get("Resolved")).getValue().toString();
+			// System.out.println(resolutionDateTimeString);
+			// DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+			// OffsetDateTime resolutionDateTime = OffsetDateTime.parse(resolutionDateTimeString,formatter);
+			// System.out.println(resolutionDateTime.format(formatter));
+			// Instant instant = Instant.ofEpochMilli(singleIssue.getCreationDate().getMillis());
+			// OffsetDateTime offsetDateTime = OffsetDateTime.ofInstant(instant, ZoneId.of(singleIssue.getCreationDate().getZone().getID()));
+			// // System.out.println(singleIssue.getCreationDate());
+			// // System.out.println(singleIssue.getCreationDate().toLocalDateTime());
+			// System.out.println(offsetDateTime);
+			// Iterable<BasicProject> allProjects = myJiraClient.getAllProject();
 			// for (BasicProject project : allProjects) {
 			// 	String projectUrl = project.getKey();
 			// 	Project singleProject = myJiraClient.getProject(projectUrl);
+			// 	System.out.println(singleProject.getName());
+			// 	Iterable<Version> projectVersions = singleProject.getVersions();
+			// 	for(Version version : projectVersions){
+			// 		System.out.println(version.getReleaseDate());
+			// 	}
+			// }
 			// 	projectName.add(singleProject.getName());
 			// 	User projectLead = myJiraClient.getUser(singleProject.getLead().getName());
 			// 	projectLeadName.add(projectLead.getDisplayName());
