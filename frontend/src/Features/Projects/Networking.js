@@ -7,7 +7,7 @@ export async function getAllProjects() {
     mode: 'no-cors',
   };
 
-  return fetch('/api/v1/project', requestOptions)
+  return fetch('/api/v1/project/', requestOptions)
     .then((response) => response.json())
     .then((data) => data)
     .catch((error) => console.log('error', error));
