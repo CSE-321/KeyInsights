@@ -1,5 +1,5 @@
 import { round, getProjectNameFromUrl } from './MathUtil';
-export function getKPI_1(projectName) {
+export async function getKPI_1(projectName) {
   var myHeaders = new Headers();
   myHeaders.append('Content-Type', 'application/json');
 
