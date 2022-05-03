@@ -24,7 +24,6 @@ const ProjectInsightsPage = () => {
           <KpiNavBar completionHandler={onInsightsTypeChanged} />
         </div>
         <div className="w-[80%] flex-grow-1">
-          <p>{name}</p>
           {activeInsights === 0 && (
             <>
               <OverviewBody projectName={name} />

@@ -55,7 +55,7 @@ const ProjectCard = ({ project }) => {
 
         <div className="grid grid-cols-8 grid-flow-row mb-5 ml-5">
           <p className="col-span-4 ">Project Lead</p>
-          <p className="col-span-2"> Created at</p>
+          <p className="col-span-2"> Created</p>
           <p className="col-span-2">Issues</p>
           <img
             src={activeProject.teamLeadAvatarUrl}
