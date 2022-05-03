@@ -2,7 +2,7 @@ import React from 'react';
 
 export const getNotificationsFromApiAsync = async (request) => {
   try {
-    const response = await fetch('api/v1/NotificationSettings', {
+    const response = await fetch('api/v1/notification', {
       headers: {
         Accept: 'application/json',
         'Content-type': 'application/json',
@@ -19,7 +19,7 @@ export const getNotificationsFromApiAsync = async (request) => {
 
 export const sendSettingsDataToBackend = async (data) => {
   try {
-    const response = await fetch('api/v1/NotificationSettings', {
+    const response = await fetch('api/v1/notification', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
