@@ -18,7 +18,7 @@ const ProjectCard = ({ project }) => {
   }, [project]);
 
   const selfIsSelected = () => {
-    navigate('/projects/id=' + project.id, { replace: true });
+    navigate('/projects/name=' + project.name, { replace: true });
   };
 
   return (
