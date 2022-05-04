@@ -137,9 +137,11 @@ function Table({ columns, data, onRowClick }) {
               prepareRow(row);
               return (
                 <tr
-                  onClick={() => onRowClick(row.original.id)}
+                  onClick={() =>
+                    onRowClick(row.original.name, row.original.numIssues)
+                  }
                   {...row.getRowProps()}
-                  className=" border-2 border-b-slate-100">
+                  className=" border-2 border-b-slate-100 hover:cursor-pointer">
                   {row.cells.map((cell) => {
                     return (
                       <td
