@@ -32,20 +32,6 @@ import java.util.stream.StreamSupport;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-/*
-JSON object should include 
-totalJiraIssue and story points
-totalClosedJiraIssue and story points
-separated by month and team
-SELECT TO_CHAR(created_date_time, 'YYYY-MM') AS created_month, COUNT(id)
-FROM issues
-GROUP BY created_month
-ORDER BY created_month
-
-this is total 
-
-we also want open issues, closed issues, and the story points for them
-*/
 @Component
 public class LoadDatabase implements CommandLineRunner {
 
@@ -119,6 +105,7 @@ public class LoadDatabase implements CommandLineRunner {
                                 String projectLeadDisplayName = projectLead.getDisplayName();
                                 Long projectId = basicProject.getId();
                                 String projectUniqueId = dotenv.get("JIRA_URL") + projectId;
+                                OffsetDateTime projectCreationDateTime = null;
                                 // ------------------------------------------------------------
 
                                 // this line of code attempts to locate a project with that name
@@ -202,6 +189,7 @@ public class LoadDatabase implements CommandLineRunner {
                                                                 creationInstant,
                                                                 ZoneId.of(singleIssue.getCreationDate().getZone()
                                                                                 .getID()));
+                                                projectCreationDateTime = creationDateTime;
                                                 // -------------------------------------------------------
 
                                                 // This block of code is just getting
@@ -338,15 +326,6 @@ public class LoadDatabase implements CommandLineRunner {
                                                 issueRepository.save(issue);
                                                 issueCount += 1;
                                                 // ---------------------------
-
-                                                // In our project table, we have a created date column
-                                                // We decided to use the earlist issue creation date
-                                                // as that value
-                                                // ----------------------------------------------------
-                                                if (Integer.parseInt(issueNumber) == 1) {
-                                                        project.setCreatedDate(creationDateTime);
-                                                }
-                                                // ----------------------------------------------------
                                         }
 
                                         // Outside the while loop means we haev iterated through all the issues in the
@@ -358,6 +337,7 @@ public class LoadDatabase implements CommandLineRunner {
                                         allIssuesCount = StreamSupport.stream(allIssues.spliterator(), false).count();
                                         // -----------------------------------------------------------------------------
                                 }
+                                project.setCreatedDate(projectCreationDateTime);
                                 project.setNumIssues(issueCount);
                                 projectRepository.save(project);
                         }
