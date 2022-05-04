@@ -79,6 +79,19 @@ public interface JiraIssueRepository extends JpaRepository<JiraIssue, Integer> {
 
     @Query(value = "SELECT COUNT(j.id) FROM JiraIssue j WHERE j.projectName = :projectName AND dueDateTime <= CURRENT_TIMESTAMP and j.resolution is null")
     Integer unfinishedJiraIssuesByToday(@Param("projectName") String projectName);
+
+    @Query(value = "SELECT TO_CHAR(j.createdDateTime, 'YYYY-MM') AS createdMonth, COUNT(j.id), SUM(j.storyPoint) FROM JiraIssue j WHERE j.projectName = :projectName GROUP BY createdMonth ORDER BY createdMonth")
+    ArrayList<Object[]> numberOfIssuesCreatedInMonth(@Param("projectName") String projectName);
+
+    @Query(value = "SELECT TO_CHAR(j.createdDateTime, 'YYYY-MM') AS createdMonth, COUNT(j.id), SUM(j.storyPoint) FROM JiraIssue j WHERE j.projectName = :projectName AND j.teamType = :teamType GROUP BY createdMonth ORDER BY createdMonth")
+    ArrayList<Object[]> numberOfIssuesCreatedInMonthByTeamType(@Param("projectName") String projectName, @Param("teamType") String teamType);
+
+    @Query(value = "SELECT TO_CHAR(j.resolutionDateTime, 'YYYY-MM') AS resolvedMonth, COUNT(j.id), SUM(j.storyPoint) FROM JiraIssue j WHERE j.projectName = :projectName GROUP BY resolvedMonth ORDER BY resolvedMonth")
+    ArrayList<Object[]> numberOfIssuesResolvedInMonth(@Param("projectName") String projectName);
+
+    @Query(value = "SELECT TO_CHAR(j.resolutionDateTime, 'YYYY-MM') AS resolvedMonth, COUNT(j.id), SUM(j.storyPoint) FROM JiraIssue j WHERE j.projectName = :projectName AND j.teamType = :teamType GROUP BY resolvedMonth ORDER BY resolvedMonth")
+    ArrayList<Object[]> numberOfIssuesResolvedInMonthByTeamType(@Param("projectName") String projectName, @Param("teamType") String teamType);
+
     /* This calculates the median between jira starting and jira ending
 WITH cse AS (
 SELECT EXTRACT(DAY FROM resolution_date_time - created_date_time) as intervalDays
