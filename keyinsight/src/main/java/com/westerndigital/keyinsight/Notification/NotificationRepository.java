@@ -11,5 +11,5 @@ import org.springframework.stereotype.Repository;
 public interface NotificationRepository 
     extends JpaRepository<Notification, Long> {
 
-    public List<Notification> findByJiraUser(JiraUser jiraUser);
+    public Notification findByJiraUser(JiraUser jiraUser);
 }

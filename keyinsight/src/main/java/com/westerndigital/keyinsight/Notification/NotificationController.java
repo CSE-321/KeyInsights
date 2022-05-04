@@ -32,7 +32,7 @@ public class NotificationController {
     @GetMapping
     public ResponseEntity<List<Notification>> getAllNotifications() {
         List<Notification> notifications = notificationService
-            .getNotificationSettings(); 
+            .getAllNotificationSettings(); 
 
         return ResponseEntity.ok(notifications);
     }

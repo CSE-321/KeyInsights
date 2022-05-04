@@ -13,15 +13,18 @@ public class NotificationService {
     @Autowired
     private NotificationRepository notificationRepository;
 
-    public List<Notification> getAllNotificationSettings(JiraUser jiraUser) {
+    public Notification getUserNotificationSettings(JiraUser jiraUser) {
         return notificationRepository.findByJiraUser(jiraUser);
     }
 
-    public List<Notification> getNotificationSettings() {
+    public List<Notification> getAllNotificationSettings() {
         return notificationRepository.findAll();
     }
 
     public void updateNotificationSettings(Notification notificationSettings) {
+
+        // Notification notification = getUserNotificationSettings
+
         notificationRepository.save(notificationSettings);
     }
 }
