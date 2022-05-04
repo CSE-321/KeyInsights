@@ -32,20 +32,6 @@ import java.util.stream.StreamSupport;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-/*
-JSON object should include 
-totalJiraIssue and story points
-totalClosedJiraIssue and story points
-separated by month and team
-SELECT TO_CHAR(created_date_time, 'YYYY-MM') AS created_month, COUNT(id)
-FROM issues
-GROUP BY created_month
-ORDER BY created_month
-
-this is total 
-
-we also want open issues, closed issues, and the story points for them
-*/
 @Component
 public class LoadDatabase implements CommandLineRunner {
 

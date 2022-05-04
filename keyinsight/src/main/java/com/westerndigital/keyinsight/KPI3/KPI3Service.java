@@ -21,71 +21,118 @@ public class KPI3Service {
         this.kpi3Repository = kpi3Repository;
     }
 
-    public List<KPI3> getKPI3PerTeam(String projectName){
+    public List<KPI3> getKPI3PerTeam(String projectName) {
+
         kpi3Repository.deleteAll();
         ArrayList<KPI3> listofKPI3 = new ArrayList<KPI3>();
-        ArrayList<Object[]> numOfCreatedIssuesByMonth = issueRepository.numberOfIssuesCreatedInMonth(projectName);
-        
-        
-        for(Object[] numOfCreatedIssue : numOfCreatedIssuesByMonth){
-            KPI3 numberOfIssuesCreatedInMonth = new KPI3();
-            System.out.println(numOfCreatedIssue[0]);
-            System.out.println(numOfCreatedIssue[1]);
-            System.out.println(numOfCreatedIssue[2]);
+        ArrayList<Object[]> numOfCreatedResolvedIssuesByMonth = issueRepository
+                .numberOfIssuesCreatedAndResolvedInAMonth(projectName);
+        for (Object[] numOfCreatedResolvedIssue : numOfCreatedResolvedIssuesByMonth) {
+            KPI3 numberOfIssuesCreatedResolvedInMonth = new KPI3();
+            System.out.println(numOfCreatedResolvedIssue[0]);
+            System.out.println(numOfCreatedResolvedIssue[1]);
+            System.out.println(numOfCreatedResolvedIssue[2]);
+            System.out.println(numOfCreatedResolvedIssue[3]);
+            System.out.println(numOfCreatedResolvedIssue[4]);
+            System.out.println(numOfCreatedResolvedIssue[5]);
+
             String createdMonth = null;
-            if(numOfCreatedIssue[0].toString() != null){
-                createdMonth = numOfCreatedIssue[0].toString();
-            }
-            
-
-            Integer jiraCount = null;
-            if(numOfCreatedIssue[1] != null){
-                jiraCount = Integer.parseInt(numOfCreatedIssue[1].toString());
+            if (numOfCreatedResolvedIssue[0] != null) {
+                createdMonth = numOfCreatedResolvedIssue[0].toString();
             }
 
-            Float jiraStoryPoints = null;
-            if(numOfCreatedIssue[2] != null){
-                jiraStoryPoints = Float.parseFloat(numOfCreatedIssue[2].toString());
+            String resolvedMonth = null;
+            if (numOfCreatedResolvedIssue[1] != null) {
+                resolvedMonth = numOfCreatedResolvedIssue[1].toString();
             }
-            numberOfIssuesCreatedInMonth.setTeamType("All Jira Issues");
-            numberOfIssuesCreatedInMonth.setCreatedMonth(createdMonth);
-            numberOfIssuesCreatedInMonth.setTotalCreatedJiraCount(jiraCount);
-            numberOfIssuesCreatedInMonth.setTotalCreatedJiraStoryPoints(jiraStoryPoints);
-            kpi3Repository.save(numberOfIssuesCreatedInMonth);
-            listofKPI3.add(numberOfIssuesCreatedInMonth);
+
+            Integer createdJiraCount = null;
+            if (numOfCreatedResolvedIssue[2] != null) {
+                createdJiraCount = Integer.parseInt(numOfCreatedResolvedIssue[2].toString());
+            }
+
+            Float createdJiraStoryPoints = null;
+            if (numOfCreatedResolvedIssue[3] != null) {
+                createdJiraStoryPoints = Float.parseFloat(numOfCreatedResolvedIssue[3].toString());
+            }
+
+            Integer resolvedJiraCount = null;
+            if (numOfCreatedResolvedIssue[4] != null) {
+                resolvedJiraCount = Integer.parseInt(numOfCreatedResolvedIssue[4].toString());
+            }
+
+            Float resolvedJiraStoryPoints = null;
+            if (numOfCreatedResolvedIssue[5] != null) {
+                resolvedJiraStoryPoints = Float.parseFloat(numOfCreatedResolvedIssue[5].toString());
+            }
+
+            numberOfIssuesCreatedResolvedInMonth.setTeamType("All Jira Issues");
+            numberOfIssuesCreatedResolvedInMonth.setCreatedMonth(createdMonth);
+            numberOfIssuesCreatedResolvedInMonth.setResolvedMonth(resolvedMonth);
+            numberOfIssuesCreatedResolvedInMonth.setCreatedJiraCount(createdJiraCount);
+            numberOfIssuesCreatedResolvedInMonth.setCreatedJiraStoryPoints(createdJiraStoryPoints);
+            numberOfIssuesCreatedResolvedInMonth.setResolvedJiraCount(resolvedJiraCount);
+            numberOfIssuesCreatedResolvedInMonth.setResolvedJiraStoryPoints(resolvedJiraStoryPoints);
+            kpi3Repository.save(numberOfIssuesCreatedResolvedInMonth);
+            listofKPI3.add(numberOfIssuesCreatedResolvedInMonth);
+
         }
 
         List<String> teamTypes = issueRepository.getAllTeamType(projectName);
 
-        for(String teamType : teamTypes){
-            ArrayList<Object[]> numOfCreatedIssuesInMonthByTeamType = issueRepository.numberOfIssuesCreatedInMonthByTeamType(projectName, teamType);
-            for(Object[] numOfCreatedIssueByTeamType : numOfCreatedIssuesInMonthByTeamType){
-                KPI3 numberOfIssuesCreatedInMonthByTeamType = new KPI3();
-                System.out.println(numOfCreatedIssueByTeamType[0]);
-                System.out.println(numOfCreatedIssueByTeamType[1]);
-                System.out.println(numOfCreatedIssueByTeamType[2]);
+        for (String teamType : teamTypes) {
+            ArrayList<Object[]> numOfCreatedResolvedIssuesByMonthAndTeamType = issueRepository
+                    .numberOfIssuesCreatedAndResolvedInAMonthByTeamType(projectName, teamType);
+            for (Object[] numOfCreatedResolvedIssue : numOfCreatedResolvedIssuesByMonthAndTeamType) {
+                KPI3 numberOfIssuesCreatedResolvedInMonth = new KPI3();
+                System.out.println(numOfCreatedResolvedIssue[0]);
+                System.out.println(numOfCreatedResolvedIssue[1]);
+                System.out.println(numOfCreatedResolvedIssue[2]);
+                System.out.println(numOfCreatedResolvedIssue[3]);
+                System.out.println(numOfCreatedResolvedIssue[4]);
+                System.out.println(numOfCreatedResolvedIssue[5]);
+
                 String createdMonth = null;
-                if(numOfCreatedIssueByTeamType[0].toString() != null){
-                    createdMonth = numOfCreatedIssueByTeamType[0].toString();
+                if (numOfCreatedResolvedIssue[0] != null) {
+                    createdMonth = numOfCreatedResolvedIssue[0].toString();
                 }
-                
-    
-                Integer jiraCount = null;
-                if(numOfCreatedIssueByTeamType[1] != null){
-                    jiraCount = Integer.parseInt(numOfCreatedIssueByTeamType[1].toString());
+
+                String resolvedMonth = null;
+                if (numOfCreatedResolvedIssue[1] != null) {
+                    resolvedMonth = numOfCreatedResolvedIssue[1].toString();
                 }
-    
-                Float jiraStoryPoints = null;
-                if(numOfCreatedIssueByTeamType[2] != null){
-                    jiraStoryPoints = Float.parseFloat(numOfCreatedIssueByTeamType[2].toString());
+
+                Integer createdJiraCount = null;
+                if (numOfCreatedResolvedIssue[2] != null) {
+                    createdJiraCount = Integer.parseInt(numOfCreatedResolvedIssue[2].toString());
                 }
-                numberOfIssuesCreatedInMonthByTeamType.setTeamType(teamType);
-                numberOfIssuesCreatedInMonthByTeamType.setCreatedMonth(createdMonth);
-                numberOfIssuesCreatedInMonthByTeamType.setTotalCreatedJiraCount(jiraCount);
-                numberOfIssuesCreatedInMonthByTeamType.setTotalCreatedJiraStoryPoints(jiraStoryPoints);
-                kpi3Repository.save(numberOfIssuesCreatedInMonthByTeamType);
-                listofKPI3.add(numberOfIssuesCreatedInMonthByTeamType);
+
+                Float createdJiraStoryPoints = null;
+                if (numOfCreatedResolvedIssue[3] != null) {
+                    createdJiraStoryPoints = Float.parseFloat(numOfCreatedResolvedIssue[3].toString());
+                }
+
+                Integer resolvedJiraCount = null;
+                if (numOfCreatedResolvedIssue[4] != null) {
+                    resolvedJiraCount = Integer.parseInt(numOfCreatedResolvedIssue[4].toString());
+                }
+
+                Float resolvedJiraStoryPoints = null;
+                if (numOfCreatedResolvedIssue[5] != null) {
+                    resolvedJiraStoryPoints = Float.parseFloat(numOfCreatedResolvedIssue[5].toString());
+                }
+
+                numberOfIssuesCreatedResolvedInMonth.setTeamType(teamType);
+                numberOfIssuesCreatedResolvedInMonth.setCreatedMonth(createdMonth);
+                numberOfIssuesCreatedResolvedInMonth.setResolvedMonth(resolvedMonth);
+                numberOfIssuesCreatedResolvedInMonth.setCreatedJiraCount(createdJiraCount);
+                numberOfIssuesCreatedResolvedInMonth.setCreatedJiraStoryPoints(createdJiraStoryPoints);
+                numberOfIssuesCreatedResolvedInMonth.setResolvedJiraCount(resolvedJiraCount);
+                numberOfIssuesCreatedResolvedInMonth.setResolvedJiraStoryPoints(resolvedJiraStoryPoints);
+                kpi3Repository.save(numberOfIssuesCreatedResolvedInMonth);
+                listofKPI3.add(numberOfIssuesCreatedResolvedInMonth);
             }
+
         }
         return listofKPI3;
     }

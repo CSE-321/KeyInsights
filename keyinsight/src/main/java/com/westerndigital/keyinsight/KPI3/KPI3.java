@@ -21,6 +21,9 @@ public class KPI3 {
     private Integer id;
     private String teamType;
     private String createdMonth;
-    private Integer totalCreatedJiraCount;
-    private Float totalCreatedJiraStoryPoints;
+    private String resolvedMonth;
+    private Integer createdJiraCount;
+    private Float createdJiraStoryPoints;
+    private Integer resolvedJiraCount;
+    private Float resolvedJiraStoryPoints;
 }

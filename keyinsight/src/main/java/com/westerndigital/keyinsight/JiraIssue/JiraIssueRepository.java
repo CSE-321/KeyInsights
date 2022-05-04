@@ -80,47 +80,13 @@ public interface JiraIssueRepository extends JpaRepository<JiraIssue, Integer> {
     @Query(value = "SELECT COUNT(j.id) FROM JiraIssue j WHERE j.projectName = :projectName AND dueDateTime <= CURRENT_TIMESTAMP and j.resolution is null")
     Integer unfinishedJiraIssuesByToday(@Param("projectName") String projectName);
 
-    @Query(value = "SELECT TO_CHAR(j.createdDateTime, 'YYYY-MM') AS createdMonth, COUNT(j.id), SUM(j.storyPoint) FROM JiraIssue j WHERE j.projectName = :projectName GROUP BY createdMonth ORDER BY createdMonth")
-    ArrayList<Object[]> numberOfIssuesCreatedInMonth(@Param("projectName") String projectName);
+    @Query(value = "WITH created AS(SELECT TO_CHAR(created_date_time, 'YYYY-MM') AS created_month, COUNT(id) AS createdJiraCount, SUM(story_point) AS createdJiraStoryPoints FROM issues WHERE project_name =?1 GROUP BY created_month ORDER BY created_month),"+
+        "resolved AS(SELECT TO_CHAR(resolution_date_time, 'YYYY-MM') AS resolved_month,  COUNT(id) AS resolvedJiraCount, SUM(story_point) AS resolvedJiraStoryPoints FROM issues WHERE project_name =?1 AND resolution_date_time is not null GROUP BY resolved_month ORDER BY resolved_month)" +
+        "SELECT created.created_month, resolved.resolved_month, created.createdJiraCount, created.createdJiraStoryPoints, resolved.resolvedJiraCount, resolved.resolvedJiraStoryPoints FROM created LEFT JOIN resolved ON created.created_month = resolved.resolved_month", nativeQuery = true)
+    ArrayList<Object[]> numberOfIssuesCreatedAndResolvedInAMonth(@Param("projectName") String projectName);
 
-    @Query(value = "SELECT TO_CHAR(j.createdDateTime, 'YYYY-MM') AS createdMonth, COUNT(j.id), SUM(j.storyPoint) FROM JiraIssue j WHERE j.projectName = :projectName AND j.teamType = :teamType GROUP BY createdMonth ORDER BY createdMonth")
-    ArrayList<Object[]> numberOfIssuesCreatedInMonthByTeamType(@Param("projectName") String projectName, @Param("teamType") String teamType);
-
-    @Query(value = "SELECT TO_CHAR(j.resolutionDateTime, 'YYYY-MM') AS resolvedMonth, COUNT(j.id), SUM(j.storyPoint) FROM JiraIssue j WHERE j.projectName = :projectName GROUP BY resolvedMonth ORDER BY resolvedMonth")
-    ArrayList<Object[]> numberOfIssuesResolvedInMonth(@Param("projectName") String projectName);
-
-    @Query(value = "SELECT TO_CHAR(j.resolutionDateTime, 'YYYY-MM') AS resolvedMonth, COUNT(j.id), SUM(j.storyPoint) FROM JiraIssue j WHERE j.projectName = :projectName AND j.teamType = :teamType GROUP BY resolvedMonth ORDER BY resolvedMonth")
-    ArrayList<Object[]> numberOfIssuesResolvedInMonthByTeamType(@Param("projectName") String projectName, @Param("teamType") String teamType);
-
-    /* This calculates the median between jira starting and jira ending
-WITH cse AS (
-SELECT EXTRACT(DAY FROM resolution_date_time - created_date_time) as intervalDays
-FROM issues
-WHERE project_name = 'B8X4' AND resolution_date_time is not null
-)
-
-SELECT PERCENTILE_DISC(0.5) WITHIN GROUP(ORDER BY intervalDays)
-FROM cse
-    */
-
-    /* this query finds issues created between 2 dates
-SELECT *
-FROM issues
-WHERE project_name = 'B8X4' AND created_date_time >= '2020-11-01' AND created_date_time < '2021-12-31'
-    */
-
-    /* Count for jira issues resolved within last 7 days
-SELECT COUNT(id)
-FROM issues
-WHERE project_name = 'B8X4'
-AND status in ('Resolved')
-AND resolution_date_time > current_date - interval '7 days'
-    */
-
-/* grab issues that are not finished past the due date
-SELECT *
-FROM issues
-WHERE due_date_time <= now() AND resolution is null
-ORDER BY id asc
-*/
+    @Query(value = "WITH created AS(SELECT TO_CHAR(created_date_time, 'YYYY-MM') AS created_month, COUNT(id) AS createdJiraCount, SUM(story_point) AS createdJiraStoryPoints FROM issues WHERE project_name =?1 AND team_type =?2 GROUP BY created_month ORDER BY created_month),"+
+        "resolved AS(SELECT TO_CHAR(resolution_date_time, 'YYYY-MM') AS resolved_month,  COUNT(id) AS resolvedJiraCount, SUM(story_point) AS resolvedJiraStoryPoints FROM issues WHERE project_name =?1 AND team_type =?2 AND resolution_date_time is not null GROUP BY resolved_month ORDER BY resolved_month)" +
+        "SELECT created.created_month, resolved.resolved_month, created.createdJiraCount, created.createdJiraStoryPoints, resolved.resolvedJiraCount, resolved.resolvedJiraStoryPoints FROM created LEFT JOIN resolved ON created.created_month = resolved.resolved_month", nativeQuery = true)
+    ArrayList<Object[]> numberOfIssuesCreatedAndResolvedInAMonthByTeamType(@Param("projectName") String projectName, @Param("teamType") String teamType);
 }
