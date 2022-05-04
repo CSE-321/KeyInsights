@@ -31,7 +31,13 @@ const ProjectsPage = () => {
   }, []);
 
   const data = useMemo(() => projects, [projects]);
-  const onTableRowClick = (name) => {
+
+  //navigates to insights page when project is clicked
+  const onTableRowClick = (name, issueCount) => {
+    if (issueCount <= 0) {
+      navigate(`/error/${1000}`);
+      return;
+    }
     navigate('/projects/name=' + name, { replace: true });
   };
 

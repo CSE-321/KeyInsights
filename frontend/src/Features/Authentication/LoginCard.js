@@ -15,9 +15,9 @@ import { setActiveServer } from '../../App/Slices/serverSlice';
 const LoginCard = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [serverURL, setServerURL] = useState('');
-  const [usernameText, setUsernameText] = useState('');
-  const [passwordText, setPasswordText] = useState('');
+  const [serverURL, setServerURL] = useState('jira.cloud-stm.com:8080');
+  const [usernameText, setUsernameText] = useState('ucm-cse-321');
+  const [passwordText, setPasswordText] = useState('Merced321');
   const [invalidUsername, setInvalidUsername] = useState(false);
   const [signInRejected, setSignInRejected] = useState(false);
   const [signInError, setSignInError] = useState('');

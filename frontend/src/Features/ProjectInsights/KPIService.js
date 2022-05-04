@@ -1,5 +1,5 @@
 import { round, getProjectNameFromUrl } from './MathUtil';
-export function getKPI_1(projectName) {
+export async function getKPI_1(projectName) {
   var myHeaders = new Headers();
   myHeaders.append('Content-Type', 'application/json');
 
@@ -140,4 +140,49 @@ export function convertToGraph(criticalNotCompletedList) {
   });
 
   return graphData;
+}
+
+export function getPercentageOfBugs(KPI1_List) {
+  if (KPI1_List.length <= 0) {
+    return 0;
+  }
+
+  var totalBugs = round(KPI1_List[0].percentageBugs, 2);
+  return totalBugs;
+}
+
+export function converPercentageBugsToGraphData(KPI1_List) {
+  if (KPI1_List.length <= 0) {
+    return [
+      {
+        id: 'Total',
+        label: 'Total Issues',
+        value: 0,
+        color: 'hsl(46, 70%, 50%)',
+      },
+      {
+        id: 'Closed',
+        label: 'Closed Issues',
+        value: 0,
+        color: 'hsl(56, 70%, 50%)',
+      },
+    ];
+  }
+  var percentage = round(KPI1_List[0].percentageBugs, 2);
+  var totalPercentage = 100;
+
+  return [
+    {
+      id: 'Bugs',
+      label: 'Bugs',
+      value: percentage,
+      color: 'hsl(60, 70%, 50%)',
+    },
+    {
+      id: 'Out Of',
+      label: '',
+      value: totalPercentage,
+      color: 'hsl(56, 70%, 50%)',
+    },
+  ];
 }
