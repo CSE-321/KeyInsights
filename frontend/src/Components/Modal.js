@@ -7,6 +7,7 @@ const Modal = ({
   setProject,
   listOfProjects,
   setIsProjectSelected,
+  setDefaultValues,
 }) => {
   return (
     <>
@@ -24,6 +25,7 @@ const Modal = ({
                   setModalOn(false);
                   setProject(listOfProjects[0]);
                   setIsProjectSelected(true);
+                  setDefaultValues();
                 }}>
                 {listOfProjects[0]}
               </button>
@@ -40,6 +42,7 @@ Modal.propTypes = {
   setProject: PropTypes.func,
   setIsProjectSelected: PropTypes.func,
   listOfProjects: PropTypes.array,
+  setDefaultValues: PropTypes.func,
 };
 
 export default Modal;
