@@ -46,22 +46,22 @@ public class KPI3Service {
                 resolvedMonth = numOfCreatedResolvedIssue[1].toString();
             }
 
-            Integer createdJiraCount = null;
+            Integer createdJiraCount = 0;
             if (numOfCreatedResolvedIssue[2] != null) {
                 createdJiraCount = Integer.parseInt(numOfCreatedResolvedIssue[2].toString());
             }
 
-            Float createdJiraStoryPoints = null;
+            Float createdJiraStoryPoints = 0f;
             if (numOfCreatedResolvedIssue[3] != null) {
                 createdJiraStoryPoints = Float.parseFloat(numOfCreatedResolvedIssue[3].toString());
             }
 
-            Integer resolvedJiraCount = null;
+            Integer resolvedJiraCount = 0;
             if (numOfCreatedResolvedIssue[4] != null) {
                 resolvedJiraCount = Integer.parseInt(numOfCreatedResolvedIssue[4].toString());
             }
 
-            Float resolvedJiraStoryPoints = null;
+            Float resolvedJiraStoryPoints = 0f;
             if (numOfCreatedResolvedIssue[5] != null) {
                 resolvedJiraStoryPoints = Float.parseFloat(numOfCreatedResolvedIssue[5].toString());
             }
