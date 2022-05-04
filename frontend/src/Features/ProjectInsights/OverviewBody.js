@@ -12,6 +12,8 @@ import {
   convertToKeys,
   convertToGraph,
   getCriticalNotCompleted,
+  getPercentageOfBugs,
+  converPercentageBugsToGraphData,
 } from './KPIService';
 import Skeleton from 'react-loading-skeleton';
 
@@ -64,7 +66,7 @@ const OverviewBody = ({ projectName }) => {
       <div
         id="Insights Main Area"
         className="grid grid-cols-6 grid-flow-row space-y-10 space-x-5">
-        <div className="col-span-6 sm:col-start-2 sm:col-end-6">
+        <div className="col-span-6 ">
           <OverviewCard
             cardTitle="Issue Completion"
             cardText={
@@ -162,6 +164,24 @@ const OverviewBody = ({ projectName }) => {
             graphData={convertToGraph(getCriticalNotCompleted(kpi1_List))}
             //graphKeys={convertToKeys(getTopTeamsByJiraClosed(kpi1_List))}
             forIndexBy={'teamType'}></OverviewCard>
+        </div>
+        <div className="col-span-6">
+          <OverviewCard
+            cardTitle="Percentage of bugs"
+            cardText={
+              <>
+                <p>
+                  This project contains percentage of bugs <br />
+                  <span className="text-[#5DD39E]">
+                    {getPercentageOfBugs(kpi1_List) || <Skeleton></Skeleton>}%
+                  </span>
+                </p>
+              </>
+            }
+            graphType={'Pie'}
+            graphData={converPercentageBugsToGraphData(
+              kpi1_List,
+            )}></OverviewCard>
         </div>
       </div>
       <div className="mt-5">
