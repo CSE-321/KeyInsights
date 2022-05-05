@@ -1,4 +1,4 @@
-package com.westerndigital.keyinsight.KPI1;
+package com.westerndigital.keyinsight.KPI3;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,16 +15,16 @@ import java.rmi.ServerException;
 import java.util.List;
 
 @RestController
-public class KPI1Controller {
+public class KPI3Controller {
     @Autowired
-    private KPI1Service kpi1Service;
+    private KPI3Service kpi3Service;
 
-    public KPI1Controller(KPI1Service kpi1Service) {
-        this.kpi1Service = kpi1Service;
+    public KPI3Controller(KPI3Service kpi3Service) {
+        this.kpi3Service = kpi3Service;
     }
 
-    @GetMapping("api/v1/KPI1/{projectName}")
-    public ResponseEntity<List<KPI1>> getKPI1PerTeam(@PathVariable("projectName") String projectName) {
-        return new ResponseEntity<>(kpi1Service.getKPI1PerTeam(projectName), HttpStatus.OK);
+    @GetMapping("api/v1/KPI3/{projectName}")
+    public ResponseEntity<List<KPI3>> getKPI3PerTeam(@PathVariable("projectName") String projectName) {
+        return new ResponseEntity<>(kpi3Service.getKPI3PerTeam(projectName), HttpStatus.OK);
     }
 }

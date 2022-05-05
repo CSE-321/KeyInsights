@@ -14,16 +14,19 @@ public class KPI1Service {
         @Autowired
         private final JiraIssueRepository issueRepository;
 
-        public KPI1Service(JiraIssueRepository issueRepository) {
-                this.issueRepository = issueRepository;
+        @Autowired
+        private final KPI1Repository kpi1Repository;
 
+        public KPI1Service(JiraIssueRepository issueRepository, KPI1Repository kpi1Repository) {
+                this.issueRepository = issueRepository;
+                this.kpi1Repository = kpi1Repository;
         }
 
         public List<KPI1> getKPI1PerTeam(String projectName) {
                 ArrayList<KPI1> listofKPI1 = new ArrayList<KPI1>();
                 //String projectName = "B8X4";
-                List<String> teamtypes = issueRepository.getAllTeamType(projectName);
-                System.out.print(teamtypes);
+                List<String> teamTypes = issueRepository.getAllTeamType(projectName);
+                System.out.print(teamTypes);
 
                 String closed = "Closed";
                 String wip = "In Progress";
@@ -42,7 +45,7 @@ public class KPI1Service {
 
                 String cancelled = "Project cancelled";
 
-                KPI1 OverviewKPI1 = new KPI1();
+                KPI1 OverviewKPI1 = kpi1Repository.findByTeamType("All Jira Issues").orElse(new KPI1());
 
                 // --------------------------------------
 
@@ -154,10 +157,11 @@ public class KPI1Service {
                 OverviewKPI1.setPercentageCancelledIssues(
                                 ((float) totalJiraCancelledIssueCount / totalJiraIssueCount) * 100);
                 
+                kpi1Repository.save(OverviewKPI1);
                 listofKPI1.add(OverviewKPI1);
 
-                for (String teamType : teamtypes) {
-                        OverviewKPI1 = new KPI1();
+                for (String teamType : teamTypes) {
+                        OverviewKPI1 = kpi1Repository.findByTeamType(teamType).orElse(new KPI1());
 
                         // --------------------------------------
 
@@ -280,6 +284,7 @@ public class KPI1Service {
                                         ((float) totalTeamTypeJiraCancelledIssueCount / totalTeamTypeJiraIssueCount)
                                                         * 100);
 
+                        kpi1Repository.save(OverviewKPI1);
                         listofKPI1.add(OverviewKPI1);
 
                 }
@@ -287,16 +292,16 @@ public class KPI1Service {
                 return listofKPI1;
         }
 
-        public void tmp() {
-                ArrayList<Integer> listOfMedianValues = issueRepository.medianOfOpenResolvedJiraIssues("B8X4",
-                                "Resolved");
-                double median = 0;
-                if (listOfMedianValues.size() % 2 != 0) {
-                        median = (double) listOfMedianValues.get(listOfMedianValues.size() / 2);
-                } else {
-                        median = (double) (listOfMedianValues.get((listOfMedianValues.size() - 1) / 2)
-                                        + listOfMedianValues.get(listOfMedianValues.size() / 2)) / 2.0;
-                }
-                System.out.println(median);
-        }
+        // public void tmp() {
+        //         ArrayList<Integer> listOfMedianValues = issueRepository.medianOfOpenResolvedJiraIssues("B8X4",
+        //                         "Resolved");
+        //         double median = 0;
+        //         if (listOfMedianValues.size() % 2 != 0) {
+        //                 median = (double) listOfMedianValues.get(listOfMedianValues.size() / 2);
+        //         } else {
+        //                 median = (double) (listOfMedianValues.get((listOfMedianValues.size() - 1) / 2)
+        //                                 + listOfMedianValues.get(listOfMedianValues.size() / 2)) / 2.0;
+        //         }
+        //         System.out.println(median);
+        // }
 }

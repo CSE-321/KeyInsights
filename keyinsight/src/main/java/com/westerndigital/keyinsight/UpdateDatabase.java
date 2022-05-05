@@ -62,29 +62,20 @@ public class UpdateDatabase {
 
     @Scheduled(initialDelay = 30 * 60 * 1000, fixedRate = 30 * 60 * 1000)
     public void scheduledWork() throws Exception {
+        Dotenv dotenv = Dotenv.load();
         // This block of code attempts to use the username, password, and server url to
         // create a
         // Jira Rest Java Client(JRJC) that connects to the server
         // That JRJC allows us to interact with the Jira Server and grab the information
         // we need
         // The authenication doesn't happen until the client attempts grab some kind of
-        // information
-        // --------------------------------------------------------------------
-        Dotenv dotenv = Dotenv.load();
-        try {
-            myJiraClient = new JiraRestJavaClient(dotenv.get("JIRA_USERNAME"),
-                    dotenv.get("JIRA_PASSWORD"), dotenv.get("JIRA_URL"));
-            User user = myJiraClient.getUser(dotenv.get("JIRA_USERNAME"));
-        } catch (RestClientException e) {
-            System.out.println(e.getLocalizedMessage());
-        }
-        // --------------------------------------------------------------------
-
+        // information     
         // This whole try catch block is in case an exeception occurs
         // when extracting the information into the PostgreSQL database
         // -------------------------------------------------------------------------------
         try {
-
+            myJiraClient = new JiraRestJavaClient(dotenv.get("JIRA_USERNAME"),
+            dotenv.get("JIRA_PASSWORD"), dotenv.get("JIRA_URL"));
             System.out.println("In Updating Database");
             allProjects = myJiraClient.getAllProject(); // grabs all the projects that are within the Jira Server
 

@@ -18,13 +18,17 @@ const ProjectCard = ({ project }) => {
   }, [project]);
 
   const selfIsSelected = () => {
+    if (project.numIssues <= 0) {
+      navigate(`/error/${1000}`);
+      return;
+    }
     navigate('/projects/name=' + project.name, { replace: true });
   };
 
   return (
     <>
       <div
-        className="bg-white rounded-xl drop-shadow-2xl flex flex-col justify-between transform transition duration-500 hover:scale-110 transform-gpu relative"
+        className="bg-white rounded-xl drop-shadow-2xl flex flex-col justify-between transform transition duration-500 hover:cursor-pointer hover:scale-110 transform-gpu relative"
         onClick={selfIsSelected}>
         <div className="flex flex-row justify-between mt-3 ml-5">
           <h1 className="flex-shrink text-xl sm:text-2xl md:text-3xl font-extrabold truncate">

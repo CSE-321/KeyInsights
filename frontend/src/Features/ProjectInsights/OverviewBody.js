@@ -3,6 +3,8 @@ import OverviewCard from './OverviewCard';
 import Table from '../Table/Table';
 import SelectColumnFilter from '../Table/SelectColumnFilter';
 import PropTypes from 'prop-types';
+import Skeleton from 'react-loading-skeleton';
+import { round } from './MathUtil';
 import {
   getKPI_1,
   getTopJiraClosedTeam,
@@ -12,8 +14,9 @@ import {
   convertToKeys,
   convertToGraph,
   getCriticalNotCompleted,
+  getPercentageOfBugs,
+  converPercentageBugsToGraphData,
 } from './KPIService';
-import Skeleton from 'react-loading-skeleton';
 
 const OverviewBody = ({ projectName }) => {
   const [kpi1_List, setKpi1_List] = React.useState([]);
@@ -23,6 +26,14 @@ const OverviewBody = ({ projectName }) => {
   //make api call
   useEffect(() => {
     getKPI_1(projectName).then((data) => {
+      data.forEach((kpi) => {
+        for (var key in kpi) {
+          if (key === 'id' || key === 'teamType') {
+            continue;
+          }
+          kpi[key] = round(kpi[key], 0);
+        }
+      });
       setKpi1_List(data);
       setTopTeamsList(getTopTeamsByJiraClosed(data));
       setNeedsAttentionList(getCriticalNotCompleted(data));
@@ -64,7 +75,7 @@ const OverviewBody = ({ projectName }) => {
       <div
         id="Insights Main Area"
         className="grid grid-cols-6 grid-flow-row space-y-10 space-x-5">
-        <div className="col-span-6 sm:col-start-2 sm:col-end-6">
+        <div className="col-span-6 ">
           <OverviewCard
             cardTitle="Issue Completion"
             cardText={
@@ -162,6 +173,24 @@ const OverviewBody = ({ projectName }) => {
             graphData={convertToGraph(getCriticalNotCompleted(kpi1_List))}
             //graphKeys={convertToKeys(getTopTeamsByJiraClosed(kpi1_List))}
             forIndexBy={'teamType'}></OverviewCard>
+        </div>
+        <div className="col-span-6">
+          <OverviewCard
+            cardTitle="Percentage of bugs"
+            cardText={
+              <>
+                <p>
+                  <span className="text-[#5DD39E]">
+                    {getPercentageOfBugs(kpi1_List) || <Skeleton></Skeleton>}%
+                  </span>
+                  &nbsp;Of all issues are bugs.
+                </p>
+              </>
+            }
+            graphType={'Pie'}
+            graphData={converPercentageBugsToGraphData(
+              kpi1_List,
+            )}></OverviewCard>
         </div>
       </div>
       <div className="mt-5">

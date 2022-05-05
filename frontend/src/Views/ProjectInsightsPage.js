@@ -3,6 +3,11 @@ import { useParams } from 'react-router';
 import BodyHeader from '../Components/BodyHeader';
 import KpiNavBar from '../Features/ProjectInsights/KpiNavBar';
 import OverviewBody from '../Features/ProjectInsights/OverviewBody';
+import RequestComposition from '../Features/ProjectInsights/RequestComposition';
+import RequestOverTime from '../Features/ProjectInsights/RequestOverTime';
+import PropTypes from 'prop-types';
+import { getProjectNameFromUrl } from '../Features/ProjectInsights/MathUtil';
+
 const ProjectInsightsPage = () => {
   const [activeInsights, setActiveInsights] = React.useState(0);
   //const [kpi1_List, setKpi1_List] = React.useState([]);
@@ -15,7 +20,7 @@ const ProjectInsightsPage = () => {
   return (
     <div>
       <BodyHeader
-        title="Project Insights Page"
+        title={`Project Insights - ${getProjectNameFromUrl(name)}`}
         subtext="View keyinsights for project"
         showButton={false}
       />
@@ -29,10 +34,22 @@ const ProjectInsightsPage = () => {
               <OverviewBody projectName={name} />
             </>
           )}
+          {activeInsights === 1 && (
+            <>
+              <RequestComposition projectName={name} />
+            </>
+          )}
+          {activeInsights === 4 && (
+            <>
+              <RequestOverTime projectName={name} />
+            </>
+          )}
         </div>
       </div>
     </div>
   );
 };
+
+ProjectInsightsPage.propTypes = {};
 
 export default ProjectInsightsPage;
