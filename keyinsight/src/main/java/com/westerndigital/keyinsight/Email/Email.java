@@ -1,4 +1,4 @@
-package com.westerndigital.keyinsight.SpringEmail;
+package com.westerndigital.keyinsight.Email;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
@@ -13,7 +13,7 @@ import io.github.cdimascio.dotenv.Dotenv;
 
 import java.util.Properties;
 
-public class SpringEmail {
+public class Email {
     @Bean
     public MailSender getMailSender(){
         Dotenv dotenv = Dotenv.load();
@@ -34,11 +34,11 @@ public class SpringEmail {
         return mailSender;
     }
 
-    @Bean
-    public SimpleMailMessage templateSimpleMailMessage() {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setText("This is a template message:\n%s\n");
-        return message;
-    }
+    // @Bean
+    // public SimpleMailMessage templateSimpleMailMessage() {
+    //     SimpleMailMessage message = new SimpleMailMessage();
+    //     message.setText("This is a template message:\n%s\n");
+    //     return message;
+    // }
 
 }

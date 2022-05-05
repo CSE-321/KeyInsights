@@ -1,4 +1,4 @@
-package com.westerndigital.keyinsight.SpringEmail;
+package com.westerndigital.keyinsight.Email;
 
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 
 @Component
-public class SpringEmailSender implements SpringEmailService{
+public class EmailServiceImplementation implements EmailService{
     @Autowired
     public JavaMailSender mailSender;
 
