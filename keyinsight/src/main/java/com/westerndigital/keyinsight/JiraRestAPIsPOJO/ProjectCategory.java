@@ -1,4 +1,4 @@
-package com.westerndigital.keyinsight.JiraRestAPIDTOs;
+package com.westerndigital.keyinsight.JiraRestAPIsPOJO;
 
 public class ProjectCategory {
     private String self;
@@ -39,6 +39,18 @@ public class ProjectCategory {
     public void setDescription(String description) {
         this.description = description;
     }
+
+
+    @Override
+    public String toString() {
+        return "{" +
+            " self='" + getSelf() + "'" +
+            ", id='" + getId() + "'" +
+            ", name='" + getName() + "'" +
+            ", description='" + getDescription() + "'" +
+            "}";
+    }
+
 
 
 }

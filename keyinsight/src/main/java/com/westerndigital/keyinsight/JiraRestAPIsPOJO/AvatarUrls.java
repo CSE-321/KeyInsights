@@ -1,11 +1,9 @@
-package com.westerndigital.keyinsight.JiraRestAPIDTOs;
+package com.westerndigital.keyinsight.JiraRestAPIsPOJO;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import lombok.Data;
-
-@Data
 public class AvatarUrls {
+    //https://stackoverflow.com/questions/54179178/com-fasterxml-jackson-databind-exc-unrecognizedpropertyexception-with-json-array
     @JsonProperty("48x48")
     private String size48;
     @JsonProperty("24x24")
@@ -48,5 +46,17 @@ public class AvatarUrls {
     public void setSize32(String size32) {
         this.size32 = size32;
     }
+
+
+    @Override
+    public String toString() {
+        return "{" +
+            " size48='" + getSize48() + "'" +
+            ", size24='" + getSize24() + "'" +
+            ", size16='" + getSize16() + "'" +
+            ", size32='" + getSize32() + "'" +
+            "}";
+    }
+
 
 }

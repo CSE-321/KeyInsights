@@ -4,67 +4,79 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import com.westerndigital.keyinsight.JiraIssue.JiraIssueRepository;
-import com.westerndigital.keyinsight.JiraProject.JiraProject;
-import com.westerndigital.keyinsight.JiraProject.JiraProjectRepository;
-import com.westerndigital.keyinsight.JiraRestAPIDTOs.ProjectJson;
-import com.westerndigital.keyinsight.JiraIssue.JiraIssue;
-import com.westerndigital.keyinsight.NotificationSettings.NotificationSettingsRepository;
-import com.westerndigital.keyinsight.JiraServer.JiraServerRepository;
-import com.westerndigital.keyinsight.JiraUser.JiraUserRepository;
+// import com.westerndigital.keyinsight.JiraIssue.JiraIssueRepository;
+// import com.westerndigital.keyinsight.JiraProject.JiraProject;
+// import com.westerndigital.keyinsight.JiraProject.JiraProjectRepository;
+// import com.westerndigital.keyinsight.JiraIssue.JiraIssue;
+// import com.westerndigital.keyinsight.NotificationSettings.NotificationSettingsRepository;
+// import com.westerndigital.keyinsight.JiraServer.JiraServerRepository;
+// import com.westerndigital.keyinsight.JiraUser.JiraUserRepository;
+
+// import java.time.OffsetDateTime;
+// import java.time.ZoneId;
+// import java.time.format.DateTimeFormatter;
+// import java.time.Instant;
+// import java.util.ArrayList;
+// import java.util.HashMap;
+// import java.util.stream.StreamSupport;
+
+import java.util.List;
 
 import io.github.cdimascio.dotenv.Dotenv;
 import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
-
-import java.time.OffsetDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.stream.StreamSupport;
+import kong.unirest.JsonNode;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import com.westerndigital.keyinsight.JiraRestAPIsPOJO.GetAllProjectsPOJO.ProjectJson;
+import com.westerndigital.keyinsight.JiraRestAPIsPOJO.GetSingleProjectPOJO.SingleProjectJson;
 
 @Component
 public class LoadDatabase implements CommandLineRunner {
 
         // inject repositories
-        @Autowired
-        private JiraUserRepository userRepository;
+        // @Autowired
+        // private JiraUserRepository userRepository;
 
-        @Autowired
-        private JiraServerRepository serverRepository;
+        // @Autowired
+        // private JiraServerRepository serverRepository;
 
-        @Autowired
-        private JiraProjectRepository projectRepository;
+        // @Autowired
+        // private JiraProjectRepository projectRepository;
 
-        @Autowired
-        private JiraIssueRepository issueRepository;
+        // @Autowired
+        // private JiraIssueRepository issueRepository;
 
-        @Autowired
-        private NotificationSettingsRepository notificationSettingsRepository;
+        // @Autowired
+        // private NotificationSettingsRepository notificationSettingsRepository;
 
         @Override
         public void run(String... args) throws Exception {
                 Dotenv dotenv = Dotenv.load();
+                //https://stackoverflow.com/questions/20832015/how-do-i-iterate-over-a-json-response-using-jackson-api-of-a-list-inside-a-list
+                //http://makeseleniumeasy.com/2020/06/11/rest-assured-tutorial-30-how-to-create-pojo-classes-of-a-json-array-payload/
                 ObjectMapper mapper = new ObjectMapper();
-                mapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
-                HttpResponse<kong.unirest.JsonNode> response = Unirest.get("http://jira.cloud-stm.com:8080/rest/api/2/project")
+                //https://stackoverflow.com/questions/58539657/com-fasterxml-jackson-databind-exc-mismatchedinputexception-cannot-deserialize
+                mapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY); 
+                //https://docs.atlassian.com/software/jira/docs/api/REST/8.13.10/
+                HttpResponse<JsonNode> getAllProjects = Unirest.get(dotenv.get("JIRA_URL")+"/rest/api/latest/project")
                 .basicAuth(dotenv.get("JIRA_USERNAME"), dotenv.get("JIRA_PASSWORD"))
                 .header("Accept", "application/json")
                 .asJson();
-                List<ProjectJson> projectJsons= mapper.readValue(response.getBody().getArray().toString(), new TypeReference<List<ProjectJson>>(){});
+                List<ProjectJson> projectJsons= mapper.readValue(getAllProjects.getBody().getArray().toString(), new TypeReference<List<ProjectJson>>(){});
 
                 for(ProjectJson projectJson : projectJsons){
                         System.out.println(projectJson.getName());
                         System.out.println(projectJson.getId());
                         System.out.println(projectJson.getProjectTypeKey());
+                        HttpResponse<JsonNode> getSingleProject = Unirest.get(dotenv.get("JIRA_URL")+"/rest/api/latest/project/"+projectJson.getId())
+                        .basicAuth(dotenv.get("JIRA_USERNAME"), dotenv.get("JIRA_PASSWORD"))
+                        .header("Accept", "application/json")
+                        .asJson();
+                        List<SingleProjectJson> singleProjectJsons= mapper.readValue(getSingleProject.getBody().getArray().toString(), new TypeReference<List<SingleProjectJson>>(){});
                 }
 
 

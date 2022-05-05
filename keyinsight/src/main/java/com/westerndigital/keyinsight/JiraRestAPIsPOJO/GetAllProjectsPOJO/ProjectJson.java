@@ -1,9 +1,9 @@
-package com.westerndigital.keyinsight.JiraRestAPIDTOs;
+package com.westerndigital.keyinsight.JiraRestAPIsPOJO.GetAllProjectsPOJO;
 
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.westerndigital.keyinsight.JiraRestAPIsPOJO.AvatarUrls;
+import com.westerndigital.keyinsight.JiraRestAPIsPOJO.ProjectCategory;
 
 public class ProjectJson {
     private String expand;
@@ -80,6 +80,22 @@ public class ProjectJson {
     public void setProjectTypeKey(String projectTypeKey) {
         this.projectTypeKey = projectTypeKey;
     }
+
+
+    @Override
+    public String toString() {
+        return "{" +
+            " expand='" + getExpand() + "'" +
+            ", self='" + getSelf() + "'" +
+            ", id='" + getId() + "'" +
+            ", key='" + getKey() + "'" +
+            ", name='" + getName() + "'" +
+            ", avatarUrls='" + getAvatarUrls() + "'" +
+            ", projectCategory='" + getProjectCategory() + "'" +
+            ", projectTypeKey='" + getProjectTypeKey() + "'" +
+            "}";
+    }
+
     
 }
 
