@@ -53,33 +53,23 @@ public class Notification {
     private String projectName;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn
-    // do not save value during update since it is a foreign key
-    @Transient  
+    @JoinColumn(name = "ticket_status_setting_id")
     private TicketStatusSetting ticketStatusSetting;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn
-    // do not save value during update since it is a foreign key
-    @Transient
+    @JoinColumn(name = "sprint_status_setting_id")
     private SprintStatusSetting sprintStatusSetting;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn
-    // do not save value during update since it is a foreign key
-    @Transient
+    @JoinColumn(name = "unfinished_ticket_setting_id")
     private UnfinishedTicketSetting unfinishedTicketSetting;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn
-    // do not save value during update since it is a foreign key
-    @Transient
+    @JoinColumn(name = "project_digest_report_setting_id")
     private ProjectDigestReportSetting projectDigestReportSetting;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn
-    // do not save value during update since it is a foreign key
-    @Transient
+    @JoinColumn(name = "workload_digest_report_setting_id")
     private WorkloadDigestReportSetting workloadDigestReportSetting;
 
     public Notification() {}
