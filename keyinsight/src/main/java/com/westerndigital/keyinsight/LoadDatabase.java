@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import com.westerndigital.keyinsight.JiraIssue.JiraIssueRepository;
 import com.westerndigital.keyinsight.JiraProject.JiraProject;
 import com.westerndigital.keyinsight.JiraProject.JiraProjectRepository;
+import com.westerndigital.keyinsight.JiraRestAPIDTOs.ProjectJson;
 import com.westerndigital.keyinsight.JiraIssue.JiraIssue;
 import com.westerndigital.keyinsight.NotificationSettings.NotificationSettingsRepository;
 import com.westerndigital.keyinsight.JiraServer.JiraServerRepository;
@@ -20,9 +21,13 @@ import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.stream.StreamSupport;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -48,24 +53,19 @@ public class LoadDatabase implements CommandLineRunner {
         @Override
         public void run(String... args) throws Exception {
                 Dotenv dotenv = Dotenv.load();
-
+                ObjectMapper mapper = new ObjectMapper();
+                mapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
                 HttpResponse<kong.unirest.JsonNode> response = Unirest.get("http://jira.cloud-stm.com:8080/rest/api/2/project")
-                .basicAuth("ucm-cse-321", "Merced321")
+                .basicAuth(dotenv.get("JIRA_USERNAME"), dotenv.get("JIRA_PASSWORD"))
                 .header("Accept", "application/json")
                 .asJson();
-                System.out.println(response.getBody());
+                List<ProjectJson> projectJsons= mapper.readValue(response.getBody().getArray().toString(), new TypeReference<List<ProjectJson>>(){});
 
-
-
-
-
-
-
-
-
-
-
-
+                for(ProjectJson projectJson : projectJsons){
+                        System.out.println(projectJson.getName());
+                        System.out.println(projectJson.getId());
+                        System.out.println(projectJson.getProjectTypeKey());
+                }
 
 
 
