@@ -9,6 +9,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+import javax.transaction.Transactional;
 
 import com.westerndigital.keyinsight.JiraUser.JiraUser;
 import com.westerndigital.keyinsight.Notification.Settings
@@ -27,6 +29,7 @@ import lombok.Getter;
 @Entity
 @Data
 @Table(name = "notification")
+@Transactional
 public class Notification {
     
     @Id
@@ -41,9 +44,9 @@ public class Notification {
 
     // remove the auto generated getter otherwise there will be a loop in the
     // query result
-    @Getter(value = AccessLevel.NONE)
-    @OneToOne
-    private JiraUser jiraUser;
+    // @Getter(value = AccessLevel.NONE)
+    // @OneToOne
+    // private JiraUser jiraUser;
 
     private String jiraUsername;
     private String serverUrl;
@@ -51,30 +54,40 @@ public class Notification {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn
+    // do not save value during update since it is a foreign key
+    @Transient  
     private TicketStatusSetting ticketStatusSetting;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn
+    // do not save value during update since it is a foreign key
+    @Transient
     private SprintStatusSetting sprintStatusSetting;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn
+    // do not save value during update since it is a foreign key
+    @Transient
     private UnfinishedTicketSetting unfinishedTicketSetting;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn
+    // do not save value during update since it is a foreign key
+    @Transient
     private ProjectDigestReportSetting projectDigestReportSetting;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn
+    // do not save value during update since it is a foreign key
+    @Transient
     private WorkloadDigestReportSetting workloadDigestReportSetting;
 
     public Notification() {}
 
-    public Notification(JiraUser jiraUser, String serverUrl, 
+    public Notification(String jiraUsername, String serverUrl, 
         String projectName) {
 
-        this.jiraUser = jiraUser;
+        this.jiraUsername = jiraUsername;
         this.serverUrl = serverUrl;
         this.projectName = projectName;
 
