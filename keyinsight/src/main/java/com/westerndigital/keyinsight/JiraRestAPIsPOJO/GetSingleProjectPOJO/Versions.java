@@ -14,10 +14,10 @@ public class Versions {
     private Boolean archived;
     private Boolean released;
     private LocalDate startDate;
-    private LocalDate releasedDate;
+    private LocalDate releaseDate;
     private Boolean overdue;
-    private LocalDate userStartDate;
-    private LocalDate userReleaseDate;
+    // private LocalDate userStartDate;
+    // private LocalDate userReleaseDate;
     private String projectId;
 
     public Versions() {
@@ -79,12 +79,12 @@ public class Versions {
         this.startDate = startDate;
     }
 
-    public LocalDate getReleasedDate() {
-        return this.releasedDate;
+    public LocalDate getReleaseDate() {
+        return this.releaseDate;
     }
 
-    public void setReleasedDate(LocalDate releasedDate) {
-        this.releasedDate = releasedDate;
+    public void setReleaseDate(LocalDate releaseDate) {
+        this.releaseDate = releaseDate;
     }
 
     public Boolean isOverdue() {
@@ -99,21 +99,21 @@ public class Versions {
         this.overdue = overdue;
     }
 
-    public LocalDate getUserStartDate() {
-        return this.userStartDate;
-    }
+    // public LocalDate getUserStartDate() {
+    //     return this.userStartDate;
+    // }
 
-    public void setUserStartDate(LocalDate userStartDate) {
-        this.userStartDate = userStartDate;
-    }
+    // public void setUserStartDate(LocalDate userStartDate) {
+    //     this.userStartDate = userStartDate;
+    // }
 
-    public LocalDate getUserReleaseDate() {
-        return this.userReleaseDate;
-    }
+    // public LocalDate getUserReleaseDate() {
+    //     return this.userReleaseDate;
+    // }
 
-    public void setUserReleaseDate(LocalDate userReleaseDate) {
-        this.userReleaseDate = userReleaseDate;
-    }
+    // public void setUserReleaseDate(LocalDate userReleaseDate) {
+    //     this.userReleaseDate = userReleaseDate;
+    // }
 
     public String getProjectId() {
         return this.projectId;
@@ -132,10 +132,10 @@ public class Versions {
             ", archived='" + isArchived() + "'" +
             ", released='" + isReleased() + "'" +
             ", startDate='" + getStartDate() + "'" +
-            ", releasedDate='" + getReleasedDate() + "'" +
+            ", releaseDate='" + getReleaseDate() + "'" +
             ", overdue='" + isOverdue() + "'" +
-            ", userStartDate='" + getUserStartDate() + "'" +
-            ", userReleaseDate='" + getUserReleaseDate() + "'" +
+            // ", userStartDate='" + getUserStartDate() + "'" +
+            // ", userReleaseDate='" + getUserReleaseDate() + "'" +
             ", projectId='" + getProjectId() + "'" +
             "}";
     }

@@ -30,8 +30,9 @@ import kong.unirest.JsonNode;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.westerndigital.keyinsight.JiraRestAPIsPOJO.GetAllProjectsPOJO.ProjectJson;
+import com.westerndigital.keyinsight.JiraRestAPIsPOJO.GetSingleProjectPOJO.Lead;
 import com.westerndigital.keyinsight.JiraRestAPIsPOJO.GetSingleProjectPOJO.SingleProjectJson;
 
 @Component
@@ -58,9 +59,11 @@ public class LoadDatabase implements CommandLineRunner {
                 Dotenv dotenv = Dotenv.load();
                 //https://stackoverflow.com/questions/20832015/how-do-i-iterate-over-a-json-response-using-jackson-api-of-a-list-inside-a-list
                 //http://makeseleniumeasy.com/2020/06/11/rest-assured-tutorial-30-how-to-create-pojo-classes-of-a-json-array-payload/
-                ObjectMapper mapper = new ObjectMapper();
+                ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
                 //https://stackoverflow.com/questions/58539657/com-fasterxml-jackson-databind-exc-mismatchedinputexception-cannot-deserialize
                 mapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY); 
+                //https://stackoverflow.com/questions/7421474/how-can-i-tell-jackson-to-ignore-a-property-for-which-i-dont-have-control-over
+                mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
                 //https://docs.atlassian.com/software/jira/docs/api/REST/8.13.10/
                 HttpResponse<JsonNode> getAllProjects = Unirest.get(dotenv.get("JIRA_URL")+"/rest/api/latest/project")
                 .basicAuth(dotenv.get("JIRA_USERNAME"), dotenv.get("JIRA_PASSWORD"))
@@ -77,6 +80,20 @@ public class LoadDatabase implements CommandLineRunner {
                         .header("Accept", "application/json")
                         .asJson();
                         List<SingleProjectJson> singleProjectJsons= mapper.readValue(getSingleProject.getBody().getArray().toString(), new TypeReference<List<SingleProjectJson>>(){});
+
+                        for(SingleProjectJson singleProjectJson : singleProjectJsons){
+                                List<Lead> projectLeads = singleProjectJson.getLead();
+                                for(Lead projectLead : projectLeads){
+                                        System.out.println(projectLead.getDisplayName());
+                                }
+                                String jqlQuery = null;
+                                Integer startLocation = 0;
+                                Integer maxResults = 50;
+                                HttpResponse<JsonNode> getIssues = Unirest.get(dotenv.get("JIRA_URL")+"/rest/api/latest/search?jql="+jqlQuery+"&startAt"+startLocation+"&maxResults="+maxResults)
+                                .basicAuth(dotenv.get("JIRA_USERNAME"), dotenv.get("JIRA_PASSWORD"))
+                                .header("Accept", "application/json")
+                                .asJson();
+                        }
                 }
 
 
