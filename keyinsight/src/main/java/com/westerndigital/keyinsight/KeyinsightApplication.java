@@ -22,7 +22,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.StreamSupport;
 
 import com.atlassian.jira.rest.client.api.domain.BasicProject;
+import com.atlassian.jira.rest.client.api.domain.BasicProjectRole;
 import com.atlassian.jira.rest.client.api.domain.Project;
+import com.atlassian.jira.rest.client.api.domain.ProjectRole;
 import com.atlassian.jira.rest.client.api.domain.User;
 import com.atlassian.jira.rest.client.api.domain.Version;
 import com.atlassian.jira.rest.client.api.domain.Issue;
@@ -88,16 +90,17 @@ public class KeyinsightApplication {
 			// // System.out.println(singleIssue.getCreationDate());
 			// // System.out.println(singleIssue.getCreationDate().toLocalDateTime());
 			// System.out.println(offsetDateTime);
-			// Iterable<BasicProject> allProjects = myJiraClient.getAllProject();
-			// for (BasicProject project : allProjects) {
-			// 	String projectUrl = project.getKey();
-			// 	Project singleProject = myJiraClient.getProject(projectUrl);
-			// 	System.out.println(singleProject.getName());
-			// 	Iterable<Version> projectVersions = singleProject.getVersions();
-			// 	for(Version version : projectVersions){
-			// 		System.out.println(version.getReleaseDate());
-			// 	}
-			// }
+			Iterable<BasicProject> allProjects = myJiraClient.getAllProject();
+			for (BasicProject project : allProjects) {
+				String projectUrl = project.getKey();
+				Project singleProject = myJiraClient.getProject(projectUrl);
+				URI projectUri = singleProject.getSelf();
+				Iterable<ProjectRole> projectRoles = myJiraClient.getRoles(projectUri);
+				for(ProjectRole projectRole : projectRoles){
+					System.out.println(projectRole.getActors());
+				}
+				
+			}
 			// 	projectName.add(singleProject.getName());
 			// 	User projectLead = myJiraClient.getUser(singleProject.getLead().getName());
 			// 	projectLeadName.add(projectLead.getDisplayName());

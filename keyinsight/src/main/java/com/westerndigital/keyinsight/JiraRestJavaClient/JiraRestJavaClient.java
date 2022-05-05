@@ -6,6 +6,7 @@ import com.atlassian.jira.rest.client.api.JiraRestClient;
 import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClientFactory;
 import com.atlassian.jira.rest.client.api.domain.Issue;
 import com.atlassian.jira.rest.client.api.domain.Project;
+import com.atlassian.jira.rest.client.api.domain.ProjectRole;
 import com.atlassian.jira.rest.client.api.domain.BasicProject;
 import com.atlassian.jira.rest.client.api.domain.User;
 
@@ -72,6 +73,10 @@ public class JiraRestJavaClient {
 
     public User getUser(String userName) {
         return restClient.getUserClient().getUser(userName).claim();
+    }
+
+    public Iterable<ProjectRole> getRoles(URI projectUri){
+        return restClient.getProjectRolesRestClient().getRoles(projectUri).claim();
     }
 
 }
