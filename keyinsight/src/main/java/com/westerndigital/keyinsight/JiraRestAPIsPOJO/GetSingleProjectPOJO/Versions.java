@@ -11,6 +11,7 @@ public class Versions {
     private String self;
     private String id;
     private String name;
+    private String description;
     private Boolean archived;
     private Boolean released;
     private LocalDate startDate;
@@ -114,6 +115,16 @@ public class Versions {
     // public void setUserReleaseDate(LocalDate userReleaseDate) {
     //     this.userReleaseDate = userReleaseDate;
     // }
+
+
+    public String getDescription() {
+        return this.description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
 
     public String getProjectId() {
         return this.projectId;

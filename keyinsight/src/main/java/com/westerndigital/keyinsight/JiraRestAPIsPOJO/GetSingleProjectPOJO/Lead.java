@@ -1,6 +1,6 @@
 package com.westerndigital.keyinsight.JiraRestAPIsPOJO.GetSingleProjectPOJO;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import com.westerndigital.keyinsight.JiraRestAPIsPOJO.AvatarUrls;
 
@@ -8,7 +8,7 @@ public class Lead {
     private String self;
     private String key;
     private String name;
-    private List<AvatarUrls> avatarUrls;
+    private ArrayList<AvatarUrls> avatarUrls;
     private String displayName;
     private Boolean active;
 
@@ -39,11 +39,11 @@ public class Lead {
         this.name = name;
     }
 
-    public List<AvatarUrls> getAvatarUrls() {
+    public ArrayList<AvatarUrls> getAvatarUrls() {
         return this.avatarUrls;
     }
 
-    public void setAvatarUrls(List<AvatarUrls> avatarUrls) {
+    public void setAvatarUrls(ArrayList<AvatarUrls> avatarUrls) {
         this.avatarUrls = avatarUrls;
     }
 

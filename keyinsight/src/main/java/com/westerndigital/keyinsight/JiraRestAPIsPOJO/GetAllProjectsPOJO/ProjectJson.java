@@ -1,6 +1,6 @@
 package com.westerndigital.keyinsight.JiraRestAPIsPOJO.GetAllProjectsPOJO;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import com.westerndigital.keyinsight.JiraRestAPIsPOJO.AvatarUrls;
 import com.westerndigital.keyinsight.JiraRestAPIsPOJO.ProjectCategory;
@@ -11,8 +11,8 @@ public class ProjectJson {
     private String id;
     private String key;
     private String name;
-    private List<AvatarUrls> avatarUrls;
-    private List<ProjectCategory> projectCategory;
+    private ArrayList<AvatarUrls> avatarUrls;
+    private ArrayList<ProjectCategory> projectCategory;
     private String projectTypeKey;
 
     public ProjectJson(){}
@@ -57,19 +57,19 @@ public class ProjectJson {
         this.name = name;
     }
 
-    public List<AvatarUrls> getAvatarUrls() {
+    public ArrayList<AvatarUrls> getAvatarUrls() {
         return this.avatarUrls;
     }
 
-    public void setAvatarUrls(List<AvatarUrls> avatarUrls) {
+    public void setAvatarUrls(ArrayList<AvatarUrls> avatarUrls) {
         this.avatarUrls = avatarUrls;
     }
 
-    public List<ProjectCategory> getProjectCategory() {
+    public ArrayList<ProjectCategory> getProjectCategory() {
         return this.projectCategory;
     }
 
-    public void setProjectCategory(List<ProjectCategory> projectCategory) {
+    public void setProjectCategory(ArrayList<ProjectCategory> projectCategory) {
         this.projectCategory = projectCategory;
     }
 

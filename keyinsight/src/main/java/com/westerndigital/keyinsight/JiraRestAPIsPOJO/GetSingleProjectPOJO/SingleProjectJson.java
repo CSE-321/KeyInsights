@@ -1,6 +1,6 @@
 package com.westerndigital.keyinsight.JiraRestAPIsPOJO.GetSingleProjectPOJO;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import com.westerndigital.keyinsight.JiraRestAPIsPOJO.AvatarUrls;
 import com.westerndigital.keyinsight.JiraRestAPIsPOJO.ProjectCategory;
@@ -11,15 +11,15 @@ public class SingleProjectJson {
     private String id;
     private String key;
     private String description;
-    private List<Lead> lead;
-    private List<String> components;
-    private List<IssueTypes> issueTypes;
+    private ArrayList<Lead> lead;
+    private ArrayList<String> components;
+    private ArrayList<IssueTypes> issueTypes;
     private String assigneeType;
-    private List<Versions> versions;
+    private ArrayList<Versions> versions;
     private String name;
-    private List<Roles> roles;
-    private List<AvatarUrls> avatarUrls;
-    private List<ProjectCategory> projectCategory;
+    private ArrayList<Roles> roles;
+    private ArrayList<AvatarUrls> avatarUrls;
+    private ArrayList<ProjectCategory> projectCategory;
     private String projectTypeKey;
     private Boolean archived;
 
@@ -66,27 +66,27 @@ public class SingleProjectJson {
         this.description = description;
     }
 
-    public List<Lead> getLead() {
+    public ArrayList<Lead> getLead() {
         return this.lead;
     }
 
-    public void setLead(List<Lead> lead) {
+    public void setLead(ArrayList<Lead> lead) {
         this.lead = lead;
     }
 
-    public List<String> getComponents() {
+    public ArrayList<String> getComponents() {
         return this.components;
     }
 
-    public void setComponents(List<String> components) {
+    public void setComponents(ArrayList<String> components) {
         this.components = components;
     }
 
-    public List<IssueTypes> getIssueTypes() {
+    public ArrayList<IssueTypes> getIssueTypes() {
         return this.issueTypes;
     }
 
-    public void setIssueTypes(List<IssueTypes> issueTypes) {
+    public void setIssueTypes(ArrayList<IssueTypes> issueTypes) {
         this.issueTypes = issueTypes;
     }
 
@@ -98,11 +98,11 @@ public class SingleProjectJson {
         this.assigneeType = assigneeType;
     }
 
-    public List<Versions> getVersions() {
+    public ArrayList<Versions> getVersions() {
         return this.versions;
     }
 
-    public void setVersions(List<Versions> versions) {
+    public void setVersions(ArrayList<Versions> versions) {
         this.versions = versions;
     }
 
@@ -114,27 +114,27 @@ public class SingleProjectJson {
         this.name = name;
     }
 
-    public List<Roles> getRoles() {
+    public ArrayList<Roles> getRoles() {
         return this.roles;
     }
 
-    public void setRoles(List<Roles> roles) {
+    public void setRoles(ArrayList<Roles> roles) {
         this.roles = roles;
     }
 
-    public List<AvatarUrls> getAvatarUrls() {
+    public ArrayList<AvatarUrls> getAvatarUrls() {
         return this.avatarUrls;
     }
 
-    public void setAvatarUrls(List<AvatarUrls> avatarUrls) {
+    public void setAvatarUrls(ArrayList<AvatarUrls> avatarUrls) {
         this.avatarUrls = avatarUrls;
     }
 
-    public List<ProjectCategory> getProjectCategory() {
+    public ArrayList<ProjectCategory> getProjectCategory() {
         return this.projectCategory;
     }
 
-    public void setProjectCategory(List<ProjectCategory> projectCategory) {
+    public void setProjectCategory(ArrayList<ProjectCategory> projectCategory) {
         this.projectCategory = projectCategory;
     }
 
