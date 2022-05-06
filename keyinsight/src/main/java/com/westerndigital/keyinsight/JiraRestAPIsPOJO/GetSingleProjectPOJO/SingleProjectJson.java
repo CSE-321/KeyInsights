@@ -11,14 +11,14 @@ public class SingleProjectJson {
     private String id;
     private String key;
     private String description;
-    private ArrayList<Lead> lead;
+    private Lead lead;
     private ArrayList<String> components;
     private ArrayList<IssueTypes> issueTypes;
     private String assigneeType;
     private ArrayList<Versions> versions;
     private String name;
     private ArrayList<Roles> roles;
-    private ArrayList<AvatarUrls> avatarUrls;
+    private AvatarUrls avatarUrls;
     private ArrayList<ProjectCategory> projectCategory;
     private String projectTypeKey;
     private Boolean archived;
@@ -66,11 +66,11 @@ public class SingleProjectJson {
         this.description = description;
     }
 
-    public ArrayList<Lead> getLead() {
+    public Lead getLead() {
         return this.lead;
     }
 
-    public void setLead(ArrayList<Lead> lead) {
+    public void setLead(Lead lead) {
         this.lead = lead;
     }
 
@@ -122,11 +122,11 @@ public class SingleProjectJson {
         this.roles = roles;
     }
 
-    public ArrayList<AvatarUrls> getAvatarUrls() {
+    public AvatarUrls getAvatarUrls() {
         return this.avatarUrls;
     }
 
-    public void setAvatarUrls(ArrayList<AvatarUrls> avatarUrls) {
+    public void setAvatarUrls(AvatarUrls avatarUrls) {
         this.avatarUrls = avatarUrls;
     }
 
@@ -156,6 +156,28 @@ public class SingleProjectJson {
 
     public void setArchived(Boolean archived) {
         this.archived = archived;
+    }
+
+    @Override
+    public String toString() {
+        return "{" +
+            " expand='" + getExpand() + "'" +
+            ", self='" + getSelf() + "'" +
+            ", id='" + getId() + "'" +
+            ", key='" + getKey() + "'" +
+            ", description='" + getDescription() + "'" +
+            ", lead='" + getLead() + "'" +
+            ", components='" + getComponents() + "'" +
+            ", issueTypes='" + getIssueTypes() + "'" +
+            ", assigneeType='" + getAssigneeType() + "'" +
+            ", versions='" + getVersions() + "'" +
+            ", name='" + getName() + "'" +
+            ", roles='" + getRoles() + "'" +
+            ", avatarUrls='" + getAvatarUrls() + "'" +
+            ", projectCategory='" + getProjectCategory() + "'" +
+            ", projectTypeKey='" + getProjectTypeKey() + "'" +
+            ", archived='" + isArchived() + "'" +
+            "}";
     }
 
 }

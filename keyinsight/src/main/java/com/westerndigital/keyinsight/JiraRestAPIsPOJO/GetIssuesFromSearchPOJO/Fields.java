@@ -17,36 +17,22 @@ public class Fields {
     private Priority priority;
     //story points
     @JsonProperty("customfield_10618")
-    private Double storyPoints;
+    private Double storypoints;
     private Assignee assignee;
+    private OffsetDateTime updated;
     private Status status;
     private String description;
     //subtype
-    private Type customfield_10451;
+    @JsonProperty("customfield_10451")
+    private Type subtype;
     //type
-    private Type customfield_12628;
+    @JsonProperty("customfield_12628")
+    private Type secondtype;
     private String summary;
     private Creator creator;
     private LocalDate duedate;
 
     public Fields() {
-    }
-
-    public Fields(IssueType issuetype, ProjectJson project, Resolution resolution, OffsetDateTime resolutiondate, OffsetDateTime created, Priority priority, Double storyPoints, Assignee assignee, Status status, String description, Type customfield_12628, String summary, Creator creator, LocalDate duedate) {
-        this.issuetype = issuetype;
-        this.project = project;
-        this.resolution = resolution;
-        this.resolutiondate = resolutiondate;
-        this.created = created;
-        this.priority = priority;
-        this.storyPoints = storyPoints;
-        this.assignee = assignee;
-        this.status = status;
-        this.description = description;
-        this.customfield_12628 = customfield_12628;
-        this.summary = summary;
-        this.creator = creator;
-        this.duedate = duedate;
     }
 
     public IssueType getIssuetype() {
@@ -97,12 +83,12 @@ public class Fields {
         this.priority = priority;
     }
 
-    public Double getstoryPoints() {
-        return this.storyPoints;
+    public Double getStorypoints() {
+        return this.storypoints;
     }
 
-    public void setstoryPoints(Double storyPoints) {
-        this.storyPoints = storyPoints;
+    public void setStorypoints(Double storypoints) {
+        this.storypoints = storypoints;
     }
 
     public Assignee getAssignee() {
@@ -111,6 +97,14 @@ public class Fields {
 
     public void setAssignee(Assignee assignee) {
         this.assignee = assignee;
+    }
+
+    public OffsetDateTime getUpdated() {
+        return this.updated;
+    }
+
+    public void setUpdated(OffsetDateTime updated) {
+        this.updated = updated;
     }
 
     public Status getStatus() {
@@ -129,12 +123,20 @@ public class Fields {
         this.description = description;
     }
 
-    public Type getCustomfield_12628() {
-        return this.customfield_12628;
+    public Type getSubtype() {
+        return this.subtype;
     }
 
-    public void setCustomfield_12628(Type customfield_12628) {
-        this.customfield_12628 = customfield_12628;
+    public void setSubtype(Type subtype) {
+        this.subtype = subtype;
+    }
+
+    public Type getSecondtype() {
+        return this.secondtype;
+    }
+
+    public void setSecondtype(Type secondtype) {
+        this.secondtype = secondtype;
     }
 
     public String getSummary() {
@@ -161,92 +163,6 @@ public class Fields {
         this.duedate = duedate;
     }
 
-    public Fields issuetype(IssueType issuetype) {
-        setIssuetype(issuetype);
-        return this;
-    }
-
-    public Fields project(ProjectJson project) {
-        setProject(project);
-        return this;
-    }
-
-    public Fields resolution(Resolution resolution) {
-        setResolution(resolution);
-        return this;
-    }
-
-    public Fields resolutiondate(OffsetDateTime resolutiondate) {
-        setResolutiondate(resolutiondate);
-        return this;
-    }
-
-    public Fields created(OffsetDateTime created) {
-        setCreated(created);
-        return this;
-    }
-
-    public Fields priority(Priority priority) {
-        setPriority(priority);
-        return this;
-    }
-
-    public Fields storyPoints(Double storyPoints) {
-        setstoryPoints(storyPoints);
-        return this;
-    }
-
-    public Fields assignee(Assignee assignee) {
-        setAssignee(assignee);
-        return this;
-    }
-
-    public Fields status(Status status) {
-        setStatus(status);
-        return this;
-    }
-
-    public Fields description(String description) {
-        setDescription(description);
-        return this;
-    }
-
-    public Fields customfield_12628(Type customfield_12628) {
-        setCustomfield_12628(customfield_12628);
-        return this;
-    }
-
-    public Fields summary(String summary) {
-        setSummary(summary);
-        return this;
-    }
-
-    public Fields creator(Creator creator) {
-        setCreator(creator);
-        return this;
-    }
-
-    public Fields duedate(LocalDate duedate) {
-        setDuedate(duedate);
-        return this;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == this)
-            return true;
-        if (!(o instanceof Fields)) {
-            return false;
-        }
-        Fields fields = (Fields) o;
-        return Objects.equals(issuetype, fields.issuetype) && Objects.equals(project, fields.project) && Objects.equals(resolution, fields.resolution) && Objects.equals(resolutiondate, fields.resolutiondate) && Objects.equals(created, fields.created) && Objects.equals(priority, fields.priority) && Objects.equals(storyPoints, fields.storyPoints) && Objects.equals(assignee, fields.assignee) && Objects.equals(status, fields.status) && Objects.equals(description, fields.description) && Objects.equals(customfield_12628, fields.customfield_12628) && Objects.equals(summary, fields.summary) && Objects.equals(creator, fields.creator) && Objects.equals(duedate, fields.duedate);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(issuetype, project, resolution, resolutiondate, created, priority, storyPoints, assignee, status, description, customfield_12628, summary, creator, duedate);
-    }
-
     @Override
     public String toString() {
         return "{" +
@@ -256,11 +172,13 @@ public class Fields {
             ", resolutiondate='" + getResolutiondate() + "'" +
             ", created='" + getCreated() + "'" +
             ", priority='" + getPriority() + "'" +
-            ", storyPoints='" + getstoryPoints() + "'" +
+            ", storypoints='" + getStorypoints() + "'" +
             ", assignee='" + getAssignee() + "'" +
+            ", updated='" + getUpdated() + "'" +
             ", status='" + getStatus() + "'" +
             ", description='" + getDescription() + "'" +
-            ", customfield_12628='" + getCustomfield_12628() + "'" +
+            ", subtype='" + getSubtype() + "'" +
+            ", secondtype='" + getSecondtype() + "'" +
             ", summary='" + getSummary() + "'" +
             ", creator='" + getCreator() + "'" +
             ", duedate='" + getDuedate() + "'" +

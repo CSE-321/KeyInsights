@@ -6,5 +6,4 @@ import java.util.Optional;
 
 @Repository
 public interface KPI3Repository extends JpaRepository<KPI3, Integer> {
-    Optional<KPI3> findByCreatedMonth(String createdMonth);
 }

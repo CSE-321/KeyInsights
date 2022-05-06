@@ -29,13 +29,7 @@ public class KPI3Service {
                 .numberOfIssuesCreatedAndResolvedInAMonth(projectName);
         for (Object[] numOfCreatedResolvedIssue : numOfCreatedResolvedIssuesByMonth) {
             KPI3 numberOfIssuesCreatedResolvedInMonth = new KPI3();
-            System.out.println(numOfCreatedResolvedIssue[0]);
-            System.out.println(numOfCreatedResolvedIssue[1]);
-            System.out.println(numOfCreatedResolvedIssue[2]);
-            System.out.println(numOfCreatedResolvedIssue[3]);
-            System.out.println(numOfCreatedResolvedIssue[4]);
-            System.out.println(numOfCreatedResolvedIssue[5]);
-
+            
             String createdMonth = null;
             if (numOfCreatedResolvedIssue[0] != null) {
                 createdMonth = numOfCreatedResolvedIssue[0].toString();
@@ -66,7 +60,7 @@ public class KPI3Service {
                 resolvedJiraStoryPoints = Float.parseFloat(numOfCreatedResolvedIssue[5].toString());
             }
 
-            numberOfIssuesCreatedResolvedInMonth.setTeamType("All Jira Issues");
+            numberOfIssuesCreatedResolvedInMonth.setIssueType("All Jira Issues");
             numberOfIssuesCreatedResolvedInMonth.setCreatedMonth(createdMonth);
             numberOfIssuesCreatedResolvedInMonth.setResolvedMonth(resolvedMonth);
             numberOfIssuesCreatedResolvedInMonth.setCreatedJiraCount(createdJiraCount);
@@ -78,19 +72,13 @@ public class KPI3Service {
 
         }
 
-        List<String> teamTypes = issueRepository.getAllTeamType(projectName);
+        List<String> issueTypes = issueRepository.getAllIssueType(projectName);
 
-        for (String teamType : teamTypes) {
-            ArrayList<Object[]> numOfCreatedResolvedIssuesByMonthAndTeamType = issueRepository
-                    .numberOfIssuesCreatedAndResolvedInAMonthByTeamType(projectName, teamType);
-            for (Object[] numOfCreatedResolvedIssue : numOfCreatedResolvedIssuesByMonthAndTeamType) {
+        for (String issueType : issueTypes) {
+            ArrayList<Object[]> numOfCreatedResolvedIssuesByMonthAndIssueType = issueRepository
+                    .numberOfIssuesCreatedAndResolvedInAMonthByIssueType(projectName, issueType);
+            for (Object[] numOfCreatedResolvedIssue : numOfCreatedResolvedIssuesByMonthAndIssueType) {
                 KPI3 numberOfIssuesCreatedResolvedInMonth = new KPI3();
-                System.out.println(numOfCreatedResolvedIssue[0]);
-                System.out.println(numOfCreatedResolvedIssue[1]);
-                System.out.println(numOfCreatedResolvedIssue[2]);
-                System.out.println(numOfCreatedResolvedIssue[3]);
-                System.out.println(numOfCreatedResolvedIssue[4]);
-                System.out.println(numOfCreatedResolvedIssue[5]);
 
                 String createdMonth = null;
                 if (numOfCreatedResolvedIssue[0] != null) {
@@ -122,7 +110,7 @@ public class KPI3Service {
                     resolvedJiraStoryPoints = Float.parseFloat(numOfCreatedResolvedIssue[5].toString());
                 }
 
-                numberOfIssuesCreatedResolvedInMonth.setTeamType(teamType);
+                numberOfIssuesCreatedResolvedInMonth.setIssueType(issueType);
                 numberOfIssuesCreatedResolvedInMonth.setCreatedMonth(createdMonth);
                 numberOfIssuesCreatedResolvedInMonth.setResolvedMonth(resolvedMonth);
                 numberOfIssuesCreatedResolvedInMonth.setCreatedJiraCount(createdJiraCount);

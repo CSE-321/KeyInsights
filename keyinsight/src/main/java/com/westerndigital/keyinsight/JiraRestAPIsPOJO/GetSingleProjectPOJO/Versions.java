@@ -17,8 +17,6 @@ public class Versions {
     private LocalDate startDate;
     private LocalDate releaseDate;
     private Boolean overdue;
-    // private LocalDate userStartDate;
-    // private LocalDate userReleaseDate;
     private String projectId;
 
     public Versions() {

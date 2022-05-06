@@ -11,297 +11,275 @@ import java.util.List;
 @Service
 
 public class KPI1Service {
-        @Autowired
-        private final JiraIssueRepository issueRepository;
+    @Autowired
+    private final JiraIssueRepository issueRepository;
 
-        @Autowired
-        private final KPI1Repository kpi1Repository;
+    @Autowired
+    private final KPI1Repository kpi1Repository;
 
-        public KPI1Service(JiraIssueRepository issueRepository, KPI1Repository kpi1Repository) {
-                this.issueRepository = issueRepository;
-                this.kpi1Repository = kpi1Repository;
+    public KPI1Service(JiraIssueRepository issueRepository, KPI1Repository kpi1Repository) {
+        this.issueRepository = issueRepository;
+        this.kpi1Repository = kpi1Repository;
+    }
+
+    public List<KPI1> getKPI1PerTeam(String projectName) {
+        ArrayList<KPI1> listofKPI1 = new ArrayList<KPI1>();
+        // String projectName = "B8X4";
+        ArrayList<String> issueTypes = issueRepository.getAllIssueType(projectName);
+
+        String closed = "Closed";
+        String wip = "In Progress";
+        String notStarted = "Waiting";
+        String reopened = "Reopened";
+
+        String bug = "Bug";
+
+        String criticalPriority = "Critical";
+
+        String completed = "Completed";
+
+        String fixed = "Fixed";
+
+        String done = "Done";
+
+        String cancelled = "Project cancelled";
+
+        KPI1 OverviewKPI1 = kpi1Repository.findByIssueType("All Jira Issues").orElse(new KPI1());
+
+        // --------------------------------------
+
+        // Block of code for Total Jira# and story points
+        // ----------------------------------------------------------------------------------------------------
+        Integer totalJiraIssueCount = 0;
+        Double totalJiraIssueStoryPoint = 1.0;
+        ArrayList<Object[]> totalJiraCountAndStoryPoints = issueRepository
+                .totalJiraCountAndStoryPoints(projectName);
+        for (Object[] element : totalJiraCountAndStoryPoints) {
+            totalJiraIssueCount = ((Long) element[0]).intValue();
+            totalJiraIssueStoryPoint = ((Double)element[1] == null) ? 0.0 : (Double)element[1];
+        }
+        // ----------------------------------------------------------------------------------------------------
+
+        // Block of code for Closed Jira# and story points and % of total story points
+        // ----------------------------------------------------------------------------------------------------------
+        Integer totalJiraClosedIssueCount = 0;
+        Double totalJiraClosedIssueStoryPoint = 0.0;
+        ArrayList<Object[]> totalJiraCountAndStoryPointsFromClosed = issueRepository
+                .totalJiraCountAndStoryPointsFromStatus(projectName, closed);
+        for (Object[] element : totalJiraCountAndStoryPointsFromClosed) {
+            totalJiraClosedIssueCount = ((Long) element[0]).intValue();
+            totalJiraClosedIssueStoryPoint = ((Double)element[1] == null) ? 0.0 : (Double)element[1];
+        }
+        // ----------------------------------------------------------------------------------------------------------
+
+        // Block of code for WIP Jira# and story points and % of total story points
+        // -----------------------------------------------------------------------------------------------------------
+        Integer totalJiraWIPIssueCount = 0;
+        Double totalJiraWIPIssueStoryPoint = 0.0;
+        ArrayList<Object[]> totalJiraCountAndStoryPointsFromWIP = issueRepository
+                .totalJiraCountAndStoryPointsFromStatus(projectName, wip);
+        for (Object[] element : totalJiraCountAndStoryPointsFromWIP) {
+            totalJiraWIPIssueCount = ((Long) element[0]).intValue();
+            totalJiraWIPIssueStoryPoint = ((Double)element[1] == null) ? 0.0 : (Double)element[1];
+        }
+        // ------------------------------------------------------------------------------------------------------------
+
+        // Block of code for Not Started Jira# and story points and % of total story
+        // points
+        // -----------------------------------------------------------------------------------------------------------
+        Integer totalJiraNotStartedIssueCount = 0;
+        Double totalJiraNotStartedIssueStoryPoint = 0.0;
+        ArrayList<Object[]> totalJiraCountAndStoryPointsFromNotStarted = issueRepository
+                .totalJiraCountAndStoryPointsFromStatus(projectName, notStarted);
+        for (Object[] element : totalJiraCountAndStoryPointsFromNotStarted) {
+            totalJiraNotStartedIssueCount = ((Long) element[0]).intValue();
+            totalJiraNotStartedIssueStoryPoint = ((Double)element[1] == null) ? 0.0 : (Double)element[1];
+        }
+        // -----------------------------------------------------------------------------------------------------------
+
+        // Line of code for % of bugs in Jira Issues
+        // -----------------------------------------------------------------------------------------------------------
+        int totalJiraBugIssueCount = issueRepository.totalJiraSecondTypeIssueCount(projectName,
+                bug);
+        // -----------------------------------------------------------------------------------------------------------
+
+        // Line of code for % of reopen Jira Issues
+        // -----------------------------------------------------------------------------------------------------------
+        int totalJiraReopenedIssueCount = issueRepository.totalJiraStatusIssueCount(projectName, reopened);
+        // -----------------------------------------------------------------------------------------------------------
+
+        // Line of code for % of critical Jira Issues
+        // -----------------------------------------------------------------------------------------------------------
+        int totalJiraCriticalIssueCount = issueRepository.totalJiraPriorityIssueCount(
+                projectName,
+                criticalPriority);
+        // -----------------------------------------------------------------------------------------------------------
+
+        // Line of code for % of critical not completed Jira Issues
+        // -----------------------------------------------------------------------------------------------------------
+        int totalJiraCriticalNotCompletedIssueCount = issueRepository
+                .totalJiraPriorityOppositeResolutionIssueCount(projectName,
+                        criticalPriority, completed, fixed, done);
+        // -----------------------------------------------------------------------------------------------------------
+
+        // Line of code for % of cancelled Jira Issues
+        // -----------------------------------------------------------------------------------------------------------
+        int totalJiraCancelledIssueCount = issueRepository.totalJiraResolutionIssueCount(
+                projectName,
+                cancelled);
+        // -----------------------------------------------------------------------------------------------------------
+        OverviewKPI1.setIssueType("All Jira Issues");
+        OverviewKPI1.setTotalJiraCount(totalJiraIssueCount);
+        OverviewKPI1.setTotalJiraStoryPoints(totalJiraIssueStoryPoint);
+        OverviewKPI1.setClosedJiraCount(totalJiraClosedIssueCount);
+        OverviewKPI1.setClosedJiraStoryPoints(totalJiraClosedIssueStoryPoint);
+        OverviewKPI1.setPercentageClosedJiraStoryPoints(
+                (totalJiraClosedIssueStoryPoint / totalJiraIssueStoryPoint) * 100.0f);
+        OverviewKPI1.setWipJiraCount(totalJiraWIPIssueCount);
+        OverviewKPI1.setWipJiraStoryPoints(totalJiraWIPIssueStoryPoint);
+        OverviewKPI1.setPercentageWIPJiraStoryPoints(
+                (totalJiraWIPIssueStoryPoint / totalJiraIssueStoryPoint) * 100.0f);
+        OverviewKPI1.setNotStartedJiraCount(totalJiraNotStartedIssueCount);
+        OverviewKPI1.setNotStartedJiraStoryPoints(totalJiraNotStartedIssueStoryPoint);
+        OverviewKPI1.setPercentageNotStartedJiraStoryPoints(
+                (totalJiraNotStartedIssueStoryPoint / totalJiraIssueStoryPoint)
+                        * 100.0f);
+        OverviewKPI1.setPercentageBugs((Double.valueOf(totalJiraBugIssueCount / totalJiraIssueCount)) * 100.0);
+        OverviewKPI1.setPercentageReopenedIssues(
+                (Double.valueOf(totalJiraReopenedIssueCount / totalJiraIssueCount)) * 100.0);
+        OverviewKPI1.setPercentageCriticalIssues(
+                (Double.valueOf(totalJiraCriticalIssueCount / totalJiraIssueCount)) * 100.0);
+        OverviewKPI1.setPercentageCriticalIssuesNotCompleted(
+                (Double.valueOf(totalJiraCriticalNotCompletedIssueCount / totalJiraIssueCount)) * 100.0);
+        OverviewKPI1.setPercentageCancelledIssues(
+                (Double.valueOf(totalJiraCancelledIssueCount / totalJiraIssueCount)) * 100);
+
+        kpi1Repository.save(OverviewKPI1);
+        listofKPI1.add(OverviewKPI1);
+
+        for (String issueType : issueTypes) {
+            OverviewKPI1 = kpi1Repository.findByIssueType(issueType).orElse(new KPI1());
+
+            // --------------------------------------
+
+            // Block of code for Total Jira# and story points
+            // ----------------------------------------------------------------------------------------------------
+            Integer totalIssueTypeJiraIssueCount = 0;
+            Double totalIssueTypeJiraIssueStoryPoint = 1.0;
+            ArrayList<Object[]> totalIssueTypeJiraCountAndStoryPoints = issueRepository
+                    .totalIssueTypeJiraCountAndStoryPoints(projectName, issueType);
+            for (Object[] element : totalIssueTypeJiraCountAndStoryPoints) {
+                totalIssueTypeJiraIssueCount = ((Long) element[0]).intValue();
+                totalIssueTypeJiraIssueStoryPoint = ((Double)element[1] == null) ? 1.0 : (Double)element[1];
+            }
+            // ----------------------------------------------------------------------------------------------------
+
+            // Block of code for Closed Jira# and story points and % of total story points
+            // ----------------------------------------------------------------------------------------------------------
+            Integer totalIssueTypeJiraClosedIssueCount = 0;
+            Double totalIssueTypeJiraClosedIssueStoryPoint = 0.0;
+            ArrayList<Object[]> totalIssueTypeJiraCountAndStoryPointsFromClosed = issueRepository
+                    .totalIssueTypeJiraCountAndStoryPointsFromStatus(projectName, issueType, closed);
+            for (Object[] element : totalIssueTypeJiraCountAndStoryPointsFromClosed) {
+                totalIssueTypeJiraClosedIssueCount = ((Long) element[0]).intValue();
+                totalIssueTypeJiraClosedIssueStoryPoint = ((Double)element[1] == null) ? 0.0 : (Double)element[1];
+            }
+            // ----------------------------------------------------------------------------------------------------------
+
+            // Block of code for WIP Jira# and story points and % of total story points
+            // -----------------------------------------------------------------------------------------------------------
+            Integer totalIssueTypeJiraWIPIssueCount = 0;
+            Double totalIssueTypeJiraWIPIssueStoryPoint = 0.0;
+            ArrayList<Object[]> totalIssueTypeJiraCountAndStoryPointsFromWIP = issueRepository
+                    .totalIssueTypeJiraCountAndStoryPointsFromStatus(projectName, issueType, wip);
+            for (Object[] element : totalIssueTypeJiraCountAndStoryPointsFromWIP) {
+                totalIssueTypeJiraWIPIssueCount = ((Long) element[0]).intValue();
+                totalIssueTypeJiraWIPIssueStoryPoint = ((Double)element[1] == null) ? 0.0 : (Double)element[1];
+            }
+            // ------------------------------------------------------------------------------------------------------------
+
+            // Block of code for Not Started Jira# and story points and % of total story
+            // points
+            // -----------------------------------------------------------------------------------------------------------
+            Integer totalIssueTypeJiraNotStartedIssueCount = 0;
+            Double totalIssueTypeJiraNotStartedIssueStoryPoint = 0.0;
+            ArrayList<Object[]> totalIssueTypeJiraCountAndStoryPointsFromNotStarted = issueRepository
+                    .totalIssueTypeJiraCountAndStoryPointsFromStatus(projectName, issueType, notStarted);
+            for (Object[] element : totalIssueTypeJiraCountAndStoryPointsFromNotStarted) {
+                totalIssueTypeJiraNotStartedIssueCount = ((Long) element[0]).intValue();
+                totalIssueTypeJiraNotStartedIssueStoryPoint = ((Double)element[1] == null) ? 0.0 : (Double)element[1];
+            }
+            // -----------------------------------------------------------------------------------------------------------
+
+            // Line of code for % of bugs in Jira Issues
+            // -----------------------------------------------------------------------------------------------------------
+            int totalIssueTypeJiraBugIssueCount = issueRepository
+                    .totalIssueTypeJiraSecondTypeIssueCount(projectName, issueType, bug);
+            // -----------------------------------------------------------------------------------------------------------
+
+            // Line of code for % of reopen Jira Issues
+            // -----------------------------------------------------------------------------------------------------------
+            int totalIssueTypeJiraReopenedIssueCount = issueRepository.totalIssueTypeJiraStatusIssueCount(
+                    projectName, issueType,
+                    reopened);
+            // -----------------------------------------------------------------------------------------------------------
+
+            // Line of code for % of critical Jira Issues
+            // -----------------------------------------------------------------------------------------------------------
+            int totalIssueTypeJiraCriticalIssueCount = issueRepository.totalIssueTypeJiraPriorityIssueCount(
+                    projectName, issueType,
+                    criticalPriority);
+            // -----------------------------------------------------------------------------------------------------------
+
+            // Line of code for % of critical not completed Jira Issues
+            // -----------------------------------------------------------------------------------------------------------
+            int totalIssueTypeJiraCriticalNotCompletedIssueCount = issueRepository
+                    .totalIssueTypeJiraPriorityOppositeResolutionIssueCount(projectName, issueType,
+                            criticalPriority, completed, fixed, done);
+            // -----------------------------------------------------------------------------------------------------------
+
+            // Line of code for % of cancelled Jira Issues
+            // -----------------------------------------------------------------------------------------------------------
+            int totalIssueTypeJiraCancelledIssueCount = issueRepository
+                    .totalIssueTypeJiraResolutionIssueCount(projectName, issueType,
+                            cancelled);
+            // -----------------------------------------------------------------------------------------------------------
+            OverviewKPI1.setIssueType(issueType);
+            OverviewKPI1.setTotalJiraCount(totalIssueTypeJiraIssueCount);
+            OverviewKPI1.setTotalJiraStoryPoints(totalIssueTypeJiraIssueStoryPoint);
+            OverviewKPI1.setClosedJiraCount(totalIssueTypeJiraClosedIssueCount);
+            OverviewKPI1.setClosedJiraStoryPoints(totalIssueTypeJiraClosedIssueStoryPoint);
+            OverviewKPI1.setPercentageClosedJiraStoryPoints(
+                    (totalIssueTypeJiraClosedIssueStoryPoint / totalIssueTypeJiraIssueStoryPoint)
+                            * 100.0f);
+            OverviewKPI1.setWipJiraCount(totalIssueTypeJiraWIPIssueCount);
+            OverviewKPI1.setWipJiraStoryPoints(totalIssueTypeJiraWIPIssueStoryPoint);
+            OverviewKPI1.setPercentageWIPJiraStoryPoints(
+                    (totalIssueTypeJiraWIPIssueStoryPoint / totalIssueTypeJiraIssueStoryPoint)
+                            * 100.0f);
+            OverviewKPI1.setNotStartedJiraCount(totalIssueTypeJiraNotStartedIssueCount);
+            OverviewKPI1.setNotStartedJiraStoryPoints(totalIssueTypeJiraNotStartedIssueStoryPoint);
+            OverviewKPI1.setPercentageNotStartedJiraStoryPoints(
+                    (totalIssueTypeJiraNotStartedIssueStoryPoint
+                            / totalIssueTypeJiraIssueStoryPoint)
+                            * 100.0f);
+            OverviewKPI1.setPercentageBugs(
+                    (Double.valueOf(totalIssueTypeJiraBugIssueCount / totalIssueTypeJiraIssueCount)) * 100.0);
+            OverviewKPI1.setPercentageReopenedIssues(
+                    (Double.valueOf(totalIssueTypeJiraReopenedIssueCount / totalIssueTypeJiraIssueCount)) * 100.0);
+            OverviewKPI1.setPercentageCriticalIssues(
+                    (Double.valueOf(totalIssueTypeJiraCriticalIssueCount / totalIssueTypeJiraIssueCount)) * 100.0);
+            OverviewKPI1.setPercentageCriticalIssuesNotCompleted(
+                    (Double.valueOf(totalIssueTypeJiraCriticalNotCompletedIssueCount / totalIssueTypeJiraIssueCount))
+                            * 100.0);
+            OverviewKPI1.setPercentageCancelledIssues(
+                    (Double.valueOf(totalIssueTypeJiraCancelledIssueCount / totalIssueTypeJiraIssueCount)) * 100.0);
+
+            kpi1Repository.save(OverviewKPI1);
+            listofKPI1.add(OverviewKPI1);
+
         }
 
-        public List<KPI1> getKPI1PerTeam(String projectName) {
-                ArrayList<KPI1> listofKPI1 = new ArrayList<KPI1>();
-                //String projectName = "B8X4";
-                List<String> teamTypes = issueRepository.getAllTeamType(projectName);
-                System.out.print(teamTypes);
-
-                String closed = "Closed";
-                String wip = "In Progress";
-                String notStarted = "Waiting";
-                String reopened = "Reopened";
-
-                String bug = "Bug";
-
-                String criticalPriority = "Critical";
-
-                String completed = "Completed";
-
-                String fixed = "Fixed";
-
-                String done = "Done";
-
-                String cancelled = "Project cancelled";
-
-                KPI1 OverviewKPI1 = kpi1Repository.findByTeamType("All Jira Issues").orElse(new KPI1());
-
-                // --------------------------------------
-
-                // KPI Report 1 requires these values
-                // Type(team)
-                // Total Jira# & story points
-                // Closed Jira# & story points & % of total story points
-                // Not started Jira# & story points & % of total story points
-                // WIP Jira# & story points & % of total story points
-                // % of new features - NO CLUE HOW TO FIND IT
-                // % of bugs
-                // % of reopen tickets
-                // % of critical requests
-                // % of critical requests not completed
-                // % of cancelled tickets
-                // I have grabbed all but the % of new features
-
-                // Block of code for Total Jira# and story points
-                // ----------------------------------------------------------------------------------------------------
-                int totalJiraIssueCount = issueRepository.totalJiraIssueCount(projectName);
-                Float totalJiraIssueStoryPoint = issueRepository
-                                .totalJiraIssueStoryPoint(projectName)
-                                .orElse(1.0f);
-                // ----------------------------------------------------------------------------------------------------
-
-                // Block of code for Closed Jira# and story points and % of total story points
-                // ----------------------------------------------------------------------------------------------------------
-                int totalJiraClosedIssueCount = issueRepository.totalJiraStatusIssueCount(projectName,
-                                closed);
-                Float totalJiraClosedIssueStoryPoint = issueRepository
-                                .totalJiraStatusIssueStoryPoint(projectName, closed).orElse(0.0f);
-                // ----------------------------------------------------------------------------------------------------------
-
-                // Block of code for WIP Jira# and story points and % of total story points
-                // -----------------------------------------------------------------------------------------------------------
-                int totalJiraWIPIssueCount = issueRepository.totalJiraStatusIssueCount(projectName,
-                                wip);
-                Float totalJiraWIPIssueStoryPoint = issueRepository
-                                .totalJiraStatusIssueStoryPoint(projectName, wip).orElse(0.0f);
-                // ------------------------------------------------------------------------------------------------------------
-
-                // Block of code for Not Started Jira# and story points and % of total story
-                // points
-                // -----------------------------------------------------------------------------------------------------------
-                int totalJiraNotStartedIssueCount = issueRepository.totalJiraStatusIssueCount(
-                                projectName, 
-                                notStarted);
-                Float totalJiraNotStartedIssueStoryPoint = issueRepository
-                                .totalJiraStatusIssueStoryPoint(projectName, notStarted).orElse(0.0f);
-                // -----------------------------------------------------------------------------------------------------------
-
-                // Line of code for % of bugs in Jira Issues
-                // -----------------------------------------------------------------------------------------------------------
-                int totalJiraBugIssueCount = issueRepository.totalJiraSubTypeIssueCount(projectName,
-                                bug);
-                // -----------------------------------------------------------------------------------------------------------
-
-                // Line of code for % of reopen Jira Issues
-                // -----------------------------------------------------------------------------------------------------------
-                int totalJiraReopenedIssueCount = issueRepository.totalJiraStatusIssueCount(projectName,
-                                
-                                reopened);
-                // -----------------------------------------------------------------------------------------------------------
-
-                // Line of code for % of critical Jira Issues
-                // -----------------------------------------------------------------------------------------------------------
-                int totalJiraCriticalIssueCount = issueRepository.totalJiraPriorityIssueCount(
-                                projectName, 
-                                criticalPriority);
-                // -----------------------------------------------------------------------------------------------------------
-
-                // Line of code for % of critical not completed Jira Issues
-                // -----------------------------------------------------------------------------------------------------------
-                int totalJiraCriticalNotCompletedIssueCount = issueRepository
-                                .totalJiraPriorityOppositeResolutionIssueCount(projectName, 
-                                                criticalPriority, completed, fixed, done);
-                // -----------------------------------------------------------------------------------------------------------
-
-                // Line of code for % of cancelled Jira Issues
-                // -----------------------------------------------------------------------------------------------------------
-                int totalJiraCancelledIssueCount = issueRepository.totalJiraResolutionIssueCount(
-                                projectName, 
-                                cancelled);
-                // -----------------------------------------------------------------------------------------------------------
-                OverviewKPI1.setTeamType("All Jira Issues");
-                OverviewKPI1.setTotalJiraCount(totalJiraIssueCount);
-                OverviewKPI1.setTotalJiraStoryPoints(totalJiraIssueStoryPoint);
-                OverviewKPI1.setClosedJiraCount(totalJiraClosedIssueCount);
-                OverviewKPI1.setClosedJiraStoryPoints(totalJiraClosedIssueStoryPoint);
-                OverviewKPI1.setPercentageClosedJiraStoryPoints(
-                                (totalJiraClosedIssueStoryPoint / totalJiraIssueStoryPoint) * 100.0f);
-                OverviewKPI1.setWipJiraCount(totalJiraWIPIssueCount);
-                OverviewKPI1.setWipJiraStoryPoints(totalJiraWIPIssueStoryPoint);
-                OverviewKPI1.setPercentageWIPJiraStoryPoints(
-                                (totalJiraWIPIssueStoryPoint / totalJiraIssueStoryPoint) * 100.0f);
-                OverviewKPI1.setNotStartedJiraCount(totalJiraNotStartedIssueCount);
-                OverviewKPI1.setNotStartedJiraStoryPoints(totalJiraNotStartedIssueStoryPoint);
-                OverviewKPI1.setPercentageNotStartedJiraStoryPoints(
-                                (totalJiraNotStartedIssueStoryPoint / totalJiraIssueStoryPoint)
-                                                * 100.0f);
-                OverviewKPI1.setPercentageBugs(((float) totalJiraBugIssueCount / totalJiraIssueCount) * 100.0f);
-                OverviewKPI1.setPercentageReopenedIssues(
-                                ((float) totalJiraReopenedIssueCount / totalJiraIssueCount) * 100);
-                OverviewKPI1.setPercentageCriticalIssues(
-                                ((float) totalJiraCriticalIssueCount / totalJiraIssueCount) * 100);
-                OverviewKPI1.setPercentageCriticalIssuesNotCompleted(
-                                ((float) totalJiraCriticalNotCompletedIssueCount / totalJiraIssueCount)
-                                                * 100);
-                OverviewKPI1.setPercentageCancelledIssues(
-                                ((float) totalJiraCancelledIssueCount / totalJiraIssueCount) * 100);
-                
-                kpi1Repository.save(OverviewKPI1);
-                listofKPI1.add(OverviewKPI1);
-
-                for (String teamType : teamTypes) {
-                        OverviewKPI1 = kpi1Repository.findByTeamType(teamType).orElse(new KPI1());
-
-                        // --------------------------------------
-
-                        // KPI Report 1 requires these values
-                        // Type(team)
-                        // Total Jira# & story points
-                        // Closed Jira# & story points & % of total story points
-                        // Not started Jira# & story points & % of total story points
-                        // WIP Jira# & story points & % of total story points
-                        // % of new features - NO CLUE HOW TO FIND IT
-                        // % of bugs
-                        // % of reopen tickets
-                        // % of critical requests
-                        // % of critical requests not completed
-                        // % of cancelled tickets
-                        // I have grabbed all but the % of new features
-
-                        // Block of code for Total Jira# and story points
-                        // ----------------------------------------------------------------------------------------------------
-                        int totalTeamTypeJiraIssueCount = issueRepository.totalTeamTypeJiraIssueCount(projectName,
-                                        teamType);
-                        Float totalTeamTypeJiraIssueStoryPoint = issueRepository
-                                        .totalTeamTypeJiraIssueStoryPoint(projectName, teamType)
-                                        .orElse(1.0f);
-                        // ----------------------------------------------------------------------------------------------------
-
-                        // Block of code for Closed Jira# and story points and % of total story points
-                        // ----------------------------------------------------------------------------------------------------------
-                        int totalTeamTypeJiraClosedIssueCount = issueRepository
-                                        .totalTeamTypeJiraStatusIssueCount(projectName, teamType, closed);
-                        Float totalTeamTypeJiraClosedIssueStoryPoint = issueRepository
-                                        .totalTeamTypeJiraStatusIssueStoryPoint(projectName, teamType, closed)
-                                        .orElse(0.0f);
-                        // ----------------------------------------------------------------------------------------------------------
-
-                        // Block of code for WIP Jira# and story points and % of total story points
-                        // -----------------------------------------------------------------------------------------------------------
-                        int totalTeamTypeJiraWIPIssueCount = issueRepository
-                                        .totalTeamTypeJiraStatusIssueCount(projectName, teamType, wip);
-                        Float totalTeamTypeJiraWIPIssueStoryPoint = issueRepository
-                                        .totalTeamTypeJiraStatusIssueStoryPoint(projectName, teamType, wip)
-                                        .orElse(0.0f);
-                        // ------------------------------------------------------------------------------------------------------------
-
-                        // Block of code for Not Started Jira# and story points and % of total story
-                        // points
-                        // -----------------------------------------------------------------------------------------------------------
-                        int totalTeamTypeJiraNotStartedIssueCount = issueRepository.totalTeamTypeJiraStatusIssueCount(
-                                        projectName, teamType,
-                                        notStarted);
-                        Float totalTeamTypeJiraNotStartedIssueStoryPoint = issueRepository
-                                        .totalTeamTypeJiraStatusIssueStoryPoint(projectName, teamType, notStarted)
-                                        .orElse(0.0f);
-                        // -----------------------------------------------------------------------------------------------------------
-
-                        // Line of code for % of bugs in Jira Issues
-                        // -----------------------------------------------------------------------------------------------------------
-                        int totalTeamTypeJiraBugIssueCount = issueRepository
-                                        .totalTeamTypeJiraSubTypeIssueCount(projectName, teamType, bug);
-                        // -----------------------------------------------------------------------------------------------------------
-
-                        // Line of code for % of reopen Jira Issues
-                        // -----------------------------------------------------------------------------------------------------------
-                        int totalTeamTypeJiraReopenedIssueCount = issueRepository.totalTeamTypeJiraStatusIssueCount(
-                                        projectName, teamType,
-                                        reopened);
-                        // -----------------------------------------------------------------------------------------------------------
-
-                        // Line of code for % of critical Jira Issues
-                        // -----------------------------------------------------------------------------------------------------------
-                        int totalTeamTypeJiraCriticalIssueCount = issueRepository.totalTeamTypeJiraPriorityIssueCount(
-                                        projectName, teamType,
-                                        criticalPriority);
-                        // -----------------------------------------------------------------------------------------------------------
-
-                        // Line of code for % of critical not completed Jira Issues
-                        // -----------------------------------------------------------------------------------------------------------
-                        int totalTeamTypeJiraCriticalNotCompletedIssueCount = issueRepository
-                                        .totalTeamTypeJiraPriorityOppositeResolutionIssueCount(projectName, teamType,
-                                                        criticalPriority, completed, fixed, done);
-                        // -----------------------------------------------------------------------------------------------------------
-
-                        // Line of code for % of cancelled Jira Issues
-                        // -----------------------------------------------------------------------------------------------------------
-                        int totalTeamTypeJiraCancelledIssueCount = issueRepository
-                                        .totalTeamTypeJiraResolutionIssueCount(projectName, teamType,
-                                                        cancelled);
-                        // -----------------------------------------------------------------------------------------------------------
-                        OverviewKPI1.setTeamType(teamType);
-                        OverviewKPI1.setTotalJiraCount(totalTeamTypeJiraIssueCount);
-                        OverviewKPI1.setTotalJiraStoryPoints(totalTeamTypeJiraIssueStoryPoint);
-                        OverviewKPI1.setClosedJiraCount(totalTeamTypeJiraClosedIssueCount);
-                        OverviewKPI1.setClosedJiraStoryPoints(totalTeamTypeJiraClosedIssueStoryPoint);
-                        OverviewKPI1.setPercentageClosedJiraStoryPoints(
-                                        (totalTeamTypeJiraClosedIssueStoryPoint / totalTeamTypeJiraIssueStoryPoint)
-                                                        * 100.0f);
-                        OverviewKPI1.setWipJiraCount(totalTeamTypeJiraWIPIssueCount);
-                        OverviewKPI1.setWipJiraStoryPoints(totalTeamTypeJiraWIPIssueStoryPoint);
-                        OverviewKPI1.setPercentageWIPJiraStoryPoints(
-                                        (totalTeamTypeJiraWIPIssueStoryPoint / totalTeamTypeJiraIssueStoryPoint)
-                                                        * 100.0f);
-                        OverviewKPI1.setNotStartedJiraCount(totalTeamTypeJiraNotStartedIssueCount);
-                        OverviewKPI1.setNotStartedJiraStoryPoints(totalTeamTypeJiraNotStartedIssueStoryPoint);
-                        OverviewKPI1.setPercentageNotStartedJiraStoryPoints(
-                                        (totalTeamTypeJiraNotStartedIssueStoryPoint / totalTeamTypeJiraIssueStoryPoint)
-                                                        * 100.0f);
-                        OverviewKPI1.setPercentageBugs(((float) totalTeamTypeJiraBugIssueCount / totalTeamTypeJiraIssueCount)
-                                        * 100.0f);
-                        OverviewKPI1.setPercentageReopenedIssues(
-                                        ((float) totalTeamTypeJiraReopenedIssueCount / totalTeamTypeJiraIssueCount)
-                                                        * 100);
-                        OverviewKPI1.setPercentageCriticalIssues(
-                                        ((float) totalTeamTypeJiraCriticalIssueCount / totalTeamTypeJiraIssueCount)
-                                                        * 100);
-                        OverviewKPI1.setPercentageCriticalIssuesNotCompleted(
-                                        ((float) totalTeamTypeJiraCriticalNotCompletedIssueCount
-                                                        / totalTeamTypeJiraIssueCount)
-                                                        * 100);
-                        OverviewKPI1.setPercentageCancelledIssues(
-                                        ((float) totalTeamTypeJiraCancelledIssueCount / totalTeamTypeJiraIssueCount)
-                                                        * 100);
-
-                        kpi1Repository.save(OverviewKPI1);
-                        listofKPI1.add(OverviewKPI1);
-
-                }
-
-                return listofKPI1;
-        }
-
-        // public void tmp() {
-        //         ArrayList<Integer> listOfMedianValues = issueRepository.medianOfOpenResolvedJiraIssues("B8X4",
-        //                         "Resolved");
-        //         double median = 0;
-        //         if (listOfMedianValues.size() % 2 != 0) {
-        //                 median = (double) listOfMedianValues.get(listOfMedianValues.size() / 2);
-        //         } else {
-        //                 median = (double) (listOfMedianValues.get((listOfMedianValues.size() - 1) / 2)
-        //                                 + listOfMedianValues.get(listOfMedianValues.size() / 2)) / 2.0;
-        //         }
-        //         System.out.println(median);
-        // }
+        return listofKPI1;
+    }
 }

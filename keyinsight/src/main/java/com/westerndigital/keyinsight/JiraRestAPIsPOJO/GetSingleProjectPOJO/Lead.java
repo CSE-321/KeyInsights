@@ -8,7 +8,7 @@ public class Lead {
     private String self;
     private String key;
     private String name;
-    private ArrayList<AvatarUrls> avatarUrls;
+    private AvatarUrls avatarUrls;
     private String displayName;
     private Boolean active;
 
@@ -39,11 +39,11 @@ public class Lead {
         this.name = name;
     }
 
-    public ArrayList<AvatarUrls> getAvatarUrls() {
+    public AvatarUrls getAvatarUrls() {
         return this.avatarUrls;
     }
 
-    public void setAvatarUrls(ArrayList<AvatarUrls> avatarUrls) {
+    public void setAvatarUrls(AvatarUrls avatarUrls) {
         this.avatarUrls = avatarUrls;
     }
 

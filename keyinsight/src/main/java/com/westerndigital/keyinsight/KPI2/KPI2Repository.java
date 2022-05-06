@@ -6,5 +6,5 @@ import java.util.Optional;
 
 @Repository
 public interface KPI2Repository extends JpaRepository <KPI2, Integer> {
-    Optional<KPI2> findByTeamType(String teamType);
+    Optional<KPI2> findByIssueType(String issueType);
 }
