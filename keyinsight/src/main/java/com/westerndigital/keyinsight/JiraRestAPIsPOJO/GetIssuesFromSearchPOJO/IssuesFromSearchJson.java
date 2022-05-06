@@ -1,16 +1,12 @@
 package com.westerndigital.keyinsight.JiraRestAPIsPOJO.GetIssuesFromSearchPOJO;
 
 import java.util.ArrayList;
-
 public class IssuesFromSearchJson {
     private String expand;
     private Integer startAt;
     private Integer maxResults;
     private Integer total;
     private ArrayList<Issues> issues;
-
-    public IssuesFromSearchJson() {
-    }
 
     public String getExpand() {
         return this.expand;

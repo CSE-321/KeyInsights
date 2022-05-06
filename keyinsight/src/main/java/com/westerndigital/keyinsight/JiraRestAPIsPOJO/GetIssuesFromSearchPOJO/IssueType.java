@@ -9,9 +9,6 @@ public class IssueType {
     private Boolean subtask;
     private Integer avatarId;
 
-    public IssueType() {
-    }
-
     public String getSelf() {
         return this.self;
     }

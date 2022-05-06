@@ -17,14 +17,11 @@ public class SingleProjectJson {
     private String assigneeType;
     private ArrayList<Versions> versions;
     private String name;
-    private ArrayList<Roles> roles;
+    private Roles roles;
     private AvatarUrls avatarUrls;
-    private ArrayList<ProjectCategory> projectCategory;
+    private ProjectCategory projectCategory;
     private String projectTypeKey;
     private Boolean archived;
-
-    public SingleProjectJson() {
-    }
 
     public String getExpand() {
         return this.expand;
@@ -114,11 +111,11 @@ public class SingleProjectJson {
         this.name = name;
     }
 
-    public ArrayList<Roles> getRoles() {
+    public Roles getRoles() {
         return this.roles;
     }
 
-    public void setRoles(ArrayList<Roles> roles) {
+    public void setRoles(Roles roles) {
         this.roles = roles;
     }
 
@@ -130,11 +127,11 @@ public class SingleProjectJson {
         this.avatarUrls = avatarUrls;
     }
 
-    public ArrayList<ProjectCategory> getProjectCategory() {
+    public ProjectCategory getProjectCategory() {
         return this.projectCategory;
     }
 
-    public void setProjectCategory(ArrayList<ProjectCategory> projectCategory) {
+    public void setProjectCategory(ProjectCategory projectCategory) {
         this.projectCategory = projectCategory;
     }
 

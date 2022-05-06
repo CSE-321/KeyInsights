@@ -1,7 +1,5 @@
 package com.westerndigital.keyinsight.JiraRestAPIsPOJO.GetSingleProjectPOJO;
 
-import java.util.ArrayList;
-
 import com.westerndigital.keyinsight.JiraRestAPIsPOJO.AvatarUrls;
 
 public class Lead {
@@ -11,9 +9,6 @@ public class Lead {
     private AvatarUrls avatarUrls;
     private String displayName;
     private Boolean active;
-
-    public Lead() {
-    }
 
     public String getSelf() {
         return this.self;

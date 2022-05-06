@@ -1,7 +1,5 @@
 package com.westerndigital.keyinsight.JiraRestAPIsPOJO.GetIssuesFromSearchPOJO;
 
-import java.util.Objects;
-
 import com.westerndigital.keyinsight.JiraRestAPIsPOJO.AvatarUrls;
 
 public class Assignee {
@@ -13,20 +11,6 @@ public class Assignee {
     private String displayName;
     private Boolean active;
     private String timeZone;    
-
-    public Assignee() {
-    }
-
-    public Assignee(String self, String name, String key, String emailAddress, AvatarUrls avatarUrls, String displayName, Boolean active, String timeZone) {
-        this.self = self;
-        this.name = name;
-        this.key = key;
-        this.emailAddress = emailAddress;
-        this.avatarUrls = avatarUrls;
-        this.displayName = displayName;
-        this.active = active;
-        this.timeZone = timeZone;
-    }
 
     public String getSelf() {
         return this.self;
@@ -94,62 +78,6 @@ public class Assignee {
 
     public void setTimeZone(String timeZone) {
         this.timeZone = timeZone;
-    }
-
-    public Assignee self(String self) {
-        setSelf(self);
-        return this;
-    }
-
-    public Assignee name(String name) {
-        setName(name);
-        return this;
-    }
-
-    public Assignee key(String key) {
-        setKey(key);
-        return this;
-    }
-
-    public Assignee emailAddress(String emailAddress) {
-        setEmailAddress(emailAddress);
-        return this;
-    }
-
-    public Assignee avatarUrls(AvatarUrls avatarUrls) {
-        setAvatarUrls(avatarUrls);
-        return this;
-    }
-
-    public Assignee displayName(String displayName) {
-        setDisplayName(displayName);
-        return this;
-    }
-
-    public Assignee active(Boolean active) {
-        setActive(active);
-        return this;
-    }
-
-    public Assignee timeZone(String timeZone) {
-        setTimeZone(timeZone);
-        return this;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == this)
-            return true;
-        if (!(o instanceof Assignee)) {
-            return false;
-        }
-        Assignee assignee = (Assignee) o;
-        return Objects.equals(self, assignee.self) && Objects.equals(name, assignee.name) && Objects.equals(key, assignee.key) && Objects.equals(emailAddress, assignee.emailAddress) && Objects.equals(avatarUrls, assignee.avatarUrls) && Objects.equals(displayName, assignee.displayName) && Objects.equals(active, assignee.active) && Objects.equals(timeZone, assignee.timeZone);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(self, name, key, emailAddress, avatarUrls, displayName, active, timeZone);
     }
 
     @Override

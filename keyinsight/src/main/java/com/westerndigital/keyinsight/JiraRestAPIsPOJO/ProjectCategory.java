@@ -6,8 +6,6 @@ public class ProjectCategory {
     private String name;
     private String description;
 
-    public ProjectCategory(){}
-
     public String getSelf() {
         return this.self;
     }
@@ -40,7 +38,6 @@ public class ProjectCategory {
         this.description = description;
     }
 
-
     @Override
     public String toString() {
         return "{" +
@@ -50,7 +47,4 @@ public class ProjectCategory {
             ", description='" + getDescription() + "'" +
             "}";
     }
-
-
-
 }

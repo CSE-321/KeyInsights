@@ -1,19 +1,10 @@
 package com.westerndigital.keyinsight.JiraRestAPIsPOJO.GetIssuesFromSearchPOJO;
 
-public class Issues {
-    private String expand;
+public class Parent {
     private String id;
-    private String self;
     private String key;
+    private String self;
     private Fields fields;
-
-    public String getExpand() {
-        return this.expand;
-    }
-
-    public void setExpand(String expand) {
-        this.expand = expand;
-    }
 
     public String getId() {
         return this.id;
@@ -23,20 +14,20 @@ public class Issues {
         this.id = id;
     }
 
-    public String getSelf() {
-        return this.self;
-    }
-
-    public void setSelf(String self) {
-        this.self = self;
-    }
-
     public String getKey() {
         return this.key;
     }
 
     public void setKey(String key) {
         this.key = key;
+    }
+
+    public String getSelf() {
+        return this.self;
+    }
+
+    public void setSelf(String self) {
+        this.self = self;
     }
 
     public Fields getFields() {
@@ -50,10 +41,9 @@ public class Issues {
     @Override
     public String toString() {
         return "{" +
-            " expand='" + getExpand() + "'" +
-            ", id='" + getId() + "'" +
-            ", self='" + getSelf() + "'" +
+            " id='" + getId() + "'" +
             ", key='" + getKey() + "'" +
+            ", self='" + getSelf() + "'" +
             ", fields='" + getFields() + "'" +
             "}";
     }

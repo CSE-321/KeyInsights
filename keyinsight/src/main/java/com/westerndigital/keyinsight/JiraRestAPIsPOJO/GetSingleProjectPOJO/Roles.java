@@ -3,16 +3,16 @@ package com.westerndigital.keyinsight.JiraRestAPIsPOJO.GetSingleProjectPOJO;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Roles {
-    @JsonProperty("Zepher QA")
+    @JsonProperty("Zephyr QA")
     private String ZephyrQA;
+    @JsonProperty("Developers")
     private String Developers;
     @JsonProperty("Power Users")
     private String PowerUsers;
-    private String Adminstrators;
+    @JsonProperty("Administrators")
+    private String Administrators;
+    @JsonProperty("Users")
     private String Users;
-
-    public Roles() {
-    }
 
     public String getZephyrQA() {
         return this.ZephyrQA;
@@ -38,12 +38,12 @@ public class Roles {
         this.PowerUsers = PowerUsers;
     }
 
-    public String getAdminstrators() {
-        return this.Adminstrators;
+    public String getAdministrators() {
+        return this.Administrators;
     }
 
-    public void setAdminstrators(String Adminstrators) {
-        this.Adminstrators = Adminstrators;
+    public void setAdministrators(String Administrators) {
+        this.Administrators = Administrators;
     }
 
     public String getUsers() {
@@ -60,10 +60,9 @@ public class Roles {
             " ZephyrQA='" + getZephyrQA() + "'" +
             ", Developers='" + getDevelopers() + "'" +
             ", PowerUsers='" + getPowerUsers() + "'" +
-            ", Adminstrators='" + getAdminstrators() + "'" +
+            ", Administrators='" + getAdministrators() + "'" +
             ", Users='" + getUsers() + "'" +
             "}";
     }
-
     
 }

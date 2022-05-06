@@ -13,11 +13,9 @@ public class UserJson {
     private Boolean deleted;
     private String timeZone;
     private String locale;
+    private Groups groups;
+    private ApplicationRoles applicationRoles;
     private String expand;
-
-    public UserJson() {
-    }
-
 
     public String getSelf() {
         return this.self;
@@ -107,6 +105,22 @@ public class UserJson {
         this.locale = locale;
     }
 
+    public Groups getGroups() {
+        return this.groups;
+    }
+
+    public void setGroups(Groups groups) {
+        this.groups = groups;
+    }
+
+    public ApplicationRoles getApplicationRoles() {
+        return this.applicationRoles;
+    }
+
+    public void setApplicationRoles(ApplicationRoles applicationRoles) {
+        this.applicationRoles = applicationRoles;
+    }
+
     public String getExpand() {
         return this.expand;
     }
@@ -128,8 +142,9 @@ public class UserJson {
             ", deleted='" + isDeleted() + "'" +
             ", timeZone='" + getTimeZone() + "'" +
             ", locale='" + getLocale() + "'" +
+            ", groups='" + getGroups() + "'" +
+            ", applicationRoles='" + getApplicationRoles() + "'" +
             ", expand='" + getExpand() + "'" +
             "}";
     }
-    
 }

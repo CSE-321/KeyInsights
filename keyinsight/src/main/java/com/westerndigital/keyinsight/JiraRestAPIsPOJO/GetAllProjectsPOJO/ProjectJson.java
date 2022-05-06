@@ -13,8 +13,6 @@ public class ProjectJson {
     private ProjectCategory projectCategory;
     private String projectTypeKey;
 
-    public ProjectJson(){}
-
     public String getExpand() {
         return this.expand;
     }

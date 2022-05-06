@@ -15,11 +15,8 @@ import com.westerndigital.keyinsight.JiraProject.JiraProjectRepository;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import io.github.cdimascio.dotenv.Dotenv;
 import kong.unirest.HttpResponse;
@@ -31,12 +28,8 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.westerndigital.keyinsight.JiraRestAPIsPOJO.GetAllProjectsPOJO.ProjectJson;
-import com.westerndigital.keyinsight.JiraRestAPIsPOJO.GetCustomFieldsFromSearchPOJO.CustomFieldJson;
-import com.westerndigital.keyinsight.JiraRestAPIsPOJO.GetCustomFieldsFromSearchPOJO.CustomFields;
-import com.westerndigital.keyinsight.JiraRestAPIsPOJO.GetIssuesFromSearchPOJO.Fields;
 import com.westerndigital.keyinsight.JiraRestAPIsPOJO.GetIssuesFromSearchPOJO.Issues;
 import com.westerndigital.keyinsight.JiraRestAPIsPOJO.GetIssuesFromSearchPOJO.IssuesFromSearchJson;
-import com.westerndigital.keyinsight.JiraRestAPIsPOJO.GetSingleProjectPOJO.Lead;
 import com.westerndigital.keyinsight.JiraRestAPIsPOJO.GetSingleProjectPOJO.SingleProjectJson;
 import com.westerndigital.keyinsight.JiraRestAPIsPOJO.GetSingleProjectPOJO.Versions;
 import com.westerndigital.keyinsight.JiraRestAPIsPOJO.GetSingleUser.UserJson;
@@ -73,20 +66,14 @@ public class LoadDatabase implements CommandLineRunner {
         // notificationSettingsRepository.deleteAll();
         // -------------------------------------------
 
+        // allows me to use the .env variables
         Dotenv dotenv = Dotenv.load();
-        // https://stackoverflow.com/questions/20832015/how-do-i-iterate-over-a-json-response-using-jackson-api-of-a-list-inside-a-list
-        // http://makeseleniumeasy.com/2020/06/11/rest-assured-tutorial-30-how-to-create-pojo-classes-of-a-json-array-payload/
-        ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
-        // https://stackoverflow.com/questions/58539657/com-fasterxml-jackson-databind-exc-mismatchedinputexception-cannot-deserialize
-        // not sure what this did to help fix the issue
-        mapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
-        // https://stackoverflow.com/questions/7421474/how-can-i-tell-jackson-to-ignore-a-property-for-which-i-dont-have-control-over
-        // this line of code allows the json to skip over the attributes that I did not
-        // create to avoid conflicts
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-        // https://docs.atlassian.com/software/jira/docs/api/REST/8.13.10/
-        // https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-projects/#api-rest-api-3-project-search-get
+        ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
+        // this commented out line of code allows the json to skip over the attributes
+        // that I did not
+        // create to avoid conflicts
+        // mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
         final Long startTime = System.currentTimeMillis();
         HttpResponse<JsonNode> getAllProjects = Unirest.get(dotenv.get("JIRA_URL") + "/rest/api/latest/project")
@@ -121,20 +108,22 @@ public class LoadDatabase implements CommandLineRunner {
                 project.setProjectLead(singleProjectJson.getLead().getDisplayName());
                 project.setProjectLeadAvatarUrl(singleProjectJson.getLead().getAvatarUrls().getSize48());
                 HttpResponse<JsonNode> getSingleUser = Unirest
-                .get(dotenv.get("JIRA_URL") + "/rest/api/latest/user?key=" + singleProjectJson.getLead().getKey())
-                .basicAuth(dotenv.get("JIRA_USERNAME"), dotenv.get("JIRA_PASSWORD"))
-                .header("Accept", "application/json")
-                .asJson();
+                        .get(dotenv.get("JIRA_URL") + "/rest/api/latest/user?key="
+                                + singleProjectJson.getLead().getKey())
+                        .basicAuth(dotenv.get("JIRA_USERNAME"), dotenv.get("JIRA_PASSWORD"))
+                        .header("Accept", "application/json")
+                        .asJson();
 
                 ArrayList<UserJson> userJsons = mapper.readValue(
                         getSingleUser.getBody().getArray().toString(),
                         new TypeReference<ArrayList<UserJson>>() {
                         });
 
-                for(UserJson userJson : userJsons){
+                for (UserJson userJson : userJsons) {
                     ArrayList<Versions> versions = singleProjectJson.getVersions();
-                    for(Versions version : versions){
-                        if(projectCreationDateTime == null || projectCreationDateTime.toLocalDate().isAfter(version.getStartDate())){
+                    for (Versions version : versions) {
+                        if (projectCreationDateTime == null
+                                || projectCreationDateTime.toLocalDate().isAfter(version.getStartDate())) {
                             ZoneId zoneId = ZoneId.of(userJson.getTimeZone());
                             projectCreationDateTime = version.getStartDate().atStartOfDay(zoneId).toOffsetDateTime();
                         }
@@ -169,54 +158,52 @@ public class LoadDatabase implements CommandLineRunner {
                                 JiraIssue issue = issueRepository.findById(singleIssue.getKey())
                                         .orElse(new JiraIssue());
                                 issue.setId(singleIssue.getKey());
-                                issue.setIssueNumber(Integer.parseInt(singleIssue.getKey().trim().substring(singleIssue.getKey().indexOf('-') + 1)));
+                                issue.setIssueNumber(Integer.parseInt(
+                                        singleIssue.getKey().trim().substring(singleIssue.getKey().indexOf('-') + 1)));
                                 System.out.println(singleIssue.getKey());
-                                List<Fields> fields = singleIssue.getFields();
-                                for (Fields field : fields) {
-                                    String assignee = null;
-                                    String assigneeUrl = null;
-                                    if (field.getAssignee() != null) {
-                                        assignee = field.getAssignee().getDisplayName();
-                                        assigneeUrl = field.getAssignee().getAvatarUrls().getSize48();
-                                    }
-                                    issue.setAssignee(assignee);
-                                    issue.setAssigneeAvatarUrl(assigneeUrl);
-                                    issue.setCreatedDateTime(field.getCreated());
-                                    if(projectCreationDateTime.isAfter(field.getCreated())){
-                                        projectCreationDateTime = field.getCreated();
-                                    }
-                                    OffsetDateTime dueDateTime = null;
-                                    // https://stackoverflow.com/questions/57214468/java-8-convert-localdate-to-offsetdatetime
-                                    if (field.getDuedate() != null) {
-                                        ZoneId zoneId = ZoneId.of(field.getCreator().getTimeZone());
-                                        dueDateTime = field.getDuedate().atStartOfDay(zoneId).toOffsetDateTime();
-                                    }
-                                    issue.setDueDateTime(dueDateTime);
-                                    String priority = null;
-                                    if (field.getPriority() != null) {
-                                        priority = field.getPriority().getName();
-                                    }
-                                    issue.setPriority(priority);
-                                    issue.setProjectName(field.getProject().getName().trim());
-                                    issue.setProjectUniqueId(dotenv.get("JIRA_URL") + singleProjectJson.getId());
-                                    String resolutionName = null;
-                                    if (field.getResolution() != null) {
-                                        resolutionName = field.getResolution().getName();
-                                    }
-                                    issue.setResolution(resolutionName);
-                                    issue.setResolutionDateTime(field.getResolutiondate());
-                                    issue.setStatus(field.getStatus().getName());
-                                    issue.setStoryPoint(field.getStorypoints());
-                                    String secondType = null;
-                                    if (field.getSecondtype() != null) {
-                                        secondType = field.getSecondtype().getValue();
-                                    }
-                                    issue.setSecondType(secondType);
-                                    issue.setIssueType(field.getIssuetype().getName());
-                                    issue.setUpdatedDateTime(field.getUpdated());
-                                    issueRepository.save(issue);
-
+                                String assignee = null;
+                                String assigneeUrl = null;
+                                if (singleIssue.getFields().getAssignee() != null) {
+                                    assignee = singleIssue.getFields().getAssignee().getDisplayName();
+                                    assigneeUrl = singleIssue.getFields().getAssignee().getAvatarUrls().getSize48();
                                 }
+                                issue.setAssignee(assignee);
+                                issue.setAssigneeAvatarUrl(assigneeUrl);
+                                issue.setCreatedDateTime(singleIssue.getFields().getCreated());
+                                if (projectCreationDateTime.isAfter(singleIssue.getFields().getCreated())) {
+                                    projectCreationDateTime = singleIssue.getFields().getCreated();
+                                }
+                                OffsetDateTime dueDateTime = null;
+                                // https://stackoverflow.com/questions/57214468/java-8-convert-localdate-to-offsetdatetime
+                                if (singleIssue.getFields().getDuedate() != null) {
+                                    ZoneId zoneId = ZoneId.of(singleIssue.getFields().getCreator().getTimeZone());
+                                    dueDateTime = singleIssue.getFields().getDuedate().atStartOfDay(zoneId)
+                                            .toOffsetDateTime();
+                                }
+                                issue.setDueDateTime(dueDateTime);
+                                String priority = null;
+                                if (singleIssue.getFields().getPriority() != null) {
+                                    priority = singleIssue.getFields().getPriority().getName();
+                                }
+                                issue.setPriority(priority);
+                                issue.setProjectName(singleIssue.getFields().getProject().getName().trim());
+                                issue.setProjectUniqueId(dotenv.get("JIRA_URL") + singleProjectJson.getId());
+                                String resolutionName = null;
+                                if (singleIssue.getFields().getResolution() != null) {
+                                    resolutionName = singleIssue.getFields().getResolution().getName();
+                                }
+                                issue.setResolution(resolutionName);
+                                issue.setResolutionDateTime(singleIssue.getFields().getResolutiondate());
+                                issue.setStatus(singleIssue.getFields().getStatus().getName());
+                                issue.setStoryPoint(singleIssue.getFields().getStorypoints());
+                                String secondType = null;
+                                if (singleIssue.getFields().getSecondtype() != null) {
+                                    secondType = singleIssue.getFields().getSecondtype().getValue();
+                                }
+                                issue.setSecondType(secondType);
+                                issue.setIssueType(singleIssue.getFields().getIssuetype().getName());
+                                issue.setUpdatedDateTime(singleIssue.getFields().getUpdated());
+                                issueRepository.save(issue);
                             }
                         } else {
                             System.out.println("issues is empty");
@@ -225,8 +212,8 @@ public class LoadDatabase implements CommandLineRunner {
                         currentCount = issuesFromSearchJson.getMaxResults();
                         totalCount = issuesFromSearchJson.getTotal();
                     }
-                    System.out.println("Finished Current Issues");
                     startLocation += currentCount;
+                    System.out.println("Finished Current Issues, New startLocation at " + startLocation);
                     searchUrl = String.format(
                             "%s/rest/api/latest/search?jql=%s&startAt=%d&maxResults=%d",
                             dotenv.get("JIRA_URL"), jqlQuery, startLocation,
@@ -250,7 +237,30 @@ public class LoadDatabase implements CommandLineRunner {
             }
         }
         final Long endTime = System.currentTimeMillis();
-        System.out.println("Total Execution Time: " + (endTime - startTime));
+        System.out.println("Total Execution Time: " + ((endTime - startTime) / 60000) + " minutes");
 
     }
 }
+
+/*
+ * List of Resources
+ * https://stackoverflow.com/questions/20832015/how-do-i-iterate-over-a-json-
+ * response-using-jackson-api-of-a-list-inside-a-list
+ * 
+ * http://makeseleniumeasy.com/2020/06/11/rest-assured-tutorial-30-how-to-create
+ * -pojo-classes-of-a-json-array-payload/
+ * 
+ * https://stackoverflow.com/questions/58539657/com-fasterxml-jackson-databind-
+ * exc-mismatchedinputexception-cannot-deserialize
+ * 
+ * https://stackoverflow.com/questions/7421474/how-can-i-tell-jackson-to-ignore-
+ * a-property-for-which-i-dont-have-control-over
+ * 
+ * https://stackoverflow.com/questions/20837856/can-not-deserialize-instance-of-
+ * java-util-arraylist-out-of-start-object-token
+ * 
+ * https://docs.atlassian.com/software/jira/docs/api/REST/8.13.10/
+ * 
+ * https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-
+ * projects/#api-rest-api-3-project-search-get
+ */

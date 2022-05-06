@@ -1,7 +1,5 @@
 package com.westerndigital.keyinsight.JiraRestAPIsPOJO.GetCustomFieldsFromSearchPOJO;
 
-import java.util.Objects;
-
 public class CustomFields {
     private String id;
     private String name;
@@ -15,24 +13,6 @@ public class CustomFields {
     private Boolean isAllProjects;
     private Integer projectsCount;
     private Integer screensCount;
-
-    public CustomFields() {
-    }
-
-    public CustomFields(String id, String name, String description, String type, String searcherKey, String self, Integer numericId, Boolean isLocked, Boolean isManaged, Boolean isAllProjects, Integer projectsCount, Integer screensCount) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.type = type;
-        this.searcherKey = searcherKey;
-        this.self = self;
-        this.numericId = numericId;
-        this.isLocked = isLocked;
-        this.isManaged = isManaged;
-        this.isAllProjects = isAllProjects;
-        this.projectsCount = projectsCount;
-        this.screensCount = screensCount;
-    }
 
     public String getId() {
         return this.id;
@@ -140,82 +120,6 @@ public class CustomFields {
 
     public void setScreensCount(Integer screensCount) {
         this.screensCount = screensCount;
-    }
-
-    public CustomFields id(String id) {
-        setId(id);
-        return this;
-    }
-
-    public CustomFields name(String name) {
-        setName(name);
-        return this;
-    }
-
-    public CustomFields description(String description) {
-        setDescription(description);
-        return this;
-    }
-
-    public CustomFields type(String type) {
-        setType(type);
-        return this;
-    }
-
-    public CustomFields searcherKey(String searcherKey) {
-        setSearcherKey(searcherKey);
-        return this;
-    }
-
-    public CustomFields self(String self) {
-        setSelf(self);
-        return this;
-    }
-
-    public CustomFields numericId(Integer numericId) {
-        setNumericId(numericId);
-        return this;
-    }
-
-    public CustomFields isLocked(Boolean isLocked) {
-        setIsLocked(isLocked);
-        return this;
-    }
-
-    public CustomFields isManaged(Boolean isManaged) {
-        setIsManaged(isManaged);
-        return this;
-    }
-
-    public CustomFields isAllProjects(Boolean isAllProjects) {
-        setIsAllProjects(isAllProjects);
-        return this;
-    }
-
-    public CustomFields projectsCount(Integer projectsCount) {
-        setProjectsCount(projectsCount);
-        return this;
-    }
-
-    public CustomFields screensCount(Integer screensCount) {
-        setScreensCount(screensCount);
-        return this;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == this)
-            return true;
-        if (!(o instanceof CustomFields)) {
-            return false;
-        }
-        CustomFields customFields = (CustomFields) o;
-        return Objects.equals(id, customFields.id) && Objects.equals(name, customFields.name) && Objects.equals(description, customFields.description) && Objects.equals(type, customFields.type) && Objects.equals(searcherKey, customFields.searcherKey) && Objects.equals(self, customFields.self) && Objects.equals(numericId, customFields.numericId) && Objects.equals(isLocked, customFields.isLocked) && Objects.equals(isManaged, customFields.isManaged) && Objects.equals(isAllProjects, customFields.isAllProjects) && Objects.equals(projectsCount, customFields.projectsCount) && Objects.equals(screensCount, customFields.screensCount);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, description, type, searcherKey, self, numericId, isLocked, isManaged, isAllProjects, projectsCount, screensCount);
     }
 
     @Override

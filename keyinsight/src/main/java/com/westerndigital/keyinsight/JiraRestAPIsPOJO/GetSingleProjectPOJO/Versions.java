@@ -2,10 +2,7 @@ package com.westerndigital.keyinsight.JiraRestAPIsPOJO.GetSingleProjectPOJO;
 
 import java.time.LocalDate;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class Versions {
     private String self;
@@ -17,10 +14,11 @@ public class Versions {
     private LocalDate startDate;
     private LocalDate releaseDate;
     private Boolean overdue;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MMM/yy")
+    private LocalDate userStartDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MMM/yy")
+    private LocalDate userReleaseDate;
     private String projectId;
-
-    public Versions() {
-    }
 
     public String getSelf() {
         return this.self;
@@ -98,23 +96,6 @@ public class Versions {
         this.overdue = overdue;
     }
 
-    // public LocalDate getUserStartDate() {
-    //     return this.userStartDate;
-    // }
-
-    // public void setUserStartDate(LocalDate userStartDate) {
-    //     this.userStartDate = userStartDate;
-    // }
-
-    // public LocalDate getUserReleaseDate() {
-    //     return this.userReleaseDate;
-    // }
-
-    // public void setUserReleaseDate(LocalDate userReleaseDate) {
-    //     this.userReleaseDate = userReleaseDate;
-    // }
-
-
     public String getDescription() {
         return this.description;
     }
@@ -143,8 +124,6 @@ public class Versions {
             ", startDate='" + getStartDate() + "'" +
             ", releaseDate='" + getReleaseDate() + "'" +
             ", overdue='" + isOverdue() + "'" +
-            // ", userStartDate='" + getUserStartDate() + "'" +
-            // ", userReleaseDate='" + getUserReleaseDate() + "'" +
             ", projectId='" + getProjectId() + "'" +
             "}";
     }

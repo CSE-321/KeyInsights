@@ -9,11 +9,6 @@ public class IssueTypes {
     private Boolean subtask;
     private String avatarId;
 
-
-    public IssueTypes() {
-    }
-
-
     public String getSelf() {
         return this.self;
     }
