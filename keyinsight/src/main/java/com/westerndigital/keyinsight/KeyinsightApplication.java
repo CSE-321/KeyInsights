@@ -15,6 +15,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.io.IOException;
 
+import com.westerndigital.keyinsight.ScheduledJob.CompileWorkloadDigestJob;
 import com.westerndigital.keyinsight.ScheduledJob.ScanJiraIssuesJob;
 
 @SpringBootApplication
@@ -27,19 +28,27 @@ public class KeyinsightApplication {
 		SchedulerFactory schedulerFactory = new StdSchedulerFactory();
 		Scheduler scheduler = schedulerFactory.getScheduler();
 
-		JobDetail scanStaleJiraIssues = JobBuilder
-			.newJob(ScanJiraIssuesJob.class)
-			.build();
+		// JobDetail scanStaleJiraIssues = JobBuilder
+		// 	.newJob(ScanJiraIssuesJob.class)
+		// 	.build();
 
-		Trigger scanStableJiraIssuesTrigger = TriggerBuilder.newTrigger()
-			.startNow()
-			.withSchedule(SimpleScheduleBuilder.simpleSchedule()
-				.withIntervalInHours(24)
-				.repeatForever())
-			.build();
+		// Trigger scanStableJiraIssuesTrigger = TriggerBuilder.newTrigger()
+		// 	.startNow()
+		// 	.withSchedule(SimpleScheduleBuilder.simpleSchedule()
+		// 		.withIntervalInHours(24)
+		// 		.repeatForever())
+		// 	.build();
+
+		// JobDetail scanComplieWorkloadDigestJob = JobBuilder
+		// 	.newJob(CompileWorkloadDigestJob.class)
+		// 	.build();
+		
+		// Trigger scanCompileWorkloadDigestJobTrigger = TriggerBuilder.newTrigger()
+		// 	.startNow()
+		// 	.withSchedule
 
 		scheduler.start();
-		scheduler.scheduleJob(scanStaleJiraIssues, scanStableJiraIssuesTrigger);
+		//scheduler.scheduleJob(scanStaleJiraIssues, scanStableJiraIssuesTrigger);
 	}
 
 }
