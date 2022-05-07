@@ -88,8 +88,8 @@ const NotificationsPage = () => {
   // This will read in value from the backend to show previous notification settings
   const setDefaultValues = () => {
     const prevSettings = getNotificationsFromApiAsync(createJSON());
-    setToggled(true);
-    setToggled2(true);
+    setToggled();
+    setToggled2();
     setToggled3();
     setToggled4();
     setToggled5();

@@ -29,6 +29,18 @@ const Modal = ({
                 }}>
                 {listOfProjects[0]}
               </button>
+              <br></br>
+              <br></br>
+              <button
+                className="text-2xl transition duration-500 hover:scale-125 transform-gpu"
+                onClick={() => {
+                  setModalOn(false);
+                  setProject('CSE321');
+                  setIsProjectSelected(true);
+                  setDefaultValues();
+                }}>
+                CSE321
+              </button>
             </li>
           </ul>
         </div>
