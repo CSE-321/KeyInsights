@@ -10,11 +10,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class JiraProjectService {
     @Autowired
-    private final JiraProjectRepository projectRepository;
+    private JiraProjectRepository projectRepository;
 
-    public JiraProjectService(JiraProjectRepository projectRepository) {
-        this.projectRepository = projectRepository;
-    }
     public List<JiraProject> getAllProjects() {
         return projectRepository.findAll();
     }

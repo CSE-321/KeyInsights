@@ -9,17 +9,13 @@ import org.springframework.boot.orm.jpa.*;
 
 import java.util.List;
 
-//@Controller
-
-@RequestMapping("/api/v1/NotificationSettings")
+@Controller
+@RequestMapping("/api/v1/notification")
 
 public class NotificationSettingsController {
     @Autowired
     private NotificationSettingsService notificationSettingsService;
 
-    public NotificationSettingsController(NotificationSettingsService notificationSettingsService){
-        this.notificationSettingsService = notificationSettingsService;
-    }
     @GetMapping
     public ResponseEntity<List<NotificationSettings>> getAllNotifications(){
         return new ResponseEntity<>(notificationSettingsService.getAllNotifications(), HttpStatus.OK);

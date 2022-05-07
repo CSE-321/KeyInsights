@@ -12,15 +12,10 @@ import java.util.List;
 
 public class KPI1Service {
     @Autowired
-    private final JiraIssueService issueService;
+    private JiraIssueService issueService;
 
     @Autowired
-    private final KPI1Repository kpi1Repository;
-
-    public KPI1Service(JiraIssueService issueService, KPI1Repository kpi1Repository) {
-        this.issueService = issueService;
-        this.kpi1Repository = kpi1Repository;
-    }
+    private KPI1Repository kpi1Repository;
 
     public List<KPI1> getKPI1PerTeam(String projectName) {
         List<KPI1> listofKPI1 = new ArrayList<>();

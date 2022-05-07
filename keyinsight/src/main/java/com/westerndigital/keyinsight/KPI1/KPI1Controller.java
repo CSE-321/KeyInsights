@@ -14,10 +14,6 @@ public class KPI1Controller {
     @Autowired
     private KPI1Service kpi1Service;
 
-    public KPI1Controller(KPI1Service kpi1Service) {
-        this.kpi1Service = kpi1Service;
-    }
-
     @GetMapping("api/v1/KPI1/{projectName}")
     public ResponseEntity<List<KPI1>> getKPI1PerTeam(@PathVariable("projectName") String projectName) {
         return new ResponseEntity<>(kpi1Service.getKPI1PerTeam(projectName), HttpStatus.OK);
