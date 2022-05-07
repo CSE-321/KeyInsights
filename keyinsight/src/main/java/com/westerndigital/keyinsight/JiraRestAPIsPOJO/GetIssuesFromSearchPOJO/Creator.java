@@ -1,6 +1,6 @@
 package com.westerndigital.keyinsight.JiraRestAPIsPOJO.GetIssuesFromSearchPOJO;
 
-import com.westerndigital.keyinsight.JiraRestAPIsPOJO.AvatarUrls;
+import com.westerndigital.keyinsight.JiraRestAPIsPOJO.GeneralPOJOs.AvatarUrls;
 
 import lombok.Data;
 import lombok.ToString;

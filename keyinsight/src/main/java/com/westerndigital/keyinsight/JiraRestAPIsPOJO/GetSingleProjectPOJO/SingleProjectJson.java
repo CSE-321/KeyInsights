@@ -2,8 +2,8 @@ package com.westerndigital.keyinsight.JiraRestAPIsPOJO.GetSingleProjectPOJO;
 
 import java.util.ArrayList;
 
-import com.westerndigital.keyinsight.JiraRestAPIsPOJO.AvatarUrls;
-import com.westerndigital.keyinsight.JiraRestAPIsPOJO.ProjectCategory;
+import com.westerndigital.keyinsight.JiraRestAPIsPOJO.GeneralPOJOs.AvatarUrls;
+import com.westerndigital.keyinsight.JiraRestAPIsPOJO.GeneralPOJOs.ProjectCategory;
 
 public class SingleProjectJson {
     private String expand;

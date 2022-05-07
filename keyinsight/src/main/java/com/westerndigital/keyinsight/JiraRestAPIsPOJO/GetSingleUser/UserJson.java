@@ -1,6 +1,6 @@
 package com.westerndigital.keyinsight.JiraRestAPIsPOJO.GetSingleUser;
 
-import com.westerndigital.keyinsight.JiraRestAPIsPOJO.AvatarUrls;
+import com.westerndigital.keyinsight.JiraRestAPIsPOJO.GeneralPOJOs.AvatarUrls;
 
 public class UserJson {
     private String self;

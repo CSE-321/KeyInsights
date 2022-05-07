@@ -1,7 +1,7 @@
 package com.westerndigital.keyinsight.JiraRestAPIsPOJO.GetAllProjectsPOJO;
 
-import com.westerndigital.keyinsight.JiraRestAPIsPOJO.AvatarUrls;
-import com.westerndigital.keyinsight.JiraRestAPIsPOJO.ProjectCategory;
+import com.westerndigital.keyinsight.JiraRestAPIsPOJO.GeneralPOJOs.AvatarUrls;
+import com.westerndigital.keyinsight.JiraRestAPIsPOJO.GeneralPOJOs.ProjectCategory;
 
 import lombok.Data;
 import lombok.ToString;

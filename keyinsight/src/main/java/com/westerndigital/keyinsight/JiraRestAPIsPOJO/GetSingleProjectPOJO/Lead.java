@@ -1,6 +1,6 @@
 package com.westerndigital.keyinsight.JiraRestAPIsPOJO.GetSingleProjectPOJO;
 
-import com.westerndigital.keyinsight.JiraRestAPIsPOJO.AvatarUrls;
+import com.westerndigital.keyinsight.JiraRestAPIsPOJO.GeneralPOJOs.AvatarUrls;
 
 public class Lead {
     private String self;

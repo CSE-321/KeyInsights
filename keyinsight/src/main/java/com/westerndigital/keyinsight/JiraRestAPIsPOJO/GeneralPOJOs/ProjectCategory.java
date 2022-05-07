@@ -1,4 +1,4 @@
-package com.westerndigital.keyinsight.JiraRestAPIsPOJO;
+package com.westerndigital.keyinsight.JiraRestAPIsPOJO.GeneralPOJOs;
 
 public class ProjectCategory {
     private String self;
