@@ -98,8 +98,8 @@ public class LoadDatabase implements CommandLineRunner {
                 JiraProject project = projectService.findById(JiraUrl + singleProjectJson.getId());
                 project.setId(JiraUrl + singleProjectJson.getId());
                 project.setName(singleProjectJson.getName().trim());
-                project.setProjectLead(singleProjectJson.getLead().getDisplayName());
-                project.setProjectLeadAvatarUrl(singleProjectJson.getLead().getAvatarUrls().getSize48());
+                project.setTeamLead(singleProjectJson.getLead().getDisplayName());
+                project.setTeamLeadAvatarUrl(singleProjectJson.getLead().getAvatarUrls().getSize48());
                 project.setProjectType(singleProjectJson.getProjectTypeKey());
                 // This block of code just uses the REST API for JiraServer to get a specific
                 // user into a JSON
@@ -236,7 +236,7 @@ public class LoadDatabase implements CommandLineRunner {
 
                 } while (startLocation < totalCount);
                 System.out.println("Outside of the while issue loop");
-                project.setNumberOfIssues(totalCount);
+                project.setNumIssues(totalCount);
                 project.setCreatedDate(projectCreationDateTime);
                 projectService.saveSingleProject(project);
             }

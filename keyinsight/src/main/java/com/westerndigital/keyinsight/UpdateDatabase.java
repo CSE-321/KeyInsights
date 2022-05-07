@@ -44,6 +44,7 @@ public class UpdateDatabase {
         String JiraUrl = dotenv.get("JIRA_URL");
         String JiraUsername = dotenv.get("JIRA_USERNAME");
         String JiraPassword = dotenv.get("JIRA_PASSWORD");
+        int numberOfTimesThisProgramRan = 0;
 
         // maps the JSON object to the POJO selected
         ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
@@ -87,8 +88,8 @@ public class UpdateDatabase {
                 JiraProject project = projectService.findById(JiraUrl + singleProjectJson.getId());
                 project.setId(JiraUrl + singleProjectJson.getId());
                 project.setName(singleProjectJson.getName().trim());
-                project.setProjectLead(singleProjectJson.getLead().getDisplayName());
-                project.setProjectLeadAvatarUrl(singleProjectJson.getLead().getAvatarUrls().getSize48());
+                project.setTeamLead(singleProjectJson.getLead().getDisplayName());
+                project.setTeamLeadAvatarUrl(singleProjectJson.getLead().getAvatarUrls().getSize48());
 
                 // This block of code just uses the REST API for JiraServer to get a specific
                 // user into a JSON
@@ -229,15 +230,16 @@ public class UpdateDatabase {
 
                 } while (startLocation < totalCount);
                 System.out.println("Outside of the while issue loop");
-                project.setNumberOfIssues(totalCount);
+                project.setNumIssues(totalCount);
                 project.setCreatedDate(projectCreationDateTime);
                 projectService.saveSingleProject(project);
             }
         }
+        numberOfTimesThisProgramRan += 1;
         final Long endTime = System.currentTimeMillis();
         System.out.println("Total Execution Time: " + (endTime - startTime) + " milliseconds");
         System.out
-                .println("Please wait 30 minutes for the database to update! Current time is " + OffsetDateTime.now()
+                .println("Please wait 30 minutes for the database to update for the " + numberOfTimesThisProgramRan + " time. Current time is " + OffsetDateTime.now()
                         + ". The next Update is at " + OffsetDateTime.now().plusMinutes(30));
     }
 }
