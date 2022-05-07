@@ -19,7 +19,7 @@ public class JiraProject {
     private String name;
     private String teamLead;
     private String teamLeadAvatarUrl;
-    private OffsetDateTime createdDate; // uses the create date of the first issue
-    private Integer numIssues;
     private String projectType;
+    private Integer numIssues;
+    private OffsetDateTime createdDate;
 }

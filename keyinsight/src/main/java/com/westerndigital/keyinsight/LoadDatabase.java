@@ -132,6 +132,7 @@ public class LoadDatabase implements CommandLineRunner {
                         }
                     }
                 }
+                project.setCreatedDate(projectCreationDateTime);
                 // --------------------------------------------------------------------------------------------------------
                 projectService.saveSingleProject(project);
 

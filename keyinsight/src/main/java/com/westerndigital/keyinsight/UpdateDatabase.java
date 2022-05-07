@@ -122,6 +122,7 @@ public class UpdateDatabase {
                         }
                     }
                 }
+                project.setCreatedDate(projectCreationDateTime);
                 // --------------------------------------------------------------------------------------------------------
                 projectService.saveSingleProject(project);
 
@@ -131,10 +132,10 @@ public class UpdateDatabase {
                 // IssuesFromSearchJson
                 // -----------------------------------------------------------------------------------------------------------
                 Integer createdWithin = -30;
-                Integer updatedWithin = -13;
+                Integer updatedWithin = -30;
                 Integer totalCount = 0;
                 Integer currentCount = 0;
-                String jqlQuery = String.format("project=%s AND created >= %dm OR updated >= %dw",
+                String jqlQuery = String.format("project=%s AND created >= %dm OR updated >= %dm",
                         singleProjectJson.getName().trim(), createdWithin, updatedWithin);
                 Integer startLocation = 0;
                 Integer maxSearchResults = -1;
