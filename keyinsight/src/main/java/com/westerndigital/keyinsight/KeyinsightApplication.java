@@ -94,11 +94,8 @@ public class KeyinsightApplication {
 			for (BasicProject project : allProjects) {
 				String projectUrl = project.getKey();
 				Project singleProject = myJiraClient.getProject(projectUrl);
-				URI projectUri = singleProject.getSelf();
-				Iterable<ProjectRole> projectRoles = myJiraClient.getRoles(projectUri);
-				for(ProjectRole projectRole : projectRoles){
-					System.out.println(projectRole.getActors());
-				}
+				User projectLead = myJiraClient.getUser(singleProject.getLead().getName());
+				System.out.println(projectLead.getAvatarUri().toString());
 				
 			}
 			// 	projectName.add(singleProject.getName());
