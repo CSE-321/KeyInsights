@@ -24,7 +24,7 @@ public class KPI1Service {
 
     public List<KPI1> getKPI1PerTeam(String projectName) {
         List<KPI1> listofKPI1 = new ArrayList<>();
-        List<String> issueTypes = issueService.getAllIssueType(projectName);
+        List<String> teamTypes = issueService.getAllTeamType(projectName);
 
         String closed = "Closed";
         String wip = "In Progress";
@@ -43,7 +43,7 @@ public class KPI1Service {
 
         String cancelled = "Project cancelled";
 
-        KPI1 OverviewKPI1 = kpi1Repository.findByIssueType("All Jira Issues").orElse(new KPI1());
+        KPI1 OverviewKPI1 = kpi1Repository.findByTeamType("All Jira Issues").orElse(new KPI1());
 
         // --------------------------------------
 
@@ -87,7 +87,7 @@ public class KPI1Service {
 
         // Line of code for % of bugs in Jira Issues
         // -----------------------------------------------------------------------------------------------------------
-        int totalJiraBugIssueCount = issueService.totalJiraSecondTypeIssueCount(projectName,
+        int totalJiraBugIssueCount = issueService.totalJiraSubTypeIssueCount(projectName,
                 bug);
         // -----------------------------------------------------------------------------------------------------------
 
@@ -116,7 +116,7 @@ public class KPI1Service {
                 projectName,
                 cancelled);
         // -----------------------------------------------------------------------------------------------------------
-        OverviewKPI1.setIssueType("All Jira Issues");
+        OverviewKPI1.setTeamType("All Jira Issues");
         OverviewKPI1.setTotalJiraCount(totalJiraIssueCount);
         OverviewKPI1.setTotalJiraStoryPoints(totalJiraIssueStoryPoint);
         OverviewKPI1.setClosedJiraCount(totalJiraClosedIssueCount);
@@ -145,115 +145,115 @@ public class KPI1Service {
         kpi1Repository.save(OverviewKPI1);
         listofKPI1.add(OverviewKPI1);
 
-        for (String issueType : issueTypes) {
-            OverviewKPI1 = kpi1Repository.findByIssueType(issueType).orElse(new KPI1());
+        for (String teamType : teamTypes) {
+            OverviewKPI1 = kpi1Repository.findByTeamType(teamType).orElse(new KPI1());
 
             // --------------------------------------
 
             // Block of code for Total Jira# and story points
             // ----------------------------------------------------------------------------------------------------
-            List<Object[]> totalIssueTypeJiraCountAndStoryPoints = issueService
-                    .totalIssueTypeJiraCountAndStoryPoints(projectName, issueType);
-            int totalIssueTypeJiraIssueCount = Integer
-                    .parseInt(totalIssueTypeJiraCountAndStoryPoints.get(0)[0].toString());
-            double totalIssueTypeJiraIssueStoryPoint = Double
-                    .parseDouble(totalIssueTypeJiraCountAndStoryPoints.get(0)[1].toString());
+            List<Object[]> totalTeamTypeJiraCountAndStoryPoints = issueService
+                    .totalTeamTypeJiraCountAndStoryPoints(projectName, teamType);
+            int totalTeamTypeJiraIssueCount = Integer
+                    .parseInt(totalTeamTypeJiraCountAndStoryPoints.get(0)[0].toString());
+            double totalTeamTypeJiraIssueStoryPoint = Double
+                    .parseDouble(totalTeamTypeJiraCountAndStoryPoints.get(0)[1].toString());
             // ----------------------------------------------------------------------------------------------------
 
             // Block of code for Closed Jira# and story points and % of total story points
             // ----------------------------------------------------------------------------------------------------------
-            List<Object[]> totalIssueTypeJiraCountAndStoryPointsFromClosed = issueService
-                    .totalIssueTypeJiraCountAndStoryPointsFromStatus(projectName, issueType, closed);
-            int totalIssueTypeJiraClosedIssueCount = Integer
-                    .parseInt(totalIssueTypeJiraCountAndStoryPointsFromClosed.get(0)[0].toString());
-            double totalIssueTypeJiraClosedIssueStoryPoint = Double
-                    .parseDouble(totalIssueTypeJiraCountAndStoryPointsFromClosed.get(0)[1].toString());
+            List<Object[]> totalTeamTypeJiraCountAndStoryPointsFromClosed = issueService
+                    .totalTeamTypeJiraCountAndStoryPointsFromStatus(projectName, teamType, closed);
+            int totalTeamTypeJiraClosedIssueCount = Integer
+                    .parseInt(totalTeamTypeJiraCountAndStoryPointsFromClosed.get(0)[0].toString());
+            double totalTeamTypeJiraClosedIssueStoryPoint = Double
+                    .parseDouble(totalTeamTypeJiraCountAndStoryPointsFromClosed.get(0)[1].toString());
             // ----------------------------------------------------------------------------------------------------------
 
             // Block of code for WIP Jira# and story points and % of total story points
             // -----------------------------------------------------------------------------------------------------------
-            List<Object[]> totalIssueTypeJiraCountAndStoryPointsFromWIP = issueService
-                    .totalIssueTypeJiraCountAndStoryPointsFromStatus(projectName, issueType, wip);
-            int totalIssueTypeJiraWIPIssueCount = Integer
-                    .parseInt(totalIssueTypeJiraCountAndStoryPointsFromWIP.get(0)[0].toString());
-            double totalIssueTypeJiraWIPIssueStoryPoint = Double
-                    .parseDouble(totalIssueTypeJiraCountAndStoryPointsFromWIP.get(0)[1].toString());
+            List<Object[]> totalTeamTypeJiraCountAndStoryPointsFromWIP = issueService
+                    .totalTeamTypeJiraCountAndStoryPointsFromStatus(projectName, teamType, wip);
+            int totalTeamTypeJiraWIPIssueCount = Integer
+                    .parseInt(totalTeamTypeJiraCountAndStoryPointsFromWIP.get(0)[0].toString());
+            double totalTeamTypeJiraWIPIssueStoryPoint = Double
+                    .parseDouble(totalTeamTypeJiraCountAndStoryPointsFromWIP.get(0)[1].toString());
             // ------------------------------------------------------------------------------------------------------------
 
             // Block of code for Not Started Jira# and story points and % of total story
             // points
             // -----------------------------------------------------------------------------------------------------------
-            List<Object[]> totalIssueTypeJiraCountAndStoryPointsFromNotStarted = issueService
-                    .totalIssueTypeJiraCountAndStoryPointsFromStatus(projectName, issueType, notStarted);
-            int totalIssueTypeJiraNotStartedIssueCount = Integer
-                    .parseInt(totalIssueTypeJiraCountAndStoryPointsFromNotStarted.get(0)[0].toString());
-            double totalIssueTypeJiraNotStartedIssueStoryPoint = Double
-                    .parseDouble(totalIssueTypeJiraCountAndStoryPointsFromNotStarted.get(0)[1].toString());
+            List<Object[]> totalTeamTypeJiraCountAndStoryPointsFromNotStarted = issueService
+                    .totalTeamTypeJiraCountAndStoryPointsFromStatus(projectName, teamType, notStarted);
+            int totalTeamTypeJiraNotStartedIssueCount = Integer
+                    .parseInt(totalTeamTypeJiraCountAndStoryPointsFromNotStarted.get(0)[0].toString());
+            double totalTeamTypeJiraNotStartedIssueStoryPoint = Double
+                    .parseDouble(totalTeamTypeJiraCountAndStoryPointsFromNotStarted.get(0)[1].toString());
             // -----------------------------------------------------------------------------------------------------------
 
             // Line of code for % of bugs in Jira Issues
             // -----------------------------------------------------------------------------------------------------------
-            int totalIssueTypeJiraBugIssueCount = issueService
-                    .totalIssueTypeJiraSecondTypeIssueCount(projectName, issueType, bug);
+            int totalTeamTypeJiraBugIssueCount = issueService
+                    .totalTeamTypeJiraSubTypeIssueCount(projectName, teamType, bug);
             // -----------------------------------------------------------------------------------------------------------
 
             // Line of code for % of reopen Jira Issues
             // -----------------------------------------------------------------------------------------------------------
-            int totalIssueTypeJiraReopenedIssueCount = issueService.totalIssueTypeJiraStatusIssueCount(
-                    projectName, issueType,
+            int totalTeamTypeJiraReopenedIssueCount = issueService.totalTeamTypeJiraStatusIssueCount(
+                    projectName, teamType,
                     reopened);
             // -----------------------------------------------------------------------------------------------------------
 
             // Line of code for % of critical Jira Issues
             // -----------------------------------------------------------------------------------------------------------
-            int totalIssueTypeJiraCriticalIssueCount = issueService.totalIssueTypeJiraPriorityIssueCount(
-                    projectName, issueType,
+            int totalTeamTypeJiraCriticalIssueCount = issueService.totalTeamTypeJiraPriorityIssueCount(
+                    projectName, teamType,
                     criticalPriority);
             // -----------------------------------------------------------------------------------------------------------
 
             // Line of code for % of critical not completed Jira Issues
             // -----------------------------------------------------------------------------------------------------------
-            int totalIssueTypeJiraCriticalNotCompletedIssueCount = issueService
-                    .totalIssueTypeJiraPriorityOppositeResolutionIssueCount(projectName, issueType,
+            int totalTeamTypeJiraCriticalNotCompletedIssueCount = issueService
+                    .totalTeamTypeJiraPriorityOppositeResolutionIssueCount(projectName, teamType,
                             criticalPriority, completed, fixed, done);
             // -----------------------------------------------------------------------------------------------------------
 
             // Line of code for % of cancelled Jira Issues
             // -----------------------------------------------------------------------------------------------------------
-            int totalIssueTypeJiraCancelledIssueCount = issueService
-                    .totalIssueTypeJiraResolutionIssueCount(projectName, issueType,
+            int totalTeamTypeJiraCancelledIssueCount = issueService
+                    .totalTeamTypeJiraResolutionIssueCount(projectName, teamType,
                             cancelled);
             // -----------------------------------------------------------------------------------------------------------
-            OverviewKPI1.setIssueType(issueType);
-            OverviewKPI1.setTotalJiraCount(totalIssueTypeJiraIssueCount);
-            OverviewKPI1.setTotalJiraStoryPoints(totalIssueTypeJiraIssueStoryPoint);
-            OverviewKPI1.setClosedJiraCount(totalIssueTypeJiraClosedIssueCount);
-            OverviewKPI1.setClosedJiraStoryPoints(totalIssueTypeJiraClosedIssueStoryPoint);
+            OverviewKPI1.setTeamType(teamType);
+            OverviewKPI1.setTotalJiraCount(totalTeamTypeJiraIssueCount);
+            OverviewKPI1.setTotalJiraStoryPoints(totalTeamTypeJiraIssueStoryPoint);
+            OverviewKPI1.setClosedJiraCount(totalTeamTypeJiraClosedIssueCount);
+            OverviewKPI1.setClosedJiraStoryPoints(totalTeamTypeJiraClosedIssueStoryPoint);
             OverviewKPI1.setPercentageClosedJiraStoryPoints(
-                    (totalIssueTypeJiraClosedIssueStoryPoint / totalIssueTypeJiraIssueStoryPoint)
+                    (totalTeamTypeJiraClosedIssueStoryPoint / totalTeamTypeJiraIssueStoryPoint)
                             * 100.0f);
-            OverviewKPI1.setWipJiraCount(totalIssueTypeJiraWIPIssueCount);
-            OverviewKPI1.setWipJiraStoryPoints(totalIssueTypeJiraWIPIssueStoryPoint);
+            OverviewKPI1.setWipJiraCount(totalTeamTypeJiraWIPIssueCount);
+            OverviewKPI1.setWipJiraStoryPoints(totalTeamTypeJiraWIPIssueStoryPoint);
             OverviewKPI1.setPercentageWIPJiraStoryPoints(
-                    (totalIssueTypeJiraWIPIssueStoryPoint / totalIssueTypeJiraIssueStoryPoint)
+                    (totalTeamTypeJiraWIPIssueStoryPoint / totalTeamTypeJiraIssueStoryPoint)
                             * 100.0f);
-            OverviewKPI1.setNotStartedJiraCount(totalIssueTypeJiraNotStartedIssueCount);
-            OverviewKPI1.setNotStartedJiraStoryPoints(totalIssueTypeJiraNotStartedIssueStoryPoint);
+            OverviewKPI1.setNotStartedJiraCount(totalTeamTypeJiraNotStartedIssueCount);
+            OverviewKPI1.setNotStartedJiraStoryPoints(totalTeamTypeJiraNotStartedIssueStoryPoint);
             OverviewKPI1.setPercentageNotStartedJiraStoryPoints(
-                    (totalIssueTypeJiraNotStartedIssueStoryPoint
-                            / totalIssueTypeJiraIssueStoryPoint)
+                    (totalTeamTypeJiraNotStartedIssueStoryPoint
+                            / totalTeamTypeJiraIssueStoryPoint)
                             * 100.0f);
             OverviewKPI1.setPercentageBugs(
-                    ((double) totalIssueTypeJiraBugIssueCount / totalIssueTypeJiraIssueCount) * 100.0);
+                    ((double) totalTeamTypeJiraBugIssueCount / totalTeamTypeJiraIssueCount) * 100.0);
             OverviewKPI1.setPercentageReopenedIssues(
-                    ((double) totalIssueTypeJiraReopenedIssueCount / totalIssueTypeJiraIssueCount) * 100.0);
+                    ((double) totalTeamTypeJiraReopenedIssueCount / totalTeamTypeJiraIssueCount) * 100.0);
             OverviewKPI1.setPercentageCriticalIssues(
-                    ((double) totalIssueTypeJiraCriticalIssueCount / totalIssueTypeJiraIssueCount) * 100.0);
+                    ((double) totalTeamTypeJiraCriticalIssueCount / totalTeamTypeJiraIssueCount) * 100.0);
             OverviewKPI1.setPercentageCriticalIssuesNotCompleted(
-                    ((double) totalIssueTypeJiraCriticalNotCompletedIssueCount / totalIssueTypeJiraIssueCount)
+                    ((double) totalTeamTypeJiraCriticalNotCompletedIssueCount / totalTeamTypeJiraIssueCount)
                             * 100.0);
             OverviewKPI1.setPercentageCancelledIssues(
-                    ((double) totalIssueTypeJiraCancelledIssueCount / totalIssueTypeJiraIssueCount) * 100.0);
+                    ((double) totalTeamTypeJiraCancelledIssueCount / totalTeamTypeJiraIssueCount) * 100.0);
 
             kpi1Repository.save(OverviewKPI1);
             listofKPI1.add(OverviewKPI1);

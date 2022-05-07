@@ -22,8 +22,8 @@ public class JiraIssueService {
         return issueRepository.findById(key).orElse(new JiraIssue());
     }
 
-    public List<String> getAllIssueType(String projectName) {
-        return issueRepository.getAllIssueType(projectName);
+    public List<String> getAllTeamType(String projectName) {
+        return issueRepository.getAllTeamType(projectName);
     }
 
     public List<Object[]> totalJiraCountAndStoryPoints(String projectName) {
@@ -34,8 +34,8 @@ public class JiraIssueService {
         return issueRepository.totalJiraCountAndStoryPointsFromStatus(projectName, status);
     }
 
-    public Integer totalJiraSecondTypeIssueCount(String projectName, String secondType) {
-        return issueRepository.totalJiraSecondTypeIssueCount(projectName, secondType);
+    public Integer totalJiraSubTypeIssueCount(String projectName, String subType) {
+        return issueRepository.totalJiraSubTypeIssueCount(projectName, subType);
     }
 
     public Integer totalJiraStatusIssueCount(String projectName, String status) {
@@ -60,56 +60,56 @@ public class JiraIssueService {
         return issueRepository.totalJiraResolutionIssueCount(projectName, resolution);
     }
 
-    public List<Object[]> totalIssueTypeJiraCountAndStoryPoints(String projectName, String issueType) {
-        return issueRepository.totalIssueTypeJiraCountAndStoryPoints(projectName, issueType);
+    public List<Object[]> totalTeamTypeJiraCountAndStoryPoints(String projectName, String teamType) {
+        return issueRepository.totalTeamTypeJiraCountAndStoryPoints(projectName, teamType);
     }
 
-    public List<Object[]> totalIssueTypeJiraCountAndStoryPointsFromStatus(String projectName, String issueType,
+    public List<Object[]> totalTeamTypeJiraCountAndStoryPointsFromStatus(String projectName, String teamType,
             String status) {
-        return issueRepository.totalIssueTypeJiraCountAndStoryPointsFromStatus(projectName, issueType, status);
+        return issueRepository.totalTeamTypeJiraCountAndStoryPointsFromStatus(projectName, teamType, status);
     }
 
-    public Integer totalIssueTypeJiraSecondTypeIssueCount(String projectName, String issueType, String secondType) {
-        return issueRepository.totalIssueTypeJiraSecondTypeIssueCount(projectName, issueType, secondType);
+    public Integer totalTeamTypeJiraSubTypeIssueCount(String projectName, String teamType, String subType) {
+        return issueRepository.totalTeamTypeJiraSubTypeIssueCount(projectName, teamType, subType);
     }
 
-    public Integer totalIssueTypeJiraStatusIssueCount(String projectName, String issueType, String status) {
-        return issueRepository.totalIssueTypeJiraStatusIssueCount(projectName, issueType, status);
+    public Integer totalTeamTypeJiraStatusIssueCount(String projectName, String teamType, String status) {
+        return issueRepository.totalTeamTypeJiraStatusIssueCount(projectName, teamType, status);
     }
 
-    public Integer totalIssueTypeJiraPriorityIssueCount(String projectName, String issueType, String priority) {
-        return issueRepository.totalIssueTypeJiraPriorityIssueCount(projectName, issueType, priority);
+    public Integer totalTeamTypeJiraPriorityIssueCount(String projectName, String teamType, String priority) {
+        return issueRepository.totalTeamTypeJiraPriorityIssueCount(projectName, teamType, priority);
     }
 
-    public Integer totalIssueTypeJiraPriorityOppositeResolutionIssueCount(String projectName, String issueType,
+    public Integer totalTeamTypeJiraPriorityOppositeResolutionIssueCount(String projectName, String teamType,
             String priority, String resolution1, String resolution2, String resolution3) {
-        return issueRepository.totalIssueTypeJiraPriorityOppositeResolutionIssueCount(projectName, issueType, priority,
+        return issueRepository.totalTeamTypeJiraPriorityOppositeResolutionIssueCount(projectName, teamType, priority,
                 resolution1, resolution2, resolution3);
     }
 
-    public Integer totalIssueTypeJiraResolutionIssueCount(String projectName, String issueType, String resolution) {
-        return issueRepository.totalIssueTypeJiraResolutionIssueCount(projectName, issueType, resolution);
+    public Integer totalTeamTypeJiraResolutionIssueCount(String projectName, String teamType, String resolution) {
+        return issueRepository.totalTeamTypeJiraResolutionIssueCount(projectName, teamType, resolution);
     }
 
 	public List<Integer> daysNeededToCompleteTotalJiraIssues(String projectName) {
 		return issueRepository.daysNeededToCompleteTotalJiraIssues(projectName);
 	}
 
-	public List<Integer> daysNeededToCompleteIssueTypeJiraIssues(String projectName, String issueType) {
-		return issueRepository.daysNeededToCompleteIssueTypeJiraIssues(projectName, issueType);
+	public List<Integer> daysNeededToCompleteTeamTypeJiraIssues(String projectName, String teamType) {
+		return issueRepository.daysNeededToCompleteTeamTypeJiraIssues(projectName, teamType);
 	}
 
 	public List<Object[]> numberOfIssuesCreatedAndResolvedInAMonth(String projectName) {
 		return issueRepository.numberOfIssuesCreatedAndResolvedInAMonth(projectName);
 	}
 
-    public List<Object[]> numberOfIssuesCreatedAndResolvedInAMonthByIssueType(String projectName,
-            String issueType) {
-        return issueRepository.numberOfIssuesCreatedAndResolvedInAMonthByIssueType(projectName, issueType);
+    public List<Object[]> numberOfIssuesCreatedAndResolvedInAMonthByTeamType(String projectName,
+            String teamType) {
+        return issueRepository.numberOfIssuesCreatedAndResolvedInAMonthByTeamType(projectName, teamType);
     }
 
-    public List<Object[]> assigneeTotalCompleteInformation(String projectName, String issueType, String status1, String status2, String priority){
-        return issueRepository.assigneeTotalCompleteInformation(projectName, issueType, status1, status2, priority);
+    public List<Object[]> assigneeTotalCompleteInformation(String projectName, String teamType, String status1, String status2, String priority){
+        return issueRepository.assigneeTotalCompleteInformation(projectName, teamType, status1, status2, priority);
     }
 
     public void deleteAll(){

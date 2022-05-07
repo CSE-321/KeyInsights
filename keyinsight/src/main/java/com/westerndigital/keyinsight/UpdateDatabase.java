@@ -84,7 +84,6 @@ public class UpdateDatabase {
             // -----------------------------------------------------------------------------
 
             for (SingleProjectJson singleProjectJson : singleProjectJsons) {
-                OffsetDateTime projectCreationDateTime = null;
                 JiraProject project = projectService.findById(JiraUrl + singleProjectJson.getId());
                 project.setId(JiraUrl + singleProjectJson.getId());
                 project.setName(singleProjectJson.getName().trim());
@@ -108,6 +107,10 @@ public class UpdateDatabase {
                 // This block of code is just for getting the timezone of the project lead
                 // We can replace it by having the timezone be default GMT
                 // --------------------------------------------------------------------------------------------------------
+                OffsetDateTime projectCreationDateTime = null;
+                if(project.getCreatedDate() != null){
+                    projectCreationDateTime = project.getCreatedDate();
+                }
                 for (UserJson userJson : userJsons) {
                     List<Versions> versions = singleProjectJson.getVersions();
                     for (Versions version : versions) {
@@ -197,8 +200,8 @@ public class UpdateDatabase {
                                 if (singleIssue.getFields().getSecondtype() != null) {
                                     secondType = singleIssue.getFields().getSecondtype().getValue();
                                 }
-                                issue.setSecondType(secondType);
-                                issue.setIssueType(singleIssue.getFields().getIssuetype().getName());
+                                issue.setSubType(secondType);
+                                issue.setTeamType(singleIssue.getFields().getIssuetype().getName());
                                 issue.setUpdatedDateTime(singleIssue.getFields().getUpdated());
                                 issueService.saveSingleIssue(issue);
                             }

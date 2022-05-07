@@ -95,13 +95,12 @@ public class LoadDatabase implements CommandLineRunner {
             // -----------------------------------------------------------------------------
 
             for (SingleProjectJson singleProjectJson : singleProjectJsons) {
-                OffsetDateTime projectCreationDateTime = null;
                 JiraProject project = projectService.findById(JiraUrl + singleProjectJson.getId());
                 project.setId(JiraUrl + singleProjectJson.getId());
                 project.setName(singleProjectJson.getName().trim());
                 project.setProjectLead(singleProjectJson.getLead().getDisplayName());
                 project.setProjectLeadAvatarUrl(singleProjectJson.getLead().getAvatarUrls().getSize48());
-
+                project.setProjectType(singleProjectJson.getProjectTypeKey());
                 // This block of code just uses the REST API for JiraServer to get a specific
                 // user into a JSON
                 // We then use the mapper to map the JSON to the POJO, in this case the UserJson
@@ -119,10 +118,14 @@ public class LoadDatabase implements CommandLineRunner {
                 // This block of code is just for getting the timezone of the project lead
                 // We can replace it by having the timezone be default GMT
                 // --------------------------------------------------------------------------------------------------------
+                OffsetDateTime projectCreationDateTime = null;
+                if(project.getCreatedDate() != null){
+                    projectCreationDateTime = project.getCreatedDate();
+                }
                 for (UserJson userJson : userJsons) {
                     List<Versions> versions = singleProjectJson.getVersions();
                     for (Versions version : versions) {
-                        if (projectCreationDateTime == null
+                        if (projectCreationDateTime == null 
                                 || projectCreationDateTime.toLocalDate().isAfter(version.getStartDate())) {
                             ZoneId zoneId = ZoneId.of(userJson.getTimeZone());
                             projectCreationDateTime = version.getStartDate().atStartOfDay(zoneId).toOffsetDateTime();
@@ -205,8 +208,8 @@ public class LoadDatabase implements CommandLineRunner {
                                 if (singleIssue.getFields().getSecondtype() != null) {
                                     secondType = singleIssue.getFields().getSecondtype().getValue();
                                 }
-                                issue.setSecondType(secondType);
-                                issue.setIssueType(singleIssue.getFields().getIssuetype().getName());
+                                issue.setSubType(secondType);
+                                issue.setTeamType(singleIssue.getFields().getIssuetype().getName());
                                 issue.setUpdatedDateTime(singleIssue.getFields().getUpdated());
                                 issueService.saveSingleIssue(issue);
                             }

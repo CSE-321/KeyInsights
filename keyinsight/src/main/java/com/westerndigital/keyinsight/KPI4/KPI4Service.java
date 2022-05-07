@@ -25,13 +25,13 @@ public class KPI4Service {
         kpi4Repository.deleteAll();
         List<KPI4> listofKPI4 = new ArrayList<>();
 
-        List<String> issueTypes = issueService.getAllIssueType(projectName);
+        List<String> teamTypes = issueService.getAllTeamType(projectName);
         String wip = "In Progress";
         String notstarted = "Open";
         String critical = "Critical";
-        for(String issueType : issueTypes){
-            List<Object[]> assigneeCompleteTotalInformationByIssueType = issueService.assigneeTotalCompleteInformation(projectName, issueType, wip, notstarted, critical);
-            for(Object[] singleAssigneeCompleteInfo : assigneeCompleteTotalInformationByIssueType){
+        for(String teamType : teamTypes){
+            List<Object[]> assigneeCompleteTotalInformationByTeamType = issueService.assigneeTotalCompleteInformation(projectName, teamType, wip, notstarted, critical);
+            for(Object[] singleAssigneeCompleteInfo : assigneeCompleteTotalInformationByTeamType){
                 KPI4 assigneeInformation = new KPI4();
                 int totalJiraCount = Integer.parseInt(singleAssigneeCompleteInfo[1].toString());
                 double PercentageCompleted = Integer.parseInt(singleAssigneeCompleteInfo[3].toString())/(double)totalJiraCount;
@@ -40,7 +40,7 @@ public class KPI4Service {
                 double PercentageCriticalNotstarted = Integer.parseInt(singleAssigneeCompleteInfo[9].toString())/(double)totalJiraCount;
 
                 assigneeInformation.setAssigneeName(singleAssigneeCompleteInfo[0].toString());
-                assigneeInformation.setIssueType(issueType);                
+                assigneeInformation.setTeamType(teamType);                
                 assigneeInformation.setJiraCount(totalJiraCount);
                 assigneeInformation.setStoryPoint(Double.parseDouble(singleAssigneeCompleteInfo[2].toString()));                
                 assigneeInformation.setPercentageCompleted(PercentageCompleted);                

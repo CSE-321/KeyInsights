@@ -23,13 +23,13 @@ public class KPI2Service {
 
     public List<KPI2> getKPI2PerTeam(String projectName) {
         List<KPI2> listofKPI2 = new ArrayList<>();
-        List<String> issueTypes = issueService.getAllIssueType(projectName);
-        System.out.print(issueTypes);
+        List<String> teamTypes = issueService.getAllTeamType(projectName);
+        System.out.print(teamTypes);
 
-        KPI2 daysToCompleteIssueKPI2 = kpi2Repository.findByIssueType("All Jira Issues").orElse(new KPI2());
+        KPI2 daysToCompleteIssueKPI2 = kpi2Repository.findByTeamType("All Jira Issues").orElse(new KPI2());
         List<Integer> daysNeedToCompleteTotal = issueService.daysNeededToCompleteTotalJiraIssues(projectName);
 
-        double median = -1;
+        double median = -1.0;
         int size = daysNeedToCompleteTotal.size();
         int middle = size / 2;
         if(size % 2 == 0){
@@ -38,9 +38,7 @@ public class KPI2Service {
             median = daysNeedToCompleteTotal.get(middle);
         }
 
-        System.out.println("Median day needed for this team is " + median);
-
-        daysToCompleteIssueKPI2.setIssueType("All Jira Issues");
+        daysToCompleteIssueKPI2.setTeamType("All Jira Issues");
         daysToCompleteIssueKPI2.setAverageDayToCompleteIssue(daysNeedToCompleteTotal.stream().mapToInt(val -> val).average().orElse(0.0));
         daysToCompleteIssueKPI2.setMaximumDayToCompleteIssues(daysNeedToCompleteTotal.stream().mapToInt(val -> val).max().orElse(0));
         daysToCompleteIssueKPI2.setMinimumDayToCompleteIssues(daysNeedToCompleteTotal.stream().mapToInt(val -> val).min().orElse(0));
@@ -49,24 +47,22 @@ public class KPI2Service {
         kpi2Repository.save(daysToCompleteIssueKPI2);
         listofKPI2.add(daysToCompleteIssueKPI2);
 
-        for(String issueType : issueTypes){
-            daysToCompleteIssueKPI2 = kpi2Repository.findByIssueType(issueType).orElse(new KPI2());
-            List<Integer> daysNeedToCompleteIssueType = issueService.daysNeededToCompleteIssueTypeJiraIssues(projectName, issueType);
-            median = -1;
-            size = daysNeedToCompleteIssueType.size();
+        for(String teamType : teamTypes){
+            daysToCompleteIssueKPI2 = kpi2Repository.findByTeamType(teamType).orElse(new KPI2());
+            List<Integer> daysNeedToCompleteTeamType = issueService.daysNeededToCompleteTeamTypeJiraIssues(projectName, teamType);
+            median = -1.0;
+            size = daysNeedToCompleteTeamType.size();
             middle = size / 2;
             if(size % 2 == 0){
-                median = (double)(daysNeedToCompleteIssueType.get(middle - 1) + daysNeedToCompleteIssueType.get(middle))/2;
+                median = (double)(daysNeedToCompleteTeamType.get(middle - 1) + daysNeedToCompleteTeamType.get(middle))/2;
             }else{
-                median = daysNeedToCompleteIssueType.get(middle);
+                median = daysNeedToCompleteTeamType.get(middle);
             }
 
-            System.out.println("Median day needed for this team is " + median);
-
-            daysToCompleteIssueKPI2.setIssueType(issueType);
-            daysToCompleteIssueKPI2.setAverageDayToCompleteIssue(daysNeedToCompleteIssueType.stream().mapToInt(val -> val).average().orElse(0.0));
-            daysToCompleteIssueKPI2.setMaximumDayToCompleteIssues(daysNeedToCompleteIssueType.stream().mapToInt(val -> val).max().orElse(0));
-            daysToCompleteIssueKPI2.setMinimumDayToCompleteIssues(daysNeedToCompleteIssueType.stream().mapToInt(val -> val).min().orElse(0));
+            daysToCompleteIssueKPI2.setTeamType(teamType);
+            daysToCompleteIssueKPI2.setAverageDayToCompleteIssue(daysNeedToCompleteTeamType.stream().mapToInt(val -> val).average().orElse(0.0));
+            daysToCompleteIssueKPI2.setMaximumDayToCompleteIssues(daysNeedToCompleteTeamType.stream().mapToInt(val -> val).max().orElse(0));
+            daysToCompleteIssueKPI2.setMinimumDayToCompleteIssues(daysNeedToCompleteTeamType.stream().mapToInt(val -> val).min().orElse(0));
             daysToCompleteIssueKPI2.setMedianDayToCompleteIssues(median);
             
             kpi2Repository.save(daysToCompleteIssueKPI2);

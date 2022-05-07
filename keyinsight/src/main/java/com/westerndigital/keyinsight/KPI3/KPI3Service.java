@@ -60,7 +60,7 @@ public class KPI3Service {
                 resolvedJiraStoryPoints = Float.parseFloat(numOfCreatedResolvedIssue[5].toString());
             }
 
-            numberOfIssuesCreatedResolvedInMonth.setIssueType("All Jira Issues");
+            numberOfIssuesCreatedResolvedInMonth.setTeamType("All Jira Issues");
             numberOfIssuesCreatedResolvedInMonth.setCreatedMonth(createdMonth);
             numberOfIssuesCreatedResolvedInMonth.setResolvedMonth(resolvedMonth);
             numberOfIssuesCreatedResolvedInMonth.setCreatedJiraCount(createdJiraCount);
@@ -72,12 +72,12 @@ public class KPI3Service {
 
         }
 
-        List<String> issueTypes = issueService.getAllIssueType(projectName);
+        List<String> teamTypes = issueService.getAllTeamType(projectName);
 
-        for (String issueType : issueTypes) {
-            List<Object[]> numOfCreatedResolvedIssuesByMonthAndIssueType = issueService
-                    .numberOfIssuesCreatedAndResolvedInAMonthByIssueType(projectName, issueType);
-            for (Object[] numOfCreatedResolvedIssue : numOfCreatedResolvedIssuesByMonthAndIssueType) {
+        for (String teamType : teamTypes) {
+            List<Object[]> numOfCreatedResolvedIssuesByMonthAndTeamType = issueService
+                    .numberOfIssuesCreatedAndResolvedInAMonthByTeamType(projectName, teamType);
+            for (Object[] numOfCreatedResolvedIssue : numOfCreatedResolvedIssuesByMonthAndTeamType) {
                 KPI3 numberOfIssuesCreatedResolvedInMonth = new KPI3();
 
                 String createdMonth = null;
@@ -110,7 +110,7 @@ public class KPI3Service {
                     resolvedJiraStoryPoints = Float.parseFloat(numOfCreatedResolvedIssue[5].toString());
                 }
 
-                numberOfIssuesCreatedResolvedInMonth.setIssueType(issueType);
+                numberOfIssuesCreatedResolvedInMonth.setTeamType(teamType);
                 numberOfIssuesCreatedResolvedInMonth.setCreatedMonth(createdMonth);
                 numberOfIssuesCreatedResolvedInMonth.setResolvedMonth(resolvedMonth);
                 numberOfIssuesCreatedResolvedInMonth.setCreatedJiraCount(createdJiraCount);
