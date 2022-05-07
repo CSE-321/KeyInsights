@@ -11,15 +11,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class KPI2Service {
     @Autowired
-    private final JiraIssueService issueService;
+    private JiraIssueService issueService;
 
     @Autowired
-    private final KPI2Repository kpi2Repository;
-
-    public KPI2Service(JiraIssueService issueService, KPI2Repository kpi2Repository) {
-        this.issueService = issueService;
-        this.kpi2Repository = kpi2Repository;
-    }
+    private KPI2Repository kpi2Repository;
 
     public List<KPI2> getKPI2PerTeam(String projectName) {
         List<KPI2> listofKPI2 = new ArrayList<>();

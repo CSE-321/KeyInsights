@@ -13,10 +13,6 @@ public class KPI3Controller {
     @Autowired
     private KPI3Service kpi3Service;
 
-    public KPI3Controller(KPI3Service kpi3Service) {
-        this.kpi3Service = kpi3Service;
-    }
-
     @GetMapping("api/v1/KPI3/{projectName}")
     public ResponseEntity<List<KPI3>> getKPI3PerTeam(@PathVariable("projectName") String projectName) {
         return new ResponseEntity<>(kpi3Service.getKPI3PerTeam(projectName), HttpStatus.OK);

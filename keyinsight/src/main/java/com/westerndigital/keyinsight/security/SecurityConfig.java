@@ -86,7 +86,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .authorizeRequests()
             .anyRequest()
             // temporarily disable authentication for all back-end endpoints
-            .permitAll();
-            // .authenticated();
+            // .permitAll();
+            .authenticated();
     }
 }

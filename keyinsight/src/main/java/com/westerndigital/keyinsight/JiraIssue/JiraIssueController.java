@@ -16,10 +16,6 @@ public class JiraIssueController {
     @Autowired
     private JiraIssueService jiraIssueService;
 
-    public JiraIssueController(JiraIssueService jiraIssueService) {
-        this.jiraIssueService = jiraIssueService;
-    }
-
     @PostMapping(path = "/issues")
     public ResponseEntity<HttpStatus> addIssue(JiraIssue issue) {
         if (addIssue(issue) == null) {

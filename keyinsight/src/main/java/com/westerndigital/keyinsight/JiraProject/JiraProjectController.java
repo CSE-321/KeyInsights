@@ -16,10 +16,6 @@ public class JiraProjectController {
     @Autowired
     private JiraProjectService jiraProjectService;
 
-    public JiraProjectController(JiraProjectService jiraProjectService) {
-        this.jiraProjectService = jiraProjectService;
-    }
-
     @GetMapping
     public ResponseEntity<List<JiraProject>> getAllProjects() {
         return new ResponseEntity<>(jiraProjectService.getAllProjects(), HttpStatus.OK);

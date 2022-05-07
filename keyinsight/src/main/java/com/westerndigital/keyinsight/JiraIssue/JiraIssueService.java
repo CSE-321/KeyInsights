@@ -3,16 +3,14 @@ package com.westerndigital.keyinsight.JiraIssue;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class JiraIssueService {
 
-    private final JiraIssueRepository issueRepository;
-
-    public JiraIssueService(JiraIssueRepository issueRepository) {
-        this.issueRepository = issueRepository;
-    }
+    @Autowired
+    private JiraIssueRepository issueRepository;
 
     public void saveSingleIssue(JiraIssue issue) {
         issueRepository.save(issue);
