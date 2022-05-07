@@ -29,10 +29,7 @@ public class KPI1 {
     private Double percentageCriticalIssues;
     private Double percentageCriticalIssuesNotCompleted;
     private Double percentageCancelledIssues;
-
-    public KPI1() {
-    }
-
+    
     public Integer getId() {
         return this.id;
     }

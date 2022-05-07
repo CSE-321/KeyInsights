@@ -27,9 +27,6 @@ public class JiraIssue {
     private String assignee;
     private String assigneeAvatarUrl;
 
-    public JiraIssue() {
-    }
-
     public String getId() {
         return this.id;
     }

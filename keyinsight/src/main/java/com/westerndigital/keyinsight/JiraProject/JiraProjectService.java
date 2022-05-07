@@ -18,4 +18,16 @@ public class JiraProjectService {
     public List<JiraProject> getAllProjects() {
         return projectRepository.findAll();
     }
+
+    public JiraProject findById(String id){
+        return projectRepository.findById(id).orElse(new JiraProject());
+    }
+
+    public void saveSingleProject(JiraProject project){
+        projectRepository.save(project);
+    }
+
+    public void deleteAll(){
+        projectRepository.deleteAll();
+    }
 }

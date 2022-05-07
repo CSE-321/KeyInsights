@@ -19,9 +19,6 @@ public class KPI3 {
     private Integer resolvedJiraCount;
     private Float resolvedJiraStoryPoints;
 
-    public KPI3() {
-    }
-
     public Integer getId() {
         return this.id;
     }

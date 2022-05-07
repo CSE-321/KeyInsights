@@ -2,7 +2,6 @@ package com.westerndigital.keyinsight.JiraRestAPIsPOJO.GetIssuesFromSearchPOJO;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -17,7 +16,7 @@ public class Fields {
     @JsonProperty("customfield_12010")
     private String development;
     private ProjectJson project;
-    private ArrayList<Versions> fixVersions;
+    private List<Versions> fixVersions;
     private String aggregatetimespent;
     private Resolution resolution;
     @JsonProperty("customfield_11711")
@@ -33,14 +32,14 @@ public class Fields {
     private OffsetDateTime lastViewed;
     private Watches watches;
     @JsonProperty("customfield_13010")
-    private ArrayList<UserJson> watchers;
+    private List<UserJson> watchers;
     private OffsetDateTime created;
     private Priority priority;
     @JsonProperty("customfield_12840")
     private OffsetDateTime baselineenddate;
     @JsonProperty("customfield_12842")
     private Integer taskprogress;
-    private ArrayList<String> labels;
+    private List<String> labels;
     @JsonProperty("customfield_12841")
     private String taskmode;
     @JsonProperty("customfield_10610")
@@ -60,7 +59,7 @@ public class Fields {
     private LocalDate enddate;
     @JsonProperty("customfield_10618")
     private Double storypoints;
-    private ArrayList<Issuelinks> issuelinks;
+    private List<Issuelinks> issuelinks;
     private Assignee assignee;
     private OffsetDateTime updated;
     private Status status;
@@ -78,7 +77,7 @@ public class Fields {
     private String aggregatetimeestimate;
     private String summary;
     private Creator creator;
-    private ArrayList<Issues> subtasks;
+    private List<Issues> subtasks;
     private UserJson reporter;
     private Progress aggregateprogress;
     @JsonProperty("customfield_11410")
@@ -130,11 +129,11 @@ public class Fields {
         this.project = project;
     }
 
-    public ArrayList<Versions> getFixVersions() {
+    public List<Versions> getFixVersions() {
         return this.fixVersions;
     }
 
-    public void setFixVersions(ArrayList<Versions> fixVersions) {
+    public void setFixVersions(List<Versions> fixVersions) {
         this.fixVersions = fixVersions;
     }
 
@@ -218,11 +217,11 @@ public class Fields {
         this.watches = watches;
     }
 
-    public ArrayList<UserJson> getWatchers() {
+    public List<UserJson> getWatchers() {
         return this.watchers;
     }
 
-    public void setWatchers(ArrayList<UserJson> watchers) {
+    public void setWatchers(List<UserJson> watchers) {
         this.watchers = watchers;
     }
 
@@ -258,11 +257,11 @@ public class Fields {
         this.taskprogress = taskprogress;
     }
 
-    public ArrayList<String> getLabels() {
+    public List<String> getLabels() {
         return this.labels;
     }
 
-    public void setLabels(ArrayList<String> labels) {
+    public void setLabels(List<String> labels) {
         this.labels = labels;
     }
 
@@ -354,11 +353,11 @@ public class Fields {
         this.storypoints = storypoints;
     }
 
-    public ArrayList<Issuelinks> getIssuelinks() {
+    public List<Issuelinks> getIssuelinks() {
         return this.issuelinks;
     }
 
-    public void setIssuelinks(ArrayList<Issuelinks> issuelinks) {
+    public void setIssuelinks(List<Issuelinks> issuelinks) {
         this.issuelinks = issuelinks;
     }
 
@@ -466,11 +465,11 @@ public class Fields {
         this.aggregatetimeestimate = aggregatetimeestimate;
     }
 
-    public ArrayList<Issues> getSubtasks() {
+    public List<Issues> getSubtasks() {
         return this.subtasks;
     }
 
-    public void setSubtasks(ArrayList<Issues>subtasks) {
+    public void setSubtasks(List<Issues>subtasks) {
         this.subtasks = subtasks;
     }
 

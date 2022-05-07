@@ -3,7 +3,7 @@ package com.westerndigital.keyinsight.KPI3;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.westerndigital.keyinsight.JiraIssue.JiraIssueRepository;
+import com.westerndigital.keyinsight.JiraIssue.JiraIssueService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,21 +11,21 @@ import org.springframework.stereotype.Service;
 @Service
 public class KPI3Service {
     @Autowired
-    private final JiraIssueRepository issueRepository;
+    private final JiraIssueService issueService;
 
     @Autowired
     private final KPI3Repository kpi3Repository;
 
-    public KPI3Service(JiraIssueRepository issueRepository, KPI3Repository kpi3Repository) {
-        this.issueRepository = issueRepository;
+    public KPI3Service(JiraIssueService issueService, KPI3Repository kpi3Repository) {
+        this.issueService = issueService;
         this.kpi3Repository = kpi3Repository;
     }
 
     public List<KPI3> getKPI3PerTeam(String projectName) {
 
         kpi3Repository.deleteAll();
-        ArrayList<KPI3> listofKPI3 = new ArrayList<KPI3>();
-        ArrayList<Object[]> numOfCreatedResolvedIssuesByMonth = issueRepository
+        List<KPI3> listofKPI3 = new ArrayList<>();
+        List<Object[]> numOfCreatedResolvedIssuesByMonth = issueService
                 .numberOfIssuesCreatedAndResolvedInAMonth(projectName);
         for (Object[] numOfCreatedResolvedIssue : numOfCreatedResolvedIssuesByMonth) {
             KPI3 numberOfIssuesCreatedResolvedInMonth = new KPI3();
@@ -72,10 +72,10 @@ public class KPI3Service {
 
         }
 
-        List<String> issueTypes = issueRepository.getAllIssueType(projectName);
+        List<String> issueTypes = issueService.getAllIssueType(projectName);
 
         for (String issueType : issueTypes) {
-            ArrayList<Object[]> numOfCreatedResolvedIssuesByMonthAndIssueType = issueRepository
+            List<Object[]> numOfCreatedResolvedIssuesByMonthAndIssueType = issueService
                     .numberOfIssuesCreatedAndResolvedInAMonthByIssueType(projectName, issueType);
             for (Object[] numOfCreatedResolvedIssue : numOfCreatedResolvedIssuesByMonthAndIssueType) {
                 KPI3 numberOfIssuesCreatedResolvedInMonth = new KPI3();

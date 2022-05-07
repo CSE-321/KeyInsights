@@ -5,17 +5,19 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import com.westerndigital.keyinsight.JiraIssue.JiraIssue;
-import com.westerndigital.keyinsight.JiraIssue.JiraIssueRepository;
+import com.westerndigital.keyinsight.JiraIssue.JiraIssueService;
 import com.westerndigital.keyinsight.JiraProject.JiraProject;
-import com.westerndigital.keyinsight.JiraProject.JiraProjectRepository;
+import com.westerndigital.keyinsight.JiraProject.JiraProjectService;
 
-// import com.westerndigital.keyinsight.NotificationSettings.NotificationSettingsRepository;
-// import com.westerndigital.keyinsight.JiraServer.JiraServerRepository;
-// import com.westerndigital.keyinsight.JiraUser.JiraUserRepository;
+import com.westerndigital.keyinsight.JiraRestAPIsPOJO.GetAllProjectsPOJO.ProjectJson;
+import com.westerndigital.keyinsight.JiraRestAPIsPOJO.GetIssuesFromSearchPOJO.Issues;
+import com.westerndigital.keyinsight.JiraRestAPIsPOJO.GetIssuesFromSearchPOJO.IssuesFromSearchJson;
+import com.westerndigital.keyinsight.JiraRestAPIsPOJO.GetSingleProjectPOJO.SingleProjectJson;
+import com.westerndigital.keyinsight.JiraRestAPIsPOJO.GetSingleProjectPOJO.Versions;
+import com.westerndigital.keyinsight.JiraRestAPIsPOJO.GetSingleUser.UserJson;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
 import java.util.List;
 
 import io.github.cdimascio.dotenv.Dotenv;
@@ -24,34 +26,16 @@ import kong.unirest.Unirest;
 import kong.unirest.JsonNode;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.westerndigital.keyinsight.JiraRestAPIsPOJO.GetAllProjectsPOJO.ProjectJson;
-import com.westerndigital.keyinsight.JiraRestAPIsPOJO.GetIssuesFromSearchPOJO.Issues;
-import com.westerndigital.keyinsight.JiraRestAPIsPOJO.GetIssuesFromSearchPOJO.IssuesFromSearchJson;
-import com.westerndigital.keyinsight.JiraRestAPIsPOJO.GetSingleProjectPOJO.SingleProjectJson;
-import com.westerndigital.keyinsight.JiraRestAPIsPOJO.GetSingleProjectPOJO.Versions;
-import com.westerndigital.keyinsight.JiraRestAPIsPOJO.GetSingleUser.UserJson;
 
 @Component
 public class LoadDatabase implements CommandLineRunner {
-
-    // inject repositories
-    // @Autowired
-    // private JiraUserRepository userRepository;
-
-    // @Autowired
-    // private JiraServerRepository serverRepository;
+    @Autowired
+    private JiraProjectService projectService;
 
     @Autowired
-    private JiraProjectRepository projectRepository;
-
-    @Autowired
-    private JiraIssueRepository issueRepository;
-
-    // @Autowired
-    // private NotificationSettingsRepository notificationSettingsRepository;
+    private JiraIssueService issueService;
 
     @Override
     public void run(String... args) throws Exception {
@@ -68,59 +52,75 @@ public class LoadDatabase implements CommandLineRunner {
 
         // allows me to use the .env variables
         Dotenv dotenv = Dotenv.load();
+        String JiraUrl = dotenv.get("JIRA_URL");
+        String JiraUsername = dotenv.get("JIRA_USERNAME");
+        String JiraPassword = dotenv.get("JIRA_PASSWORD");
 
+        // maps the JSON object to the POJO selected
         ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
+
         // this commented out line of code allows the json to skip over the attributes
-        // that I did not
-        // create to avoid conflicts
+        // that I did not create to avoid conflicts
         // mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
         final Long startTime = System.currentTimeMillis();
-        HttpResponse<JsonNode> getAllProjects = Unirest.get(dotenv.get("JIRA_URL") + "/rest/api/latest/project")
-                .basicAuth(dotenv.get("JIRA_USERNAME"), dotenv.get("JIRA_PASSWORD"))
-                .header("Accept", "application/json")
-                .asJson();
-        ArrayList<ProjectJson> projectJsons = mapper.readValue(getAllProjects.getBody().getArray().toString(),
-                new TypeReference<ArrayList<ProjectJson>>() {
+
+        // This block of code just uses the REST API for JiraServer to get all the
+        // projects into a JSON
+        // We then use the mapper to map the JSON to the POJO, in this case the
+        // ProjectJson
+        // --------------------------------------------------------------------------------------------------
+        HttpResponse<JsonNode> getAllProjects = Unirest.get(JiraUrl + "/rest/api/latest/project")
+                .basicAuth(JiraUsername, JiraPassword).header("Accept", "application/json").asJson();
+
+        List<ProjectJson> projectJsons = mapper.readValue(getAllProjects.getBody().getArray().toString(),
+                new TypeReference<List<ProjectJson>>() {
                 });
+        // --------------------------------------------------------------------------------------------------
 
         for (ProjectJson projectJson : projectJsons) {
-            System.out.println(projectJson.getName());
-            System.out.println(projectJson.getId());
-            System.out.println(projectJson.getProjectTypeKey());
+
+            // This block of code just uses the REST API for JiraServer to get a specific
+            // project into a JSON
+            // We then use the mapper to map the JSON to the POJO, in this case the
+            // SingleProjectJson
+            // ---------------------------------------------------------------------------------
             HttpResponse<JsonNode> getSingleProject = Unirest
-                    .get(dotenv.get("JIRA_URL") + "/rest/api/latest/project/" + projectJson.getId())
-                    .basicAuth(dotenv.get("JIRA_USERNAME"), dotenv.get("JIRA_PASSWORD"))
-                    .header("Accept", "application/json")
-                    .asJson();
-            ArrayList<SingleProjectJson> singleProjectJsons = mapper.readValue(
-                    getSingleProject.getBody().getArray().toString(),
-                    new TypeReference<ArrayList<SingleProjectJson>>() {
+                    .get(JiraUrl + "/rest/api/latest/project/" + projectJson.getId())
+                    .basicAuth(JiraUsername, JiraPassword).header("Accept", "application/json").asJson();
+
+            List<SingleProjectJson> singleProjectJsons = mapper.readValue(
+                    getSingleProject.getBody().getArray().toString(), new TypeReference<List<SingleProjectJson>>() {
                     });
+            // -----------------------------------------------------------------------------
 
             for (SingleProjectJson singleProjectJson : singleProjectJsons) {
-                System.out.println(singleProjectJson.getName());
                 OffsetDateTime projectCreationDateTime = null;
-                JiraProject project = projectRepository.findById(dotenv.get("JIRA_URL") + singleProjectJson.getId())
-                        .orElse(new JiraProject());
-                project.setId(dotenv.get("JIRA_URL") + singleProjectJson.getId());
+                JiraProject project = projectService.findById(JiraUrl + singleProjectJson.getId());
+                project.setId(JiraUrl + singleProjectJson.getId());
                 project.setName(singleProjectJson.getName().trim());
                 project.setProjectLead(singleProjectJson.getLead().getDisplayName());
                 project.setProjectLeadAvatarUrl(singleProjectJson.getLead().getAvatarUrls().getSize48());
+
+                // This block of code just uses the REST API for JiraServer to get a specific
+                // user into a JSON
+                // We then use the mapper to map the JSON to the POJO, in this case the UserJson
+                // --------------------------------------------------------
                 HttpResponse<JsonNode> getSingleUser = Unirest
-                        .get(dotenv.get("JIRA_URL") + "/rest/api/latest/user?key="
+                        .get(JiraUrl + "/rest/api/latest/user?key="
                                 + singleProjectJson.getLead().getKey())
-                        .basicAuth(dotenv.get("JIRA_USERNAME"), dotenv.get("JIRA_PASSWORD"))
-                        .header("Accept", "application/json")
-                        .asJson();
+                        .basicAuth(JiraUsername, JiraPassword).header("Accept", "application/json").asJson();
 
-                ArrayList<UserJson> userJsons = mapper.readValue(
-                        getSingleUser.getBody().getArray().toString(),
-                        new TypeReference<ArrayList<UserJson>>() {
+                List<UserJson> userJsons = mapper.readValue(
+                        getSingleUser.getBody().getArray().toString(), new TypeReference<List<UserJson>>() {
                         });
+                // --------------------------------------------------------
 
+                // This block of code is just for getting the timezone of the project lead
+                // We can replace it by having the timezone be default GMT
+                // --------------------------------------------------------------------------------------------------------
                 for (UserJson userJson : userJsons) {
-                    ArrayList<Versions> versions = singleProjectJson.getVersions();
+                    List<Versions> versions = singleProjectJson.getVersions();
                     for (Versions version : versions) {
                         if (projectCreationDateTime == null
                                 || projectCreationDateTime.toLocalDate().isAfter(version.getStartDate())) {
@@ -129,38 +129,43 @@ public class LoadDatabase implements CommandLineRunner {
                         }
                     }
                 }
-                projectRepository.save(project);
+                // --------------------------------------------------------------------------------------------------------
+                projectService.saveSingleProject(project);
 
+                // This block of code just uses the REST API for JiraServer to get a the maximum
+                // numbers of issues at once into a JSON
+                // We then use the mapper to map the JSON to the POJO, in this case the
+                // IssuesFromSearchJson
+                // -----------------------------------------------------------------------------------------------------------
                 Integer totalCount = 0;
                 Integer currentCount = 0;
-                String jqlQuery = "project=" + singleProjectJson.getName().trim();
+                String jqlQuery = String.format("project=%s",
+                        singleProjectJson.getName().trim());
                 Integer startLocation = 0;
                 Integer maxSearchResults = -1;
-                String searchUrl = String.format("%s/rest/api/latest/search?jql=%s&startAt=%d&maxResults=%d",
-                        dotenv.get("JIRA_URL"), jqlQuery, startLocation, maxSearchResults);
-
+                String searchUrl = String.format("%s/rest/api/latest/search?startAt=%d&maxResults=%d",
+                        JiraUrl, startLocation, maxSearchResults);
                 HttpResponse<JsonNode> getIssues = Unirest.get(searchUrl)
-                        .basicAuth(dotenv.get("JIRA_USERNAME"), dotenv.get("JIRA_PASSWORD"))
-                        .header("Accept", "application/json").asJson();
+                        .basicAuth(JiraUsername, JiraPassword).header("Accept", "application/json")
+                        .queryString("jql", jqlQuery).asJson();
 
-                ArrayList<IssuesFromSearchJson> issuesFromSearchJsons = mapper.readValue(
-                        getIssues.getBody().getArray().toString(),
-                        new TypeReference<ArrayList<IssuesFromSearchJson>>() {
+                List<IssuesFromSearchJson> issuesFromSearchJsons = mapper.readValue(
+                        getIssues.getBody().getArray().toString(), new TypeReference<List<IssuesFromSearchJson>>() {
                         });
+                // -----------------------------------------------------------------------------------------------------------
+
                 do {
                     for (IssuesFromSearchJson issuesFromSearchJson : issuesFromSearchJsons) {
                         if (!issuesFromSearchJson.getIssues().isEmpty()) {
-                            ArrayList<Issues> listOfIssues = issuesFromSearchJson
+                            List<Issues> listOfIssues = issuesFromSearchJson
                                     .getIssues();
                             for (Issues singleIssue : listOfIssues) {
                                 // finds an issue in the database with that issueNumber
                                 // if it doesn't exist, create a new Java Issue Object
-                                JiraIssue issue = issueRepository.findById(singleIssue.getKey())
-                                        .orElse(new JiraIssue());
+                                JiraIssue issue = issueService.findById(singleIssue.getKey());
                                 issue.setId(singleIssue.getKey());
                                 issue.setIssueNumber(Integer.parseInt(
                                         singleIssue.getKey().trim().substring(singleIssue.getKey().indexOf('-') + 1)));
-                                System.out.println(singleIssue.getKey());
                                 String assignee = null;
                                 String assigneeUrl = null;
                                 if (singleIssue.getFields().getAssignee() != null) {
@@ -187,7 +192,7 @@ public class LoadDatabase implements CommandLineRunner {
                                 }
                                 issue.setPriority(priority);
                                 issue.setProjectName(singleIssue.getFields().getProject().getName().trim());
-                                issue.setProjectUniqueId(dotenv.get("JIRA_URL") + singleProjectJson.getId());
+                                issue.setProjectUniqueId(JiraUrl + singleProjectJson.getId());
                                 String resolutionName = null;
                                 if (singleIssue.getFields().getResolution() != null) {
                                     resolutionName = singleIssue.getFields().getResolution().getName();
@@ -203,7 +208,7 @@ public class LoadDatabase implements CommandLineRunner {
                                 issue.setSecondType(secondType);
                                 issue.setIssueType(singleIssue.getFields().getIssuetype().getName());
                                 issue.setUpdatedDateTime(singleIssue.getFields().getUpdated());
-                                issueRepository.save(issue);
+                                issueService.saveSingleIssue(issue);
                             }
                         } else {
                             System.out.println("issues is empty");
@@ -214,30 +219,30 @@ public class LoadDatabase implements CommandLineRunner {
                     }
                     startLocation += currentCount;
                     System.out.println("Finished Current Issues, New startLocation at " + startLocation);
-                    searchUrl = String.format(
-                            "%s/rest/api/latest/search?jql=%s&startAt=%d&maxResults=%d",
-                            dotenv.get("JIRA_URL"), jqlQuery, startLocation,
-                            maxSearchResults);
-                    getIssues = Unirest
-                            .get(searchUrl)
-                            .basicAuth(dotenv.get("JIRA_USERNAME"),
-                                    dotenv.get("JIRA_PASSWORD"))
-                            .header("Accept", "application/json")
-                            .asJson();
-                    issuesFromSearchJsons = mapper.readValue(
-                            getIssues.getBody().getArray().toString(),
-                            new TypeReference<ArrayList<IssuesFromSearchJson>>() {
+                    // --------------------------------------------------------------------------------
+                    searchUrl = String.format("%s/rest/api/latest/search?startAt=%d&maxResults=%d",
+                            JiraUrl, startLocation, maxSearchResults);
+
+                    getIssues = Unirest.get(searchUrl).basicAuth(JiraUsername, JiraPassword)
+                            .header("Accept", "application/json").queryString("jql", jqlQuery).asJson();
+
+                    issuesFromSearchJsons = mapper.readValue(getIssues.getBody().getArray().toString(),
+                            new TypeReference<List<IssuesFromSearchJson>>() {
                             });
+                    // --------------------------------------------------------------------------------
 
                 } while (startLocation < totalCount);
                 System.out.println("Outside of the while issue loop");
                 project.setNumberOfIssues(totalCount);
                 project.setCreatedDate(projectCreationDateTime);
-                projectRepository.save(project);
+                projectService.saveSingleProject(project);
             }
         }
         final Long endTime = System.currentTimeMillis();
-        System.out.println("Total Execution Time: " + ((endTime - startTime) / 60000) + " minutes");
+        System.out.println("Total Execution Time: " + (endTime - startTime) + " milliseconds");
+        System.out
+                .println("Please wait 30 minutes for the database to update! Current time is " + OffsetDateTime.now()
+                        + ". The next Update is at " + OffsetDateTime.now().plusMinutes(30));
 
     }
 }

@@ -3,7 +3,7 @@ package com.westerndigital.keyinsight.KPI2;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.westerndigital.keyinsight.JiraIssue.JiraIssueRepository;
+import com.westerndigital.keyinsight.JiraIssue.JiraIssueService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,25 +11,25 @@ import org.springframework.stereotype.Service;
 @Service
 public class KPI2Service {
     @Autowired
-    private final JiraIssueRepository issueRepository;
+    private final JiraIssueService issueService;
 
     @Autowired
     private final KPI2Repository kpi2Repository;
 
-    public KPI2Service(JiraIssueRepository issueRepository, KPI2Repository kpi2Repository) {
-        this.issueRepository = issueRepository;
+    public KPI2Service(JiraIssueService issueService, KPI2Repository kpi2Repository) {
+        this.issueService = issueService;
         this.kpi2Repository = kpi2Repository;
     }
 
     public List<KPI2> getKPI2PerTeam(String projectName) {
-        ArrayList<KPI2> listofKPI2 = new ArrayList<KPI2>();
-        List<String> issueTypes = issueRepository.getAllIssueType(projectName);
+        List<KPI2> listofKPI2 = new ArrayList<>();
+        List<String> issueTypes = issueService.getAllIssueType(projectName);
         System.out.print(issueTypes);
 
         KPI2 daysToCompleteIssueKPI2 = kpi2Repository.findByIssueType("All Jira Issues").orElse(new KPI2());
-        ArrayList<Integer> daysNeedToCompleteTotal = issueRepository.daysNeededToCompleteTotalJiraIssues(projectName);
+        List<Integer> daysNeedToCompleteTotal = issueService.daysNeededToCompleteTotalJiraIssues(projectName);
 
-        double median = -1.0;
+        double median = -1;
         int size = daysNeedToCompleteTotal.size();
         int middle = size / 2;
         if(size % 2 == 0){
@@ -51,8 +51,8 @@ public class KPI2Service {
 
         for(String issueType : issueTypes){
             daysToCompleteIssueKPI2 = kpi2Repository.findByIssueType(issueType).orElse(new KPI2());
-            ArrayList<Integer> daysNeedToCompleteIssueType = issueRepository.daysNeededToCompleteIssueTypeJiraIssues(projectName, issueType);
-            median = -1.0;
+            List<Integer> daysNeedToCompleteIssueType = issueService.daysNeededToCompleteIssueTypeJiraIssues(projectName, issueType);
+            median = -1;
             size = daysNeedToCompleteIssueType.size();
             middle = size / 2;
             if(size % 2 == 0){
