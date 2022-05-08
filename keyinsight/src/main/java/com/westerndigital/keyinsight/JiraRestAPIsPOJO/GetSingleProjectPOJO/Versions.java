@@ -4,6 +4,11 @@ import java.time.LocalDate;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import lombok.Data;
+import lombok.ToString;
+
+@Data
+@ToString
 public class Versions {
     private String self;
     private String id;
@@ -19,113 +24,4 @@ public class Versions {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MMM/yy")
     private LocalDate userReleaseDate;
     private String projectId;
-
-    public String getSelf() {
-        return this.self;
-    }
-
-    public void setSelf(String self) {
-        this.self = self;
-    }
-
-    public String getId() {
-        return this.id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Boolean isArchived() {
-        return this.archived;
-    }
-
-    public Boolean getArchived() {
-        return this.archived;
-    }
-
-    public void setArchived(Boolean archived) {
-        this.archived = archived;
-    }
-
-    public Boolean isReleased() {
-        return this.released;
-    }
-
-    public Boolean getReleased() {
-        return this.released;
-    }
-
-    public void setReleased(Boolean released) {
-        this.released = released;
-    }
-
-    public LocalDate getStartDate() {
-        return this.startDate;
-    }
-
-    public void setStartDate(LocalDate startDate) {
-        this.startDate = startDate;
-    }
-
-    public LocalDate getReleaseDate() {
-        return this.releaseDate;
-    }
-
-    public void setReleaseDate(LocalDate releaseDate) {
-        this.releaseDate = releaseDate;
-    }
-
-    public Boolean isOverdue() {
-        return this.overdue;
-    }
-
-    public Boolean getOverdue() {
-        return this.overdue;
-    }
-
-    public void setOverdue(Boolean overdue) {
-        this.overdue = overdue;
-    }
-
-    public String getDescription() {
-        return this.description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-
-    public String getProjectId() {
-        return this.projectId;
-    }
-
-    public void setProjectId(String projectId) {
-        this.projectId = projectId;
-    }
-
-    @Override
-    public String toString() {
-        return "{" +
-            " self='" + getSelf() + "'" +
-            ", id='" + getId() + "'" +
-            ", name='" + getName() + "'" +
-            ", archived='" + isArchived() + "'" +
-            ", released='" + isReleased() + "'" +
-            ", startDate='" + getStartDate() + "'" +
-            ", releaseDate='" + getReleaseDate() + "'" +
-            ", overdue='" + isOverdue() + "'" +
-            ", projectId='" + getProjectId() + "'" +
-            "}";
-    }
-
 }

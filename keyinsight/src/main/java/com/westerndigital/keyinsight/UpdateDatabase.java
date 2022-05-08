@@ -44,7 +44,6 @@ public class UpdateDatabase {
         String JiraUrl = dotenv.get("JIRA_URL");
         String JiraUsername = dotenv.get("JIRA_USERNAME");
         String JiraPassword = dotenv.get("JIRA_PASSWORD");
-        int numberOfTimesThisProgramRan = 0;
 
         // maps the JSON object to the POJO selected
         ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
@@ -231,16 +230,16 @@ public class UpdateDatabase {
 
                 } while (startLocation < totalCount);
                 System.out.println("Outside of the while issue loop");
-                project.setNumIssues(totalCount);
+
+                project.setNumIssues(project.getNumIssues() + totalCount);
                 project.setCreatedDate(projectCreationDateTime);
                 projectService.saveSingleProject(project);
             }
         }
-        numberOfTimesThisProgramRan += 1;
         final Long endTime = System.currentTimeMillis();
         System.out.println("Total Execution Time: " + (endTime - startTime) + " milliseconds");
         System.out
-                .println("Please wait 30 minutes for the database to update for the " + numberOfTimesThisProgramRan + " time. Current time is " + OffsetDateTime.now()
+                .println("Please wait 30 minutes for the database to re-update! Current time is " + OffsetDateTime.now()
                         + ". The next Update is at " + OffsetDateTime.now().plusMinutes(30));
     }
 }
