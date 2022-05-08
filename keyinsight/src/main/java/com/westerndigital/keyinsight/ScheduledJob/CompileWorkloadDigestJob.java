@@ -5,6 +5,7 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
+
 public class CompileWorkloadDigestJob extends QuartzJobBean {
 
     // public void execute(JobExecutionContext context) 
@@ -16,3 +17,4 @@ public class CompileWorkloadDigestJob extends QuartzJobBean {
         
     }
 }
+// just here to make the commit work

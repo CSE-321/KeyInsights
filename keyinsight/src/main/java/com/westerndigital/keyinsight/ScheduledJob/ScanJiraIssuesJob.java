@@ -5,6 +5,7 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
+
 public class ScanJiraIssuesJob extends QuartzJobBean {
     
     // public void execute(JobExecutionContext context) 
@@ -21,3 +22,4 @@ public class ScanJiraIssuesJob extends QuartzJobBean {
         
     }
 }
+// just here to make the commit work

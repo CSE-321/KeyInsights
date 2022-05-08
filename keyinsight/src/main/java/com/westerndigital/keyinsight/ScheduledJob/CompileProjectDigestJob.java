@@ -17,3 +17,4 @@ public class CompileProjectDigestJob extends QuartzJobBean {
 
         }
 }
+// just here to make the commit work
