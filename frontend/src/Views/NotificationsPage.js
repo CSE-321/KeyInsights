@@ -48,7 +48,7 @@ const NotificationsPage = () => {
   }, []);
 
   // Variable to hold current user
-  const user = useSelector((state) => state.user.user.name);
+  // const user = useSelector((state) => state.user.user.name);
 
   // Variabble to hold current server
   const server =
@@ -58,7 +58,7 @@ const NotificationsPage = () => {
   // Create JSON object for backend
   const createJSON = () => {
     let obj = {
-      userId: user,
+      userId: 'user',
       serverId: server,
       projectId: project,
       ticketStatusSetting: {
