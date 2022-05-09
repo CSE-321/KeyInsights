@@ -14,6 +14,7 @@ const ToggleSwitch = ({ onChange, label, isProjectSelected, checked }) => {
           onChange={onChange}
           checked={checked}
           id={label}
+          data-testid={label}
           className="sr-only"></input>
         <div className="inline-block toggle-bg bg-gray-200 border-2 border-gray-200 h-9 w-16 rounded-full"></div>
       </label>

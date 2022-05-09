@@ -39,7 +39,7 @@ const NotificationsPage = () => {
   const projects = ['B8X4'];
 
   // Variable to hold current user
-  const user = useSelector((state) => state.user.user.name);
+  //const user = useSelector((state) => state.user.user.name);
 
   // Variabble to hold current server
   const server =
@@ -49,7 +49,7 @@ const NotificationsPage = () => {
   // Create JSON object for backend
   const createJSON = () => {
     let obj = {
-      userId: user,
+      userId: 'user',
       serverId: server,
       projectId: project,
       ticketStatusSetting: {
@@ -88,8 +88,8 @@ const NotificationsPage = () => {
   // This will read in value from the backend to show previous notification settings
   const setDefaultValues = () => {
     const prevSettings = getNotificationsFromApiAsync(createJSON());
-    setToggled(true);
-    setToggled2(true);
+    setToggled();
+    setToggled2();
     setToggled3();
     setToggled4();
     setToggled5();
@@ -112,7 +112,9 @@ const NotificationsPage = () => {
         {/* Show Error Message if Project not selected or show Project Name */}
         {!isProjectSelected && (
           <>
-            <p className="ml-7 mt-2 inline w-[217px] text-rose-500 text-md sm:text-lg md:text-xl lg:text-2xl">
+            <p
+              className="ml-7 mt-2 inline w-[217px] text-rose-500 text-md sm:text-lg md:text-xl lg:text-2xl"
+              data-testid="noProjectSelected">
               No Project Selected!
             </p>
             <br></br>
@@ -120,7 +122,9 @@ const NotificationsPage = () => {
         )}
         {isProjectSelected && (
           <>
-            <p className="ml-7 mt-2 text-md sm:text-lg md:text-xl lg:text-2xl w-[215px]">
+            <p
+              className="ml-7 mt-2 text-md sm:text-lg md:text-xl lg:text-2xl w-[215px]"
+              data-testid={project}>
               {project}
             </p>
             <br></br>

@@ -1,5 +1,3 @@
-import React from 'react';
-
 export const getNotificationsFromApiAsync = async (request) => {
   try {
     const response = await fetch('api/v1/notification', {

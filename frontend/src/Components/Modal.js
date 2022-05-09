@@ -11,7 +11,9 @@ const Modal = ({
 }) => {
   return (
     <>
-      <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
+      <div
+        className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm"
+        data-testid="modal">
         <div className="bg-white w-[400px] h-[450px] p-5 rounded-lg">
           <h1 className="font-bold text-2xl text-primary-purple">
             Select a Project
