@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import ToggleSwitch from '../Components/ToggleSwitch';
 import BodyHeader from '../Components/BodyHeader';
 import Modal from '../Components/Modal';
+import { getAllProjects } from '../Features/Projects/Networking';
 import {
   getNotificationsFromApiAsync,
   sendSettingsDataToBackend,
@@ -29,6 +30,9 @@ const NotificationsPage = () => {
   // Stores name of selected project
   const [project, setProject] = useState('');
 
+  // List of all projects on server
+  const [projects, setProjects] = useState([]);
+
   // Determine if modal should be displayed or not
   const [modalOn, setModalOn] = useState(false);
 
@@ -36,7 +40,12 @@ const NotificationsPage = () => {
   const [isSettingsChanged, setIsSettingsChanged] = useState(false);
 
   // List of projects for testing
-  const projects = ['B8X4'];
+  useEffect(() => {
+    getAllProjects().then((data) => {
+      console.log(data);
+      setProjects(data);
+    });
+  }, []);
 
   // Variable to hold current user
   const user = useSelector((state) => state.user.user.name);
@@ -88,8 +97,8 @@ const NotificationsPage = () => {
   // This will read in value from the backend to show previous notification settings
   const setDefaultValues = () => {
     const prevSettings = getNotificationsFromApiAsync(createJSON());
-    setToggled(true);
-    setToggled2(true);
+    setToggled();
+    setToggled2();
     setToggled3();
     setToggled4();
     setToggled5();
