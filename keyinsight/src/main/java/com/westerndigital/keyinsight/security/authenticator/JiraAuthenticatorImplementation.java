@@ -12,6 +12,7 @@ import com.atlassian.jira.rest.client.internal.async
 import com.westerndigital.keyinsight.JiraRole.JiraRole;
 import com.westerndigital.keyinsight.JiraUser.JiraUser;
 import com.westerndigital.keyinsight.JiraUser.JiraUserRepository;
+import com.westerndigital.keyinsight.Notification.NotificationRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -25,6 +26,9 @@ public class JiraAuthenticatorImplementation implements JiraAuthenticator {
 
     @Autowired
     private JiraUserRepository jiraUserRepository;
+
+    @Autowired
+    private NotificationRepository notificationRepository;
 
     @Lazy
     @Autowired

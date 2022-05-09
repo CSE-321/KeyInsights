@@ -32,10 +32,10 @@ public class CustomAuthenticationFilter
     extends UsernamePasswordAuthenticationFilter {
 
     // access token expiration time (30 minutes)
-    final int ACCESS_TOKEN_EXPIRATION_MILLIS = 30 * 60 * 1000; 
+    final int ACCESS_TOKEN_EXPIRATION_MILLIS = 60 * 60 * 1000; 
 
     // refresh token expiration time (60 minutes)
-    final int REFRESH_TOKEN_EXPIRATION_MILLIS = 60 * 60 * 1000;
+    final int REFRESH_TOKEN_EXPIRATION_MILLIS = 24 * 60 * 60 * 1000;
 
     @Override
     public Authentication attemptAuthentication(
