@@ -1,6 +1,5 @@
-import React, { useState, useEffect, Fragment } from 'react';
+import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
-import { useLinkClickHandler } from 'react-router-dom';
 
 const Modal = ({
   setModalOn,
@@ -18,30 +17,22 @@ const Modal = ({
           </h1>
           <br></br>
           <ul>
-            <li>
-              <button
-                className="text-2xl transition duration-500 hover:scale-125 transform-gpu"
-                onClick={() => {
-                  setModalOn(false);
-                  setProject(listOfProjects[0]);
-                  setIsProjectSelected(true);
-                  setDefaultValues();
-                }}>
-                {listOfProjects[0]}
-              </button>
-              <br></br>
-              <br></br>
-              <button
-                className="text-2xl transition duration-500 hover:scale-125 transform-gpu"
-                onClick={() => {
-                  setModalOn(false);
-                  setProject('CSE321');
-                  setIsProjectSelected(true);
-                  setDefaultValues();
-                }}>
-                CSE321
-              </button>
-            </li>
+            {/* Displays all projects from Jira server */}
+            {listOfProjects.map((project) => (
+              <li key={project.name}>
+                <button
+                  className="text-2xl transition duration-500 hover:scale-125 transform-gpu mb-5"
+                  key={project.name}
+                  onClick={() => {
+                    setModalOn(false);
+                    setProject(project.name);
+                    setIsProjectSelected(true);
+                    setDefaultValues();
+                  }}>
+                  {project.name}
+                </button>
+              </li>
+            ))}
           </ul>
         </div>
       </div>
