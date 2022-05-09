@@ -7,7 +7,7 @@ import lombok.ToString;
 
 @Data
 @ToString
-public class IssuesFromSearchJson {
+public class IssuesSearchJson {
     private String expand;
     private Integer startAt;
     private Integer maxResults;

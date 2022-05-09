@@ -1,6 +1,6 @@
 package com.westerndigital.keyinsight.JiraRestAPIsPOJO.GetCustomFieldsFromSearchPOJO;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import lombok.Data;
 import lombok.ToString;
@@ -12,5 +12,5 @@ public class CustomFieldJson {
     private Integer startAt;
     private Integer total;
     private boolean isLast;
-    private ArrayList<CustomFields> values;
+    private List<CustomFields> values;
 }

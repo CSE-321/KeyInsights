@@ -9,12 +9,12 @@ import com.westerndigital.keyinsight.JiraIssue.JiraIssueService;
 import com.westerndigital.keyinsight.JiraProject.JiraProject;
 import com.westerndigital.keyinsight.JiraProject.JiraProjectService;
 
-import com.westerndigital.keyinsight.JiraRestAPIsPOJO.GetAllProjectsPOJO.ProjectJson;
+import com.westerndigital.keyinsight.JiraRestAPIsPOJO.GetAllProjectsPOJO.ProjectSearchJson;
 import com.westerndigital.keyinsight.JiraRestAPIsPOJO.GetIssuesFromSearchPOJO.Issues;
-import com.westerndigital.keyinsight.JiraRestAPIsPOJO.GetIssuesFromSearchPOJO.IssuesFromSearchJson;
-import com.westerndigital.keyinsight.JiraRestAPIsPOJO.GetSingleProjectPOJO.SingleProjectJson;
-import com.westerndigital.keyinsight.JiraRestAPIsPOJO.GetSingleProjectPOJO.Versions;
-import com.westerndigital.keyinsight.JiraRestAPIsPOJO.GetSingleUser.UserJson;
+import com.westerndigital.keyinsight.JiraRestAPIsPOJO.GetIssuesFromSearchPOJO.IssuesSearchJson;
+import com.westerndigital.keyinsight.JiraRestAPIsPOJO.ProjectPOJO.ProjectJson;
+import com.westerndigital.keyinsight.JiraRestAPIsPOJO.ProjectPOJO.Versions;
+import com.westerndigital.keyinsight.JiraRestAPIsPOJO.UserPOJO.UserJson;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
@@ -73,12 +73,12 @@ public class LoadDatabase implements CommandLineRunner {
         HttpResponse<JsonNode> getAllProjects = Unirest.get(JiraUrl + "/rest/api/latest/project")
                 .basicAuth(JiraUsername, JiraPassword).header("Accept", "application/json").asJson();
 
-        List<ProjectJson> projectJsons = mapper.readValue(getAllProjects.getBody().getArray().toString(),
-                new TypeReference<List<ProjectJson>>() {
+        List<ProjectSearchJson> projectJsons = mapper.readValue(getAllProjects.getBody().getArray().toString(),
+                new TypeReference<List<ProjectSearchJson>>() {
                 });
         // --------------------------------------------------------------------------------------------------
 
-        for (ProjectJson projectJson : projectJsons) {
+        for (ProjectSearchJson projectJson : projectJsons) {
 
             // This block of code just uses the REST API for JiraServer to get a specific
             // project into a JSON
@@ -89,12 +89,12 @@ public class LoadDatabase implements CommandLineRunner {
                     .get(JiraUrl + "/rest/api/latest/project/" + projectJson.getId())
                     .basicAuth(JiraUsername, JiraPassword).header("Accept", "application/json").asJson();
 
-            List<SingleProjectJson> singleProjectJsons = mapper.readValue(
-                    getSingleProject.getBody().getArray().toString(), new TypeReference<List<SingleProjectJson>>() {
+            List<ProjectJson> singleProjectJsons = mapper.readValue(
+                    getSingleProject.getBody().getArray().toString(), new TypeReference<List<ProjectJson>>() {
                     });
             // -----------------------------------------------------------------------------
 
-            for (SingleProjectJson singleProjectJson : singleProjectJsons) {
+            for (ProjectJson singleProjectJson : singleProjectJsons) {
                 JiraProject project = projectService.findById(JiraUrl + singleProjectJson.getId());
                 project.setId(JiraUrl + singleProjectJson.getId());
                 project.setName(singleProjectJson.getName().trim());
@@ -119,13 +119,13 @@ public class LoadDatabase implements CommandLineRunner {
                 // We can replace it by having the timezone be default GMT
                 // --------------------------------------------------------------------------------------------------------
                 OffsetDateTime projectCreationDateTime = null;
-                if(project.getCreatedDate() != null){
+                if (project.getCreatedDate() != null) {
                     projectCreationDateTime = project.getCreatedDate();
                 }
                 for (UserJson userJson : userJsons) {
                     List<Versions> versions = singleProjectJson.getVersions();
                     for (Versions version : versions) {
-                        if (projectCreationDateTime == null 
+                        if (projectCreationDateTime == null
                                 || projectCreationDateTime.toLocalDate().isAfter(version.getStartDate())) {
                             ZoneId zoneId = ZoneId.of(userJson.getTimeZone());
                             projectCreationDateTime = version.getStartDate().atStartOfDay(zoneId).toOffsetDateTime();
@@ -153,13 +153,13 @@ public class LoadDatabase implements CommandLineRunner {
                         .basicAuth(JiraUsername, JiraPassword).header("Accept", "application/json")
                         .queryString("jql", jqlQuery).asJson();
 
-                List<IssuesFromSearchJson> issuesFromSearchJsons = mapper.readValue(
-                        getIssues.getBody().getArray().toString(), new TypeReference<List<IssuesFromSearchJson>>() {
+                List<IssuesSearchJson> issuesFromSearchJsons = mapper.readValue(
+                        getIssues.getBody().getArray().toString(), new TypeReference<List<IssuesSearchJson>>() {
                         });
                 // -----------------------------------------------------------------------------------------------------------
 
                 do {
-                    for (IssuesFromSearchJson issuesFromSearchJson : issuesFromSearchJsons) {
+                    for (IssuesSearchJson issuesFromSearchJson : issuesFromSearchJsons) {
                         if (!issuesFromSearchJson.getIssues().isEmpty()) {
                             List<Issues> listOfIssues = issuesFromSearchJson
                                     .getIssues();
@@ -231,7 +231,7 @@ public class LoadDatabase implements CommandLineRunner {
                             .header("Accept", "application/json").queryString("jql", jqlQuery).asJson();
 
                     issuesFromSearchJsons = mapper.readValue(getIssues.getBody().getArray().toString(),
-                            new TypeReference<List<IssuesFromSearchJson>>() {
+                            new TypeReference<List<IssuesSearchJson>>() {
                             });
                     // --------------------------------------------------------------------------------
 

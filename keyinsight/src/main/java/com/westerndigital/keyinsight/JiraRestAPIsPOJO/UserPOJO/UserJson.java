@@ -1,4 +1,4 @@
-package com.westerndigital.keyinsight.JiraRestAPIsPOJO.GetSingleUser;
+package com.westerndigital.keyinsight.JiraRestAPIsPOJO.UserPOJO;
 
 import com.westerndigital.keyinsight.JiraRestAPIsPOJO.GeneralPOJOs.AvatarUrls;
 

@@ -5,9 +5,9 @@ import java.time.OffsetDateTime;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.westerndigital.keyinsight.JiraRestAPIsPOJO.GetAllProjectsPOJO.ProjectJson;
-import com.westerndigital.keyinsight.JiraRestAPIsPOJO.GetSingleProjectPOJO.Versions;
-import com.westerndigital.keyinsight.JiraRestAPIsPOJO.GetSingleUser.UserJson;
+import com.westerndigital.keyinsight.JiraRestAPIsPOJO.GetAllProjectsPOJO.ProjectSearchJson;
+import com.westerndigital.keyinsight.JiraRestAPIsPOJO.ProjectPOJO.Versions;
+import com.westerndigital.keyinsight.JiraRestAPIsPOJO.UserPOJO.UserJson;
 
 import lombok.Data;
 import lombok.ToString;
@@ -20,7 +20,7 @@ public class Fields {
     private String timespent;
     @JsonProperty("customfield_12010")
     private String development;
-    private ProjectJson project;
+    private ProjectSearchJson project;
     private List<Versions> fixVersions;
     private String aggregatetimespent;
     private Resolution resolution;

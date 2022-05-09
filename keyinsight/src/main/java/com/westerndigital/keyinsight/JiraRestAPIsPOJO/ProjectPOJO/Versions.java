@@ -1,4 +1,4 @@
-package com.westerndigital.keyinsight.JiraRestAPIsPOJO.GetSingleProjectPOJO;
+package com.westerndigital.keyinsight.JiraRestAPIsPOJO.ProjectPOJO;
 
 import java.time.LocalDate;
 

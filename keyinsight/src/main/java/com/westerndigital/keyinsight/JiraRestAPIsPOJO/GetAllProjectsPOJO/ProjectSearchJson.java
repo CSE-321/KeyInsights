@@ -8,7 +8,7 @@ import lombok.ToString;
 
 @Data
 @ToString
-public class ProjectJson {
+public class ProjectSearchJson {
     private String expand;
     private String self;
     private String id;
