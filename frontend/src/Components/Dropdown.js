@@ -56,14 +56,16 @@ const Dropdown = ({ id, text, setVal, setText, setIsSettingsChanged }) => {
     <>
       <div
         id={id}
-        className="inline flex-col w-48 h-20 border-solid border border-black rounded-sm text-lg sm:text-xl md:text-2xl"
+        className="inline-block align-top mb-1 flex-col w-48 h-9 border-solid border border-black rounded-sm text-lg sm:text-xl md:text-2xl"
         onMouseEnter={enableDropdown}
         onMouseLeave={disableDropdown}>
-        <button id="dropdown-button" className="h-20 w-48">
+        <button id="dropdown-button" className="h-9 w-48">
           <div
             id="dropdown-inner-button"
             className="flex flex-row justify-between items-center ">
-            <p className="text-black text-left text-xl flex-grow">{text}</p>
+            <p className="text-black text-left text-xl flex-grow ml-1">
+              {text}
+            </p>
             <p className="text-black text-right flex-grow">&#9662;</p>
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -83,7 +85,7 @@ const Dropdown = ({ id, text, setVal, setText, setIsSettingsChanged }) => {
             <Fragment>
               <div
                 id="dropdown-content"
-                className="text-white bg-black text-base  xl:text-lg z-50 relative"
+                className="text-white align-top bg-black text-base xl:text-lg z-50 relative"
                 onMouseLeave={disableDropdown}>
                 <ul>
                   <li
