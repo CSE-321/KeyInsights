@@ -113,6 +113,10 @@ public class JiraIssueService {
         return issueRepository.unfinishedJiraIssuesByToday(projectName);
     }
 
+    public List<Object[]> topXUnfinishedJiraIssuesByToday(String projectName, Integer limitNumber){
+        return issueRepository.topXUnifinishedJiraIssuesByToday(projectName, limitNumber);
+    }
+
     public void deleteAll(){
         issueRepository.deleteAll();
     }
