@@ -1,5 +1,7 @@
 package com.westerndigital.keyinsight.JiraIssue;
 
+import java.util.Optional;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -8,17 +10,20 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface JiraIssueRepository extends JpaRepository<JiraIssue, String> {
+public interface JiraIssueRepository extends JpaRepository<JiraIssue, Integer> {
 
     //no teamtype queries
-    @Query(value = "SELECT COUNT(j.id), COALESCE(SUM(j.storyPoint),0) FROM JiraIssue j WHERE j.projectName = :projectName")
-    List<Object[]> totalJiraCountAndStoryPoints(@Param("projectName") String projectName);
-    
+    @Query(value = "SELECT COUNT(j.id) FROM JiraIssue j WHERE j.projectName = :projectName")
+    Integer totalJiraIssueCount(@Param("projectName") String projectName);
+
+    @Query(value = "SELECT SUM(j.storyPoint) FROM JiraIssue j WHERE j.projectName = :projectName")
+    Optional<Float> totalJiraIssueStoryPoint(@Param("projectName") String projectName);
+
     @Query(value = "SELECT COUNT(j.id) FROM JiraIssue j WHERE j.projectName = :projectName AND j.status = :status")
     Integer totalJiraStatusIssueCount(@Param("projectName") String projectName, @Param("status") String status);
 
-    @Query(value = "SELECT COUNT(j.id), SUM(j.storyPoint) FROM JiraIssue j WHERE j.projectName = :projectName AND j.status = :status")
-    List<Object[]> totalJiraCountAndStoryPointsFromStatus(@Param("projectName") String projectName, @Param("status") String status);
+    @Query(value = "SELECT SUM(j.storyPoint) FROM JiraIssue j WHERE j.projectName = :projectName AND j.status = :status")
+    Optional<Float> totalJiraStatusIssueStoryPoint(@Param("projectName") String projectName, @Param("status") String status);
 
     @Query(value = "SELECT COUNT(j.id) FROM JiraIssue j WHERE j.projectName = :projectName AND j.subType = :subType")
     Integer totalJiraSubTypeIssueCount(@Param("projectName") String projectName, @Param("subType") String subType);
@@ -39,14 +44,17 @@ public interface JiraIssueRepository extends JpaRepository<JiraIssue, String> {
     @Query(value = "SELECT DISTINCT(j.teamType) FROM JiraIssue j WHERE j.projectName = :projectName")
     List<String> getAllTeamType(@Param("projectName") String projectName);
 
-    @Query(value = "SELECT COUNT(j.id), COALESCE(SUM(j.storyPoint),0) FROM JiraIssue j WHERE j.projectName = :projectName AND j.teamType = :teamType")
-    List<Object[]> totalTeamTypeJiraCountAndStoryPoints(@Param("projectName") String projectName, @Param("teamType") String teamType);
+    @Query(value = "SELECT COUNT(j.id) FROM JiraIssue j WHERE j.projectName = :projectName AND j.teamType = :teamType")
+    Integer totalTeamTypeJiraIssueCount(@Param("projectName") String projectName, @Param("teamType") String teamType);
+
+    @Query(value = "SELECT SUM(j.storyPoint) FROM JiraIssue j WHERE j.projectName = :projectName AND j.teamType = :teamType")
+    Optional<Float> totalTeamTypeJiraIssueStoryPoint(@Param("projectName") String projectName, @Param("teamType") String teamType);
 
     @Query(value = "SELECT COUNT(j.id) FROM JiraIssue j WHERE j.projectName = :projectName AND j.teamType = :teamType AND j.status = :status")
     Integer totalTeamTypeJiraStatusIssueCount(@Param("projectName") String projectName, @Param("teamType") String teamType, @Param("status") String status);
 
-    @Query(value = "SELECT COUNT(j.id), COALESCE(SUM(j.storyPoint),0) FROM JiraIssue j WHERE j.projectName = :projectName AND j.teamType = :teamType AND j.status = :status")
-    List<Object[]> totalTeamTypeJiraCountAndStoryPointsFromStatus(@Param("projectName") String projectName, @Param("teamType") String teamType, @Param("status") String status);
+    @Query(value = "SELECT SUM(j.storyPoint) FROM JiraIssue j WHERE j.projectName = :projectName AND j.teamType = :teamType AND j.status = :status")
+    Optional<Float> totalTeamTypeJiraStatusIssueStoryPoint(@Param("projectName") String projectName, @Param("teamType") String teamType, @Param("status") String status);
 
     @Query(value = "SELECT COUNT(j.id) FROM JiraIssue j WHERE j.projectName = :projectName AND j.teamType = :teamType AND j.subType = :subType")
     Integer totalTeamTypeJiraSubTypeIssueCount(@Param("projectName") String projectName, @Param("teamType") String teamType, @Param("subType") String subType);
@@ -63,42 +71,68 @@ public interface JiraIssueRepository extends JpaRepository<JiraIssue, String> {
     @Query(value = "SELECT COUNT(j.id) FROM JiraIssue j WHERE j.projectName = :projectName AND j.teamType = :teamType AND j.resolution = :resolution")
     Integer totalTeamTypeJiraResolutionIssueCount(@Param("projectName") String projectName, @Param("teamType") String teamType, @Param("resolution") String resolution);
 
-    @Query(value = "SELECT EXTRACT(DAY FROM j.resolutionDateTime - j.createdDateTime) as intervalDays FROM JiraIssue j WHERE j.projectName = :projectName AND j.resolutionDateTime is not null AND j.teamType = :teamType ORDER BY intervalDays ASC")
-    List<Integer> daysNeededToCompleteTeamTypeJiraIssues(@Param("projectName") String projectName, @Param("teamType") String teamType);
+    @Query(value = "SELECT EXTRACT(DAY FROM j.resolutionDateTime - j.createdDateTime) as intervalDays FROM JiraIssue j WHERE j.projectName = :projectName AND j.resolutionDateTime is not null AND j.status in (:status1) ORDER BY intervalDays ASC")
+    ArrayList<Integer> medianOfOpenResolvedJiraIssues(@Param("projectName") String projectName, @Param("status1") String status1);
 
-    @Query(value = "SELECT EXTRACT(DAY FROM j.resolutionDateTime - j.createdDateTime) as intervalDays FROM JiraIssue j WHERE j.projectName = :projectName AND j.resolutionDateTime is not null ORDER BY intervalDays ASC")
-    List<Integer> daysNeededToCompleteTotalJiraIssues(@Param("projectName") String projectName);
-
-    @Query(value = "SELECT COUNT(j.id) FROM JiraIssue j WHERE j.projectName = :projectName AND dueDateTime <= CURRENT_TIMESTAMP and j.resolution is null")
+    @Query(value = "SELECT COUNT(j.id) FROM JiraIssue j WHERE j.projectName = :projectName AND j.dueDateTime <= CURRENT_TIMESTAMP and j.resolution is null")
     Integer unfinishedJiraIssuesByToday(@Param("projectName") String projectName);
 
     @Query(value = "SELECT id, due_date_time FROM issues WHERE project_name =?1 AND due_date_time <= CURRENT_TIMESTAMP and resolution is null ORDER BY due_date_time ASC LIMIT ?2", nativeQuery = true)
     List<Object[]> topXUnifinishedJiraIssuesByToday(@Param("projectName") String projectName, @Param("limitNumber") Integer limitNumber);
+    /* This calculates the median between jira starting and jira ending
+WITH cse AS (
+SELECT EXTRACT(DAY FROM resolution_date_time - created_date_time) as intervalDays
+FROM issues
+WHERE project_name = 'B8X4' AND resolution_date_time is not null
+)
 
-    @Query(value = "WITH created AS(SELECT TO_CHAR(created_date_time, 'YYYY-MM') AS created_month, COUNT(id) AS createdJiraCount, SUM(story_point) AS createdJiraStoryPoints FROM issues WHERE project_name =?1 GROUP BY created_month ORDER BY created_month),"+
-        "resolved AS(SELECT TO_CHAR(resolution_date_time, 'YYYY-MM') AS resolved_month,  COUNT(id) AS resolvedJiraCount, SUM(story_point) AS resolvedJiraStoryPoints FROM issues WHERE project_name =?1 AND resolution_date_time is not null GROUP BY resolved_month ORDER BY resolved_month)" +
-        "SELECT created.created_month, resolved.resolved_month, created.createdJiraCount, created.createdJiraStoryPoints, resolved.resolvedJiraCount, resolved.resolvedJiraStoryPoints FROM created LEFT JOIN resolved ON created.created_month = resolved.resolved_month", nativeQuery = true)
-    List<Object[]> numberOfIssuesCreatedAndResolvedInAMonth(@Param("projectName") String projectName);
+SELECT PERCENTILE_DISC(0.5) WITHIN GROUP(ORDER BY intervalDays)
+FROM cse
 
-    @Query(value = "WITH created AS(SELECT TO_CHAR(created_date_time, 'YYYY-MM') AS created_month, COUNT(id) AS createdJiraCount, SUM(story_point) AS createdJiraStoryPoints FROM issues WHERE project_name =?1 AND team_type =?2 GROUP BY created_month ORDER BY created_month),"+
-        "resolved AS(SELECT TO_CHAR(resolution_date_time, 'YYYY-MM') AS resolved_month,  COUNT(id) AS resolvedJiraCount, SUM(story_point) AS resolvedJiraStoryPoints FROM issues WHERE project_name =?1 AND team_type =?2 AND resolution_date_time is not null GROUP BY resolved_month ORDER BY resolved_month)" +
-        "SELECT created.created_month, resolved.resolved_month, created.createdJiraCount, created.createdJiraStoryPoints, resolved.resolvedJiraCount, resolved.resolvedJiraStoryPoints FROM created LEFT JOIN resolved ON created.created_month = resolved.resolved_month", nativeQuery = true)
-    List<Object[]> numberOfIssuesCreatedAndResolvedInAMonthByTeamType(@Param("projectName") String projectName, @Param("teamType") String teamType);
 
-    @Query(value = "WITH total AS(SELECT DISTINCT(assignee) AS assignee, COUNT(id) as count, SUM(story_point) as storypoint "+
-    "FROM issues WHERE project_name =?1 AND team_type =?2 AND assignee is not null GROUP BY assignee ORDER BY assignee ASC), "+ 
-    "completed AS(SELECT DISTINCT(assignee) AS assignee, COUNT(id) as count, SUM(story_point) as storypoint "+
-    "FROM issues WHERE project_name =?1 AND team_type =?2 AND assignee is not null AND resolution is not null GROUP BY assignee ORDER BY assignee ASC), "+
-    "wip AS(SELECT DISTINCT(assignee) AS assignee, COUNT(id) as count, SUM(story_point) as storypoint "+ 
-    "FROM issues WHERE project_name =?1 AND team_type =?2 AND status = ?3 AND assignee is not null GROUP BY assignee ORDER BY assignee ASC), "+
-    "notstarted AS(SELECT DISTINCT(assignee) AS assignee, COUNT(id) as count, SUM(story_point) as storypoint "+ 
-    "FROM issues WHERE project_name =?1 AND team_type =?2 AND status = ?4 AND assignee is not null GROUP BY assignee ORDER BY assignee ASC), "+
-    "criticalnotstarted AS(SELECT DISTINCT(assignee) AS assignee, COUNT(id) as count, SUM(story_point) as storypoint "+ 
-    "FROM issues WHERE project_name =?1 AND team_type =?2 AND status = ?4 AND priority = ?5 AND assignee is not null GROUP BY assignee ORDER BY assignee ASC) "+
-    "SELECT total.assignee, COALESCE(total.count,0) AS totalCount, COALESCE(total.storypoint,0) AS totalStoryPoint, COALESCE(completed.count,0) AS completedCount, "+
-    "COALESCE(completed.storypoint,0) AS completedStoryPoint, COALESCE(wip.count,0) AS wipCount, COALESCE(wip.storypoint,0) AS wipStoryPoint, "+
-    "COALESCE(notstarted.count,0) AS notstartedCount,COALESCE(notstarted.storypoint,0) AS notstartedStoryPoint, COALESCE(criticalnotstarted.count,0) AS criticalnotstartedCount, "+
-    "COALESCE(criticalnotstarted.storypoint,0) AS criticalnotstartedStoryPoint FROM total LEFT JOIN completed on total.assignee = completed.assignee "+ 
-    "LEFT JOIN wip on total.assignee = wip.assignee LEFT JOIN notstarted on total.assignee = notstarted.assignee LEFT JOIN criticalnotstarted on total.assignee = criticalnotstarted.assignee ",nativeQuery = true)
-    List<Object[]> assigneeTotalCompleteInformation(@Param("projectName") String projectName, @Param("teamType") String teamType, @Param("status1") String status1, @Param("status2") String status2, @Param("priority") String priority);
+
+
+
+
+
+
+
+
+
+
+
+
+    */
+
+    /* this query finds issues created between 2 dates
+SELECT *
+FROM issues
+WHERE project_name = 'B8X4' AND created_date_time >= '2020-11-01' AND created_date_time < '2021-12-31'
+    */
+
+    /* Count for jira issues resolved within last 7 days
+SELECT COUNT(id)
+FROM issues
+WHERE project_name = 'B8X4'
+AND status in ('Resolved')
+AND resolution_date_time > current_date - interval '7 days'
+    */
+
+    /*Count for jira issues resolved
+SELECT COUNT(id)
+FROM issues
+WHERE project_name = 'B8X4'
+AND status in ('Resolved')
+    */
+
+    /*Story point sfor jira issue solved
+SELECT SUM(story_point)
+FROM issues
+WHERE project_name = 'B8X4'
+AND status in ('Resolved')
+    */
+
+
+
+
 }

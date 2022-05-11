@@ -8,6 +8,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.util.List;
 
 import javax.mail.internet.MimeMessage;
 
@@ -27,11 +28,11 @@ public class EmailServiceImplementation implements EmailService{
         mailSender.send(message);
         
     }
-    public void sendNotificationUnfinished(String to, int numberofissues, String name, String projectName){
+    public void sendNotificationUnfinished(String to, int numberofissues, String name, String projectName, List<Object> nameofissues){
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);
         message.setSubject("Unfinished Jira Issues");
-        message.setText("Hello " + name + ", " + "\n" +"\n" + "This email is to inform you that " + numberofissues + " Jira Issues from " + projectName + " are uncompleted or unresolved by their known due date." +"\n" +"\n" + "Best Regards," +"\n" +"\n" +"KeyInsights Team");
+        message.setText("Hello " + name + ", " + "\n" +"\n" + "During a daily scan of  " + projectName + "'s database, we noticed that the following " + numberofissues + " issues are incomplete: " + nameofissues + " Please be aware of these issues and complete them by their assigned date." +"\n" +"\n" + "Best Regards," +"\n" +"\n" +"KeySight Team");
         mailSender.send(message);
     }
     // @Scheduled(initialDelay = 30 * 1000, fixedRate = 120000)
