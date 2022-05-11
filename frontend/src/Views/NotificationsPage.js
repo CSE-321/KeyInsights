@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import ToggleSwitch from '../Components/ToggleSwitch';
 import BodyHeader from '../Components/BodyHeader';
 import Modal from '../Components/Modal';
+import DropDown from '../Components/Dropdown';
 import { getAllProjects } from '../Features/Projects/Networking';
 import {
   getNotificationsFromApiAsync,
@@ -48,7 +49,7 @@ const NotificationsPage = () => {
   }, []);
 
   // Variable to hold current user
-  // const user = useSelector((state) => state.user.user.name);
+  const user = useSelector((state) => state.user.user);
 
   // Variabble to hold current server
   const server =
@@ -58,7 +59,7 @@ const NotificationsPage = () => {
   // Create JSON object for backend
   const createJSON = () => {
     let obj = {
-      userId: 'user',
+      userId: user,
       serverId: server,
       projectId: project,
       ticketStatusSetting: {
@@ -82,30 +83,37 @@ const NotificationsPage = () => {
       },
     };
 
-    console.log(JSON.stringify(obj));
     return obj;
   };
-
-  // fetch api/v1/NotificationSettings
-
-  /*useEffect(() => {
-    createJSON();
-  }),
-    [toggled, toggled2, toggled3, toggled4, toggled5];*/
 
   // Change toggle switches and textbox values after project is selected
   // This will read in value from the backend to show previous notification settings
   const setDefaultValues = () => {
-    const prevSettings = getNotificationsFromApiAsync(createJSON());
-    setToggled();
-    setToggled2();
-    setToggled3();
-    setToggled4();
-    setToggled5();
-    setVal();
-    setVal2();
-    setVal4();
-    setVal5();
+    getNotificationsFromApiAsync().then((data) => {
+      const settings = data[0];
+      for (const setting in settings) {
+        if (setting === 'ticketStatusSetting') {
+          let temp = settings[setting];
+          setToggled(temp['notifyUser']);
+          setVal(temp['notifyFrequency']);
+        } else if (setting === 'sprintStatusSetting') {
+          let temp = settings[setting];
+          setToggled2(temp['notifyUser']);
+          setVal2(temp['notifyFrequency']);
+        } else if (setting === 'unfinishedTicketSetting') {
+          let temp = settings[setting];
+          setToggled3(temp['notifyUser']);
+        } else if (setting === 'projectDigestReportSetting') {
+          let temp = settings[setting];
+          setToggled4(temp['notifyUser']);
+          setVal4(temp['notifyFrequency']);
+        } else if (setting === 'workloadDigestReportSetting') {
+          let temp = settings[setting];
+          setToggled5(temp['notifyUser']);
+          setVal5(temp['notifyFrequency']);
+        }
+      }
+    });
   };
 
   return (
