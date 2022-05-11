@@ -286,6 +286,7 @@ const NotificationsPage = () => {
             setVal={setVal4}
             setText={setDefaultTextDropdown4}
             setIsSettingsChanged={setIsSettingsChanged}
+            isToggleSwitched={toggled4}
           />
           {/* <input
             type="text"
@@ -323,6 +324,7 @@ const NotificationsPage = () => {
             setVal={setVal5}
             setText={setDefaultTextDropdown5}
             setIsSettingsChanged={setIsSettingsChanged}
+            isToggleSwitched={toggled5}
           />
           {/* <input
             type="text"

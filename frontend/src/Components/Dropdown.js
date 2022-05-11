@@ -9,7 +9,14 @@ import '../CSS/Dropdown.css';
  * A dropdown component that displays a list of servers.
  * @returns
  */
-const Dropdown = ({ id, text, setVal, setText, setIsSettingsChanged }) => {
+const Dropdown = ({
+  id,
+  text,
+  setVal,
+  setText,
+  setIsSettingsChanged,
+  isToggleSwitched,
+}) => {
   //TODO: Make API call to get server list, and update server state
   const [showDropdown, setShowDropdown] = React.useState(false);
 
@@ -17,7 +24,9 @@ const Dropdown = ({ id, text, setVal, setText, setIsSettingsChanged }) => {
   // const serverList = useSelector((state) => state.server.servers);
 
   const enableDropdown = () => {
-    setShowDropdown(true);
+    if (isToggleSwitched) {
+      setShowDropdown(true);
+    }
   };
 
   const disableDropdown = () => {
@@ -114,6 +123,7 @@ Dropdown.propTypes = {
   setVal: PropTypes.func,
   setText: PropTypes.func,
   setIsSettingsChanged: PropTypes.func,
+  isToggleSwitched: PropTypes.bool,
 };
 
 export default Dropdown;
