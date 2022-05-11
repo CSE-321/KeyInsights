@@ -72,6 +72,9 @@ public interface JiraIssueRepository extends JpaRepository<JiraIssue, String> {
     @Query(value = "SELECT COUNT(j.id) FROM JiraIssue j WHERE j.projectName = :projectName AND dueDateTime <= CURRENT_TIMESTAMP and j.resolution is null")
     Integer unfinishedJiraIssuesByToday(@Param("projectName") String projectName);
 
+    @Query(value = "SELECT id, due_date_time FROM issues WHERE project_name =?1 AND due_date_time <= CURRENT_TIMESTAMP and resolution is null ORDER BY due_date_time ASC LIMIT ?2", nativeQuery = true)
+    List<Object[]> topXUnifinishedJiraIssuesByToday(@Param("projectName") String projectName, @Param("limitNumber") Integer limitNumber);
+
     @Query(value = "WITH created AS(SELECT TO_CHAR(created_date_time, 'YYYY-MM') AS created_month, COUNT(id) AS createdJiraCount, SUM(story_point) AS createdJiraStoryPoints FROM issues WHERE project_name =?1 GROUP BY created_month ORDER BY created_month),"+
         "resolved AS(SELECT TO_CHAR(resolution_date_time, 'YYYY-MM') AS resolved_month,  COUNT(id) AS resolvedJiraCount, SUM(story_point) AS resolvedJiraStoryPoints FROM issues WHERE project_name =?1 AND resolution_date_time is not null GROUP BY resolved_month ORDER BY resolved_month)" +
         "SELECT created.created_month, resolved.resolved_month, created.createdJiraCount, created.createdJiraStoryPoints, resolved.resolvedJiraCount, resolved.resolvedJiraStoryPoints FROM created LEFT JOIN resolved ON created.created_month = resolved.resolved_month", nativeQuery = true)
