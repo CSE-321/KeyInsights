@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
 import { signIn } from './Networking';
 import { setAccessToken, setRefreshToken } from '../../App/Slices/tokensSlice';
-import { signinUser } from '../../App/Slices/userSlice';
+import { signinUser, updateUser } from '../../App/Slices/userSlice';
 import { setActiveServer } from '../../App/Slices/serverSlice';
 
 /**
@@ -59,6 +59,7 @@ const LoginCard = () => {
           return;
         }
         dispatch(signinUser());
+        dispatch(updateUser(usernameText));
         dispatch(setAccessToken(result.access_token));
         dispatch(setRefreshToken(result.refresh_token));
         navigate('/projects', { replace: true });
