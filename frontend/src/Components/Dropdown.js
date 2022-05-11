@@ -63,7 +63,7 @@ const Dropdown = ({ id, text, setVal, setText, setIsSettingsChanged }) => {
           <div
             id="dropdown-inner-button"
             className="flex flex-row justify-between items-center ">
-            <p className="text-black text-left flex-grow">{text}</p>
+            <p className="text-black text-left text-xl flex-grow">{text}</p>
             <p className="text-black text-right flex-grow">&#9662;</p>
             <svg
               xmlns="http://www.w3.org/2000/svg"
