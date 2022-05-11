@@ -15,41 +15,12 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.io.IOException;
 
-import com.westerndigital.keyinsight.ScheduledJob.CompileWorkloadDigestJob;
-import com.westerndigital.keyinsight.ScheduledJob.ScanJiraIssuesJob;
-
 @SpringBootApplication
 @EnableScheduling
 public class KeyinsightApplication {
 
 	public static void main(String[] args) throws IOException, SchedulerException {
 		SpringApplication.run(KeyinsightApplication.class, args);
-
-		SchedulerFactory schedulerFactory = new StdSchedulerFactory();
-		Scheduler scheduler = schedulerFactory.getScheduler();
-
-		// JobDetail scanStaleJiraIssues = JobBuilder
-		// 	.newJob(ScanJiraIssuesJob.class)
-		// 	.build();
-
-		// Trigger scanStableJiraIssuesTrigger = TriggerBuilder.newTrigger()
-		// 	.startNow()
-		// 	.withSchedule(SimpleScheduleBuilder.simpleSchedule()
-		// 		.withIntervalInHours(24)
-		// 		.repeatForever())
-		// 	.build();
-
-		// JobDetail scanComplieWorkloadDigestJob = JobBuilder
-		// 	.newJob(CompileWorkloadDigestJob.class)
-		// 	.build();
-		
-		// Trigger scanCompileWorkloadDigestJobTrigger = TriggerBuilder.newTrigger()
-		// 	.startNow()
-		// 	.withSchedule
-
-		scheduler.start();
-		//scheduler.scheduleJob(scanStaleJiraIssues, scanStableJiraIssuesTrigger);
 	}
 
 }
-// just here to make the commit work
