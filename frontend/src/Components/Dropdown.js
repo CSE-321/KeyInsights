@@ -9,7 +9,7 @@ import '../CSS/Dropdown.css';
  * A dropdown component that displays a list of servers.
  * @returns
  */
-const Dropdown = ({ id, text, setVal, setText }) => {
+const Dropdown = ({ id, text, setVal, setText, setIsSettingsChanged }) => {
   //TODO: Make API call to get server list, and update server state
   const [showDropdown, setShowDropdown] = React.useState(false);
 
@@ -43,11 +43,13 @@ const Dropdown = ({ id, text, setVal, setText }) => {
   const handleClickForTwoWeeks = () => {
     setVal(14);
     setText('2 Weeks');
+    setIsSettingsChanged(true);
   };
 
   const handleClickForOneMonth = () => {
     setVal(30);
     setText('1 Month');
+    setIsSettingsChanged(true);
   };
 
   return (
@@ -109,6 +111,7 @@ Dropdown.propTypes = {
   text: PropTypes.string,
   setVal: PropTypes.func,
   setText: PropTypes.func,
+  setIsSettingsChanged: PropTypes.func,
 };
 
 export default Dropdown;
