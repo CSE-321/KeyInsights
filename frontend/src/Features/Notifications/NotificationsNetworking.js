@@ -22,7 +22,6 @@ export async function sendSettingsDataToBackend(data) {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
-    mode: 'no-cors',
   };
 
   fetch('/api/v1/notification/', requestOptions)

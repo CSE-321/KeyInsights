@@ -40,6 +40,12 @@ const NotificationsPage = () => {
   // Determine if changes have been made to settings
   const [isSettingsChanged, setIsSettingsChanged] = useState(false);
 
+  // Text to place in dropdown menus for notification options 4 and 5
+  const [defaultTextDropdown4, setDefaultTextDropdown4] =
+    useState('Select Time');
+  const [defaultTextDropdown5, setDefaultTextDropdown5] =
+    useState('Select Time');
+
   // List of projects for testing
   useEffect(() => {
     getAllProjects().then((data) => {
@@ -55,11 +61,6 @@ const NotificationsPage = () => {
   const server =
     'http://jira.cloud-stm.com:8080/rest/api/2/user?username=ucm-cse-321';
   //const server = useSelector((state) => state.server.name);
-
-  const dropDownOptions = [
-    { value: 14, label: '2 Weeks' },
-    { value: 30, label: '1 Month' },
-  ];
 
   // Create JSON object for backend
   const createJSON = () => {
@@ -88,6 +89,7 @@ const NotificationsPage = () => {
       },
     };
 
+    console.log(JSON.stringify(obj));
     return obj;
   };
 
@@ -112,10 +114,24 @@ const NotificationsPage = () => {
           let temp = settings[setting];
           setToggled4(temp['notifyUser']);
           setVal4(temp['notifyFrequency']);
+          if (val4 === 14) {
+            setDefaultTextDropdown4('2 Weeks');
+          } else if (val4 === 30) {
+            setDefaultTextDropdown4('1 Month');
+          } else {
+            setDefaultTextDropdown4('Select Time');
+          }
         } else if (setting === 'workloadDigestReportSetting') {
           let temp = settings[setting];
           setToggled5(temp['notifyUser']);
           setVal5(temp['notifyFrequency']);
+          if (val5 === 14) {
+            setDefaultTextDropdown5('2 Weeks');
+          } else if (val5 === 30) {
+            setDefaultTextDropdown5('1 Month');
+          } else {
+            setDefaultTextDropdown5('Select Time');
+          }
         }
       }
     });
@@ -245,7 +261,7 @@ const NotificationsPage = () => {
           />
 
           <h1 className="inline text-md sm:text-lg md:text-xl lg:text-2xl">
-            Notify me if ticket(s) unfinished at end of sprint.{' '}
+            Notify me if ticket(s) unfinished by due date.{' '}
           </h1>
           <br></br>
 
@@ -262,7 +278,13 @@ const NotificationsPage = () => {
           <h1 className="inline text-md sm:text-lg md:text-xl lg:text-2xl">
             Send me a project digest report every{' '}
           </h1>
-          <input
+          <DropDown
+            id="dropdown4"
+            text={defaultTextDropdown4}
+            setVal={setVal4}
+            setText={setDefaultTextDropdown4}
+          />
+          {/* <input
             type="text"
             className="borer-solid border border-black w-4 rounded-sm sm:w-8 md:w-12 lg:w-16"
             disabled={!toggled4}
@@ -276,7 +298,7 @@ const NotificationsPage = () => {
           <h1 className="inline text-md sm:text-lg md:text-xl lg:text-2xl">
             {' '}
             days.{' '}
-          </h1>
+          </h1> */}
           <br></br>
 
           {/* Fifth Notification Option */}
@@ -292,9 +314,15 @@ const NotificationsPage = () => {
           <h1 className="inline text-md sm:text-lg md:text-xl lg:text-2xl">
             Send me a workload digest report every{' '}
           </h1>
-          <input
+          <DropDown
+            id="dropdown5"
+            text={defaultTextDropdown5}
+            setVal={setVal5}
+            setText={setDefaultTextDropdown5}
+          />
+          {/* <input
             type="text"
-            className="borer-solid border border-black rounded-sm w-4 sm:w-8 md:w-12 lg:w-16"
+            className="border-solid border border-black rounded-sm w-4 sm:w-8 md:w-12 lg:w-16"
             disabled={!toggled5}
             pattern="[0-9]*"
             value={val5}
@@ -305,7 +333,7 @@ const NotificationsPage = () => {
           <h1 className="inline text-md sm:text-lg md:text-xl lg:text-2xl">
             {' '}
             days.{' '}
-          </h1>
+          </h1> */}
         </div>
       </div>
       <br></br>
