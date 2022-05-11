@@ -65,31 +65,30 @@ const NotificationsPage = () => {
   // Create JSON object for backend
   const createJSON = () => {
     let obj = {
-      userId: user,
+      userId: 'user',
       serverId: server,
       projectId: project,
       ticketStatusSetting: {
         notifyUser: toggled,
-        notificationFrequency: val,
+        notifyFrequency: val,
       },
       sprintStatusSetting: {
         notifyUser: toggled2,
-        notificationFrequency: val2,
+        notifyFrequency: val2,
       },
       unfinishedTicketSetting: {
         notifyUser: toggled3,
       },
       projectDigestReportSetting: {
         notifyUser: toggled4,
-        notificationFrequency: val4,
+        notifyFrequency: val4,
       },
       workloadDigestReportSetting: {
         notifyUser: toggled5,
-        notificationFrequency: val5,
+        notifyFrequency: val5,
       },
     };
 
-    console.log(JSON.stringify(obj));
     return obj;
   };
 

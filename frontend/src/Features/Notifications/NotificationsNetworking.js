@@ -24,7 +24,7 @@ export async function sendSettingsDataToBackend(data) {
     body: JSON.stringify(data),
   };
 
-  fetch('/api/v1/notification/', requestOptions)
-    .then((response) => response.json())
-    .catch((error) => console.log('error', error));
+  fetch('/api/v1/notification/', requestOptions).catch((error) =>
+    console.log('error', error),
+  );
 }
