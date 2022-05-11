@@ -18,13 +18,17 @@ const ProjectCard = ({ project }) => {
   }, [project]);
 
   const selfIsSelected = () => {
-    navigate('/projects/id=' + project.id, { replace: true });
+    if (project.numIssues <= 0) {
+      navigate(`/error/${1000}`);
+      return;
+    }
+    navigate('/projects/name=' + project.name, { replace: true });
   };
 
   return (
     <>
       <div
-        className="bg-white rounded-xl drop-shadow-2xl flex flex-col justify-between transform transition duration-500 hover:scale-110 transform-gpu relative"
+        className="bg-white rounded-xl drop-shadow-2xl flex flex-col justify-between transform transition duration-500 hover:cursor-pointer hover:scale-110 transform-gpu relative"
         onClick={selfIsSelected}>
         <div className="flex flex-row justify-between mt-3 ml-5">
           <h1 className="flex-shrink text-xl sm:text-2xl md:text-3xl font-extrabold truncate">
@@ -55,16 +59,16 @@ const ProjectCard = ({ project }) => {
 
         <div className="grid grid-cols-8 grid-flow-row mb-5 ml-5">
           <p className="col-span-4 ">Project Lead</p>
-          <p className="col-span-2"> Created at</p>
+          <p className="col-span-2"> Created</p>
           <p className="col-span-2">Issues</p>
           <img
-            src={activeProject.image}
+            src={activeProject.teamLeadAvatarUrl}
             className="w-10 h-10 rounded-full col-span-1 object-cover"></img>
           <p className="col-span-3 self-center truncate ml-2">
-            {activeProject.lead}
+            {activeProject.teamLead}
           </p>
-          <p className="col-span-2 truncate">{activeProject.created}</p>
-          <p className="col-span-2 truncate">{activeProject.issues}</p>
+          <p className="col-span-2 truncate">{activeProject.createdDate}</p>
+          <p className="col-span-2 truncate">{activeProject.numIssues}</p>
         </div>
       </div>
     </>

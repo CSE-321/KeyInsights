@@ -7,6 +7,8 @@ import ProjectsPage from './Views/ProjectsPage';
 import ProjectInsightsPage from './Views/ProjectInsightsPage';
 import Footer from './Components/Footer';
 import NotificationsPage from './Views/NotificationsPage';
+import ErrorPage from './Views/ErrorPage';
+import { requireAuth } from './Features/Authentication/Networking';
 
 function App() {
   return (
@@ -19,7 +21,7 @@ function App() {
             <Route exact path="/projects" element={<ProjectsPage />} />
             <Route
               exact
-              path="/projects/:id"
+              path="/projects/:name"
               element={<ProjectInsightsPage />}
             />
             <Route
@@ -27,6 +29,7 @@ function App() {
               path="/notifications"
               element={<NotificationsPage />}
             />
+            <Route exact path="/error/:code" element={<ErrorPage />} />
           </Routes>
         </div>
         <div>

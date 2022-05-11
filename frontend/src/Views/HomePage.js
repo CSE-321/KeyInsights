@@ -54,7 +54,7 @@ const HomePage = () => {
           id="graph-logo"
           className="flex flex-col text-center shrink h-52 w-screen bg-primary-purple md:h-full md:max-w-lg md: md:w-full md:text-left">
           <p className="text-white font-bold text-xl md:pl-7 md:text-2xl">
-            Key Insights
+            KeySights
           </p>
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -106,7 +106,7 @@ const HomePage = () => {
                 </g>
               </svg>
               <h1 className="text-2xl font-extrabold text-primary-purple">
-                KeyInsights
+                KeySights
               </h1>
             </div>
             <div className="flex flex-col justify-center gap-5 mt-5 text-center bg-opacity-0 sm:mt-0 sm:w-1/2">

@@ -6,385 +6,290 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Component;
 
-import com.westerndigital.keyinsight.JiraIssue.JiraIssueRepository;
-import com.westerndigital.keyinsight.JiraProject.JiraProject;
-import com.westerndigital.keyinsight.JiraProject.JiraProjectRepository;
 import com.westerndigital.keyinsight.JiraIssue.JiraIssue;
-import com.westerndigital.keyinsight.NotificationSettings.NotificationSettingsRepository;
-import com.westerndigital.keyinsight.JiraRestJavaClient.JiraRestJavaClient;
-import com.westerndigital.keyinsight.JiraServer.JiraServerRepository;
-import com.westerndigital.keyinsight.JiraUser.JiraUserRepository;
+import com.westerndigital.keyinsight.JiraIssue.JiraIssueService;
+import com.westerndigital.keyinsight.JiraProject.JiraProject;
+import com.westerndigital.keyinsight.JiraProject.JiraProjectService;
 
-import com.atlassian.jira.rest.client.api.RestClientException;
-import com.atlassian.jira.rest.client.api.domain.BasicProject;
-import com.atlassian.jira.rest.client.api.domain.Project;
-import com.atlassian.jira.rest.client.api.domain.User;
-import com.atlassian.jira.rest.client.api.domain.Issue;
-import com.atlassian.jira.rest.client.api.domain.IssueField;
-
-import io.github.cdimascio.dotenv.Dotenv;
+import com.westerndigital.keyinsight.JiraRestAPIsPOJO.GetAllProjectsPOJO.ProjectSearchJson;
+import com.westerndigital.keyinsight.JiraRestAPIsPOJO.GetIssuesFromSearchPOJO.Issues;
+import com.westerndigital.keyinsight.JiraRestAPIsPOJO.GetIssuesFromSearchPOJO.IssuesSearchJson;
+import com.westerndigital.keyinsight.JiraRestAPIsPOJO.ProjectPOJO.ProjectJson;
+import com.westerndigital.keyinsight.JiraRestAPIsPOJO.ProjectPOJO.Versions;
+import com.westerndigital.keyinsight.JiraRestAPIsPOJO.UserPOJO.UserJson;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.stream.StreamSupport;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import io.github.cdimascio.dotenv.Dotenv;
+import kong.unirest.HttpResponse;
+import kong.unirest.Unirest;
+import kong.unirest.JsonNode;
+
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
-import com.westerndigital.keyinsight.SpringEmail.SpringEmailSender;
-import com.westerndigital.keyinsight.SpringEmail.SpringEmailService;
+import com.westerndigital.keyinsight.Email.EmailService;
 
 @Component
 public class LoadDatabase implements CommandLineRunner {
 
-        // inject repositories
-        @Autowired
-        private JiraUserRepository userRepository;
+    // inject repositories
+    @Autowired
+    private JiraProjectService projectService;
 
-        @Autowired
-        private JiraServerRepository serverRepository;
+    @Autowired
+    private JiraIssueService issueService;
 
-        @Autowired
-        private JiraProjectRepository projectRepository;
+    @Autowired
+    private EmailService emailService;
 
-        @Autowired
-        private JiraIssueRepository issueRepository;
+    @Override
+    public void run(String... args) throws Exception {
 
-        @Autowired
-        private NotificationSettingsRepository notificationSettingsRepository;
+        // String to = "jrosales530@gmail.com";
+        // String subject = "Subjects";
+        // String text = "hi";
+        String to = "jrosales530@gmail.com";
+        int numberofissues = 4;
+        String name = "Carlos";
+        String projectName = "Generic Name";
+        int randome = issueService.unfinishedJiraIssuesByToday("B8X4");
+        System.out.print(randome);
+        emailService.sendNotificationUnfinished(to, randome, name, projectName);
+        // springEmailService.sendEmailNotification();
 
-        @Autowired
-        private SpringEmailService springEmailService;
+        // springEmailService.sendEmailNotification();
 
-        private JiraRestJavaClient myJiraClient;
+        // This block of code underneath just deletes every entry in the database during
+        // startup
+        // ------------------------------------------
+        // userRepository.deleteAll();
+        // serverRepository.deleteAll();
+        // notificationSettingsRepository.deleteAll();
+        // projectRepository.deleteAll();
+        // issueRepository.deleteAll();
+        // notificationSettingsRepository.deleteAll();
+        // -------------------------------------------
 
-        private Iterable<BasicProject> allProjects;
+        // allows me to use the .env variables
+        // Dotenv dotenv = Dotenv.load();
+        // String JiraUrl = dotenv.get("JIRA_URL");
+        // String JiraUsername = dotenv.get("JIRA_USERNAME");
+        // String JiraPassword = dotenv.get("JIRA_PASSWORD");
 
-        private Iterable<Issue> allIssues;
+        // // maps the JSON object to the POJO selected
+        // ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
-        private Iterable<IssueField> allIssueFields;
+        // // this commented out line of code allows the json to skip over the attributes
+        // // that I did not create to avoid conflicts
+        // // mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-        @Override
-        public void run(String... args) throws Exception {
+        // final Long startTime = System.currentTimeMillis();
 
-                // String to = "jrosales530@gmail.com";
-                // String subject = "Subjects";
-                // String text = "hi";
-                String to = "jrosales530@gmail.com";
-                int numberofissues = 4;
-                String name = "Carlos";
-                String projectName = "Generic Name";
-                int randome = issueRepository.unfinishedJiraIssuesByToday("B8X4");
-                System.out.print(randome);
-                springEmailService.sendNotificationUnfinished(to, randome, name, projectName);
-                //springEmailService.sendEmailNotification();
+        // // This block of code just uses the REST API for JiraServer to get all the
+        // // projects into a JSON
+        // // We then use the mapper to map the JSON to the POJO, in this case the
+        // // ProjectJson
+        // // --------------------------------------------------------------------------------------------------
+        // HttpResponse<JsonNode> getAllProjects = Unirest.get(JiraUrl + "/rest/api/latest/project")
+        //         .basicAuth(JiraUsername, JiraPassword).header("Accept", "application/json").asJson();
 
-                //springEmailService.sendEmailNotification();
+        // List<ProjectSearchJson> projectJsons = mapper.readValue(getAllProjects.getBody().toString(),
+        //         new TypeReference<List<ProjectSearchJson>>() {
+        //         });
+        // // --------------------------------------------------------------------------------------------------
 
-                // This block of code underneath just deletes every entry in the database during
-                // startup
-                // ------------------------------------------
-                // userRepository.deleteAll();
-                // serverRepository.deleteAll();
-                // notificationSettingsRepository.deleteAll();
-                // projectRepository.deleteAll();
-                // issueRepository.deleteAll();
-                // notificationSettingsRepository.deleteAll();
-                // -------------------------------------------
+        // for (ProjectSearchJson projectJson : projectJsons) {
 
-                // This block of code attempts to use the username, password, and server url to
-                // create a
-                // Jira Rest Java Client(JRJC) that connects to the server
-                // That JRJC allows us to interact with the Jira Server and grab the information
-                // we need
-                // The authenication doesn't happen until the client attempts grab some kind of
-                // information
-                // --------------------------------------------------------------------
-                // try {
-                // Dotenv dotenv = Dotenv.load();
-                // myJiraClient = new JiraRestJavaClient(dotenv.get("JIRA_USERNAME"),
-                // dotenv.get("JIRA_PASSWORD"), dotenv.get("JIRA_URL"));
-                // User user = myJiraClient.getUser(dotenv.get("JIRA_USERNAME"));
-                // } catch (RestClientException e) {
-                // System.out.println(e.getLocalizedMessage());
-                // }
-                // --------------------------------------------------------------------
+        //     // This block of code just uses the REST API for JiraServer to get a specific
+        //     // project into a JSON
+        //     // We then use the mapper to map the JSON to the POJO, in this case the
+        //     // SingleProjectJson
+        //     // ---------------------------------------------------------------------------------
+        //     HttpResponse<JsonNode> getSingleProject = Unirest
+        //             .get(JiraUrl + "/rest/api/latest/project/" + projectJson.getId())
+        //             .basicAuth(JiraUsername, JiraPassword).header("Accept", "application/json").asJson();
 
-                // This whole try catch block is in case an exeception occurs
-                // when extracting the information into the PostgreSQL database
-                //
-                //-------------------------------------------------------------------------------
-        //         try {
+        //     ProjectJson singleProjectJson = mapper.readValue(getSingleProject.getBody().toString(),
+        //             new TypeReference<ProjectJson>() {
+        //             });
+        //     // -----------------------------------------------------------------------------
 
-        //         allProjects = myJiraClient.getAllProject(); // grabs all the projects that are within the Jira Server
+        //     JiraProject project = projectService.findById(JiraUrl + singleProjectJson.getId());
+        //     project.setId(JiraUrl + singleProjectJson.getId());
+        //     project.setName(singleProjectJson.getName().trim());
+        //     project.setTeamLead(singleProjectJson.getLead().getDisplayName());
+        //     project.setTeamLeadAvatarUrl(singleProjectJson.getLead().getAvatarUrls().getSize48());
+        //     project.setProjectType(singleProjectJson.getProjectTypeKey());
+        //     // This block of code just uses the REST API for JiraServer to get a specific
+        //     // user into a JSON
+        //     // We then use the mapper to map the JSON to the POJO, in this case the UserJson
+        //     // --------------------------------------------------------
+        //     HttpResponse<JsonNode> getSingleUser = Unirest
+        //             .get(JiraUrl + "/rest/api/latest/user")
+        //             .basicAuth(JiraUsername, JiraPassword).header("Accept", "application/json")
+        //             .queryString("key", singleProjectJson.getLead().getKey()).asJson();
 
-        //         // Iterating through all the projects that was grabbed in the line of code above
-        //         for (BasicProject basicProject : allProjects) {
+        //     UserJson userJson = mapper.readValue(
+        //             getSingleUser.getBody().toString(), new TypeReference<UserJson>() {
+        //             });
+        //     // --------------------------------------------------------
 
-        //         JiraProject project = new JiraProject();// creates a Java Project Object that      allows us to store the
-        //         // Jira Project information using the setters
+        //     // This block of code is just for getting the timezone of the project lead
+        //     // We can replace it by having the timezone be default GMT
+        //     // --------------------------------------------------------------------------------------------------------
+        //     OffsetDateTime projectCreationDateTime = null;
+        //     if (project.getCreatedDate() != null) {
+        //         projectCreationDateTime = project.getCreatedDate();
+        //     }
 
-        //         // This block of code is just extracting information from the Project
-        //         // using getters from the class and JRJC
-        //         // ------------------------------------------------------------
-        //         String projectKey = basicProject.getKey();
-        //         Project singleProject = myJiraClient.getProject(projectKey);
-        //         String projectName = singleProject.getName();
-        //         projectName = projectName.trim();
-        //         String productLeadName = singleProject.getLead().getName();
-        //         User projectLead = myJiraClient.getUser(productLeadName);
-        //         String projectLeadDisplayName = projectLead.getDisplayName();
-        //         // ------------------------------------------------------------
-
-        //         // This block of code is setting all the information from the code above
-        //         // and storing it in the Java Project Object
-        //         // -------------------------------------------------------------------
-        //         project.setName(projectName);
-        //         project.setTeamLead(projectLeadDisplayName);
-        //         project.setTeamLeadAvatarUrl(projectLead.getAvatarUri().toString());
-        //         // -------------------------------------------------------------------
-
-        //         // This block of code is to get ready to go through all the issues that the
-        //         //Jira
-        //         // Project has
-        //         //
-        //         //-----------------------------------------------------------------------------------
-        //         int issueCount = 0;
-        //         HashMap<String, String> fieldValues = new HashMap<String, String>();
-        //         allIssues = myJiraClient.getAllIssues(projectName, issueCount); // if I have
-        //         //issueCount = 0, //the first
-        //         // Issue that I grab is B8X4-10282 not
-        //         // B8X4-1
-        //         Long allIssuesCount = StreamSupport.stream(allIssues.spliterator(),
-        //         false).count();
-        //         //
-        //         //-----------------------------------------------------------------------------------
-
-        //         // This while loop just runs as long as the allIssuesCount isn't 0
-        //         //
-        //         //-----------------------------------------------------------------------------
-        //         while (allIssuesCount > 0) {
-
-        //         // As long as the allIssuesCount isn't 0, we have to iterate through all of
-        //         //the
-        //         // issues stored in the Iterable
-        //         for (Issue singleIssue : allIssues) {
-
-        //         // This block of code is just grabbing the issueNumber after the dash
-        //         // Example B8X4-10282,this block of code just grabs 10282
-        //         // ------------------------------------------------------------------
-        //         String issueNumber = singleIssue.getKey();
-        //         issueNumber = issueNumber.substring(issueNumber.indexOf('-') + 1);
-        //         System.out.println(issueNumber);
-        //         // ------------------------------------------------------------------
-
-        //         JiraIssue issue = issueRepository.findById(Integer.parseInt(issueNumber))
-        //         .orElse(new JiraIssue()); // finds an issue in the database with that
-        //         //issueNumber
-        //         // if it doesn't exist, create a new Java Issue Object
-
-        //         // Only needs to run on the FIRST iteration, we need to grab all the fields
-        //        // that
-        //         // an issue could potentially have and store it in the hashmap to use later
-        //         // ----------------------------------------------------------------
-        //         if (issueCount == 0) {
-        //         allIssueFields = singleIssue.getFields();
-        //         for (IssueField issueField : allIssueFields) {
-        //         fieldValues.put(issueField.getName(), issueField.getId());
+        //     List<Versions> versions = singleProjectJson.getVersions();
+        //     for (Versions version : versions) {
+        //         if (projectCreationDateTime == null
+        //                 || projectCreationDateTime.toLocalDate().isAfter(version.getStartDate())) {
+        //             ZoneId zoneId = ZoneId.of(userJson.getTimeZone());
+        //             projectCreationDateTime = version.getStartDate().atStartOfDay(zoneId).toOffsetDateTime();
         //         }
+        //     }
+        //     project.setCreatedDate(projectCreationDateTime);
+        //     // --------------------------------------------------------------------------------------------------------
+        //     projectService.saveSingleProject(project);
+
+        //     // This block of code just uses the REST API for JiraServer to get a the maximum
+        //     // numbers of issues at once into a JSON
+        //     // We then use the mapper to map the JSON to the POJO, in this case the
+        //     // IssuesFromSearchJson
+        //     // -----------------------------------------------------------------------------------------------------------
+        //     Integer totalCount = 0;
+        //     Integer currentCount = 0;
+        //     String jqlQuery = String.format("project=%s",
+        //             singleProjectJson.getName().trim());
+        //     Integer startLocation = 0;
+        //     Integer maxSearchResults = -1;
+        //     String searchUrl = String.format("%s/rest/api/latest/search?startAt=%d&maxResults=%d",
+        //             JiraUrl, startLocation, maxSearchResults);
+        //     HttpResponse<JsonNode> getIssues = Unirest.get(searchUrl)
+        //             .basicAuth(JiraUsername, JiraPassword).header("Accept", "application/json")
+        //             .queryString("jql", jqlQuery).asJson();
+
+        //     IssuesSearchJson issuesFromSearchJson = mapper.readValue(
+        //             getIssues.getBody().toString(), new TypeReference<IssuesSearchJson>() {
+        //             });
+        //     // -----------------------------------------------------------------------------------------------------------
+
+        //     do {
+        //         if (!issuesFromSearchJson.getIssues().isEmpty()) {
+        //             List<Issues> listOfIssues = issuesFromSearchJson
+        //                     .getIssues();
+        //             for (Issues singleIssue : listOfIssues) {
+        //                 // finds an issue in the database with that issueNumber
+        //                 // if it doesn't exist, create a new Java Issue Object
+        //                 JiraIssue issue = issueService.findById(singleIssue.getKey());
+        //                 System.out.println(singleIssue.getKey());
+        //                 issue.setId(singleIssue.getKey());
+        //                 issue.setIssueNumber(Integer.parseInt(
+        //                         singleIssue.getKey().trim().substring(singleIssue.getKey().indexOf('-') + 1)));
+        //                 String assignee = null;
+        //                 String assigneeUrl = null;
+        //                 if (singleIssue.getFields().getAssignee() != null) {
+        //                     assignee = singleIssue.getFields().getAssignee().getDisplayName();
+        //                     assigneeUrl = singleIssue.getFields().getAssignee().getAvatarUrls().getSize48();
+        //                 }
+        //                 issue.setAssignee(assignee);
+        //                 issue.setAssigneeAvatarUrl(assigneeUrl);
+        //                 issue.setCreatedDateTime(singleIssue.getFields().getCreated());
+        //                 if (projectCreationDateTime.isAfter(singleIssue.getFields().getCreated())) {
+        //                     projectCreationDateTime = singleIssue.getFields().getCreated();
+        //                 }
+        //                 OffsetDateTime dueDateTime = null;
+        //                 // https://stackoverflow.com/questions/57214468/java-8-convert-localdate-to-offsetdatetime
+        //                 if (singleIssue.getFields().getDuedate() != null) {
+        //                     ZoneId zoneId = ZoneId.of(singleIssue.getFields().getCreator().getTimeZone());
+        //                     dueDateTime = singleIssue.getFields().getDuedate().atStartOfDay(zoneId)
+        //                             .toOffsetDateTime();
+        //                 }
+        //                 issue.setDueDateTime(dueDateTime);
+        //                 String priority = null;
+        //                 if (singleIssue.getFields().getPriority() != null) {
+        //                     priority = singleIssue.getFields().getPriority().getName();
+        //                 }
+        //                 issue.setPriority(priority);
+        //                 issue.setProjectName(singleIssue.getFields().getProject().getName().trim());
+        //                 issue.setProjectUniqueId(JiraUrl + singleProjectJson.getId());
+        //                 String resolutionName = null;
+        //                 if (singleIssue.getFields().getResolution() != null) {
+        //                     resolutionName = singleIssue.getFields().getResolution().getName();
+        //                 }
+        //                 issue.setResolution(resolutionName);
+        //                 issue.setResolutionDateTime(singleIssue.getFields().getResolutiondate());
+        //                 issue.setStatus(singleIssue.getFields().getStatus().getName());
+        //                 issue.setStoryPoint(singleIssue.getFields().getStorypoints());
+        //                 String secondType = null;
+        //                 if (singleIssue.getFields().getSecondtype() != null) {
+        //                     secondType = singleIssue.getFields().getSecondtype().getValue();
+        //                 }
+        //                 issue.setSubType(secondType);
+        //                 issue.setTeamType(singleIssue.getFields().getIssuetype().getName());
+        //                 issue.setUpdatedDateTime(singleIssue.getFields().getUpdated());
+        //                 issueService.saveSingleIssue(issue);
+        //             }
+        //         } else {
+        //             System.out.println("issues is empty");
+        //             break;
         //         }
-        //         // ----------------------------------------------------------------
+        //         currentCount = issuesFromSearchJson.getMaxResults();
+        //         totalCount = issuesFromSearchJson.getTotal();
+        //         startLocation += currentCount;
+        //         System.out.println("Finished Current Issues, New startLocation at " + startLocation);
+        //         // --------------------------------------------------------------------------------
+        //         searchUrl = String.format("%s/rest/api/latest/search?startAt=%d&maxResults=%d",
+        //                 JiraUrl, startLocation, maxSearchResults);
 
-        //         // This block of code is just getting the
-        //         // the creation date and time for each issue
-        //         // Currently, these values are never null;
-        //         // However, I am not sure if that is always the case
-        //         // -----------------------------------------------------
-        //         Instant creationInstant =
-        //         Instant.ofEpochMilli(singleIssue.getCreationDate().getMillis());
-        //         OffsetDateTime creationDateTime = OffsetDateTime.ofInstant(creationInstant,
-        //         ZoneId.of(singleIssue.getCreationDate().getZone().getID()));
-        //         // -------------------------------------------------------
+        //         getIssues = Unirest.get(searchUrl).basicAuth(JiraUsername, JiraPassword)
+        //                 .header("Accept", "application/json").queryString("jql", jqlQuery).asJson();
 
-        //         // This block of code is just getting
-        //         // the updated date and time for each issue
-        //         // Currently, these values are never null;
-        //         // However, I am not sure if that is always the case
-        //         // -------------------------------------------------------
-        //         Instant updatedInstant =
-        //         Instant.ofEpochMilli(singleIssue.getUpdateDate().getMillis());
-        //         OffsetDateTime updatedDateTime = OffsetDateTime.ofInstant(updatedInstant,
-        //         ZoneId.of(singleIssue.getUpdateDate().getZone().getID()));
-        //         // -------------------------------------------------------
+        //         issuesFromSearchJson = mapper.readValue(getIssues.getBody().toString(),
+        //                 new TypeReference<IssuesSearchJson>() {
+        //                 });
+        //         // --------------------------------------------------------------------------------
 
-        //         // This block of code is just formatting
-        //         // the due date and time for each issue
-        //         // Currently, some values are null;
-        //         // so I need to use if statements to handle that
-        //         //
-        //         //---------------------------------------------------------------------------
-        //         OffsetDateTime dueDateTime = null;
-        //         if (singleIssue.getDueDate() != null) {
-        //         Instant dueInstant =
-        //         Instant.ofEpochMilli(singleIssue.getDueDate().getMillis());
-        //         dueDateTime = OffsetDateTime.ofInstant(dueInstant,
-        //         ZoneId.of(singleIssue.getDueDate().getZone().getID()));
-        //         }
-        //         //
-        //        // ---------------------------------------------------------------------------
+        //     } while (startLocation < totalCount);
+        //     System.out.println("Outside of the while issue loop");
+        //     project.setNumIssues(totalCount);
+        //     project.setCreatedDate(projectCreationDateTime);
+        //     projectService.saveSingleProject(project);
+        // }
+        // final Long endTime = System.currentTimeMillis();
+        // System.out.println("Total Execution Time: " + (endTime - startTime) + " milliseconds");
+        // System.out
+        //         .println("Please wait 30 minutes for the database to update! Current time is " + OffsetDateTime.now()
+        //                 + ". The next Update is at " + OffsetDateTime.now().plusMinutes(30));
 
-        //         // This block of code is just getting
-        //         // the resolution date and time for each issue
-        //         // Currently, some values are null;
-        //         // so I need to use if statements to handle that
-        //         //
-        //        // ---------------------------------------------------------------------------
-        //         String resolvedDateTimeField = fieldValues.get("Resolved");
-        //         OffsetDateTime resolutionDateTime = null;
-        //         if(singleIssue.getField(resolvedDateTimeField).getValue() != null){
-        //         String resolutionDateTimeString =
-        //         singleIssue.getField(resolvedDateTimeField).getValue().toString();
-        //         DateTimeFormatter formatter =
-        //         DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-        //         resolutionDateTime =
-        //         OffsetDateTime.parse(resolutionDateTimeString,formatter);
-        //         }
-        //         //----------------------------------------------------------------------------
-
-        //         // This block of code is grabbing the story points per issue if they have
-        //       //  them
-        //         // This is one location where the hashmap comes back from earlier
-        //         // ------------------------------------------------------------------------
-        //         String storyPointField = fieldValues.get("Story Points");
-        //         Float storyPointInfo = null;
-        //         if (singleIssue.getField(storyPointField).getValue() != null) {
-        //         storyPointInfo = Float
-        //         .parseFloat(singleIssue.getField(storyPointField).getValue()
-        //         .toString());
-        //         }
-        //         // ------------------------------------------------------------------------
-
-        //         // This block of code is grabbing all the subTypes per issue
-        //         // This is another location where the hashmap comes back again
-        //         // ------------------------------------------------------------------------
-        //         String typeField = fieldValues.get("Type");
-        //         String subType = null;
-        //         if (singleIssue.getField(typeField).getValue() != null) {
-        //         String subTypeValueJsonString = singleIssue.getField(typeField)
-        //         .getValue()
-        //         .toString();
-        //         ObjectMapper mapper = new ObjectMapper();
-        //         JsonNode node = mapper.readTree(subTypeValueJsonString);
-        //         subType = node.get("value").asText();
-        //         //
-        //         //https://stackoverflow.com/questions/5245840/how-to-convert-jsonstring-to-jsonobject-in-java
-        //         }
-        //         // ------------------------------------------------------------------------
-
-        //         // Block of code just grabbing the resolution per issue
-        //         // ------------------------------------------------------
-        //         String resolution = null;
-        //         if (singleIssue.getResolution() != null) {
-        //         resolution = singleIssue.getResolution().getName();
-        //         }
-        //         // ------------------------------------------------------
-
-        //         // Block of code just grabbing the priority per issue
-        //         // ---------------------------------------------------
-        //         String priority = null;
-        //         if (singleIssue.getPriority() != null) {
-        //         priority = singleIssue.getPriority().getName();
-        //         }
-        //         // ---------------------------------------------------
-
-        //         // Block of code grabbing the assignee and the avator url for them per issue
-        //         // --------------------------------------------------------------------------
-        //         String assigneeName = null;
-        //         String assigneeNameUrl = null;
-        //         if (singleIssue.getAssignee() != null) {
-        //         assigneeName = singleIssue.getAssignee().getDisplayName();
-        //         assigneeNameUrl = singleIssue.getAssignee().getAvatarUri().toString();
-        //         }
-        //         // --------------------------------------------------------------------------
-
-        //         // Setting the values from the Jira Extraction to a variable in the Java
-        //         //Issue
-        //         // Object
-        //         // --------------------------------------------------------
-        //         issue.setId(Integer.parseInt(issueNumber));
-        //         issue.setName(singleIssue.getKey());
-        //         issue.setProjectName(projectName);
-        //         issue.setTeamType(singleIssue.getIssueType().getName());
-        //         issue.setStatus(singleIssue.getStatus().getName());
-        //         issue.setCreatedDateTime(creationDateTime);
-        //         issue.setUpdatedDateTime(updatedDateTime);
-        //         issue.setDueDateTime(dueDateTime);
-        //         issue.setResolutionDateTime(resolutionDateTime);
-        //         issue.setStoryPoint(storyPointInfo);
-        //         issue.setSubType(subType);
-        //         issue.setResolution(resolution);
-        //         issue.setPriority(priority);
-        //         issue.setAssignee(assigneeName);
-        //         issue.setAssigneeAvatarUrl(assigneeNameUrl);
-        //         // --------------------------------------------------------
-
-        //         // Just saving that Issue Object with the saved values
-        //         // into the database with the repository
-        //         // Also increasing the issueCount so that I know
-        //         // where to start the next issue search from
-        //         // ---------------------------
-        //         issueRepository.save(issue);
-        //         issueCount += 1;
-        //         // ---------------------------
-
-        //         // In our project table, we have a created date column
-        //         // We decided to use the earlist issue creation date
-        //         // as that value
-        //         // ----------------------------------------------------
-        //         if (Integer.parseInt(issueNumber) == 1) {
-        //         project.setCreatedDate(creationDateTime);
-        //         }
-        //         // ----------------------------------------------------
-        //         }
-
-        //         // Outside the while loop means we haev iterated through all the issues in
-        //        // the
-        //         // iterable
-        //         // Now we continue to grab the next set of issues using the issueCount as the
-        //         // starting point
-        //         //
-        //        // -----------------------------------------------------------------------------
-        //         allIssues = myJiraClient.getAllIssues(projectName, issueCount);
-        //         allIssuesCount = StreamSupport.stream(allIssues.spliterator(),
-        //         false).count();
-        //         //
-        //        // -----------------------------------------------------------------------------
-        //         }
-        //         // Outside of the while loop means we have iterated through all the issues
-        //         // within that project
-        //         // Just have to set the number of issues to issueCount and save the Java Project
-        //         // Object
-        //         // with the saved values to the repository
-        //         // --------------------------------
-        //         project.setNumIssues(issueCount);
-        //         projectRepository.save(project);
-        //         // ---------------------------------
-        //         }
-
-        //         System.out.println("finished");
-        //         myJiraClient.getRestClient().close();
-
-        //         } catch (RestClientException e) {
-        //         System.out.println(e.getLocalizedMessage());
-        //         }
-        //         //
-        //         //--------------------------------------------------------------------------------
-
-        }
+    }
 }
 
+/*
+ * List of Resources
+ * https://stackoverflow.com/questions/20832015/how-do-i-iterate-over-a-json-
+ * response-using-jackson-api-of-a-list-inside-a-list
+ * 
+ * http://makeseleniumeasy.com/2020/06/11/rest-assured-tutorial-30-how-to-create
+ * -pojo-classes-of-a-json-array-payload/
+ * 
+ * https://stackoverflow.com/questions/58539657/com-fasterxml-jackson-databind-
+ * exc-mismatchedinputexception-cannot-deserialize
+ * 
+ * https://stackoverflow.com/questions/7421474/how-can-i-tell-jackson-to-ignore-
+ * a-property-for-which-i-dont-have-control-over
+ * 
+ * https://stackoverflow.com/questions/20837856/can-not-deserialize-instance-of-
+ * java-util-arraylist-out-of-start-object-token
+ * 
+ * https://docs.atlassian.com/software/jira/docs/api/REST/8.13.10/
+ * 
+ * https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-
+ * projects/#api-rest-api-3-project-search-get
+ */
