@@ -17,20 +17,15 @@ export async function getNotificationsFromApiAsync() {
 
 // POST request made after user clicks on 'Save Changes' button on Notifications page
 // This sends the current settings to the backend to store data on the backend
-export const sendSettingsDataToBackend = async (data) => {
-  try {
-    const response = await fetch('api/v1/notification', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-type': 'application/json',
-      },
-      body: JSON.stringify(data),
-      mode: 'no-cors',
-    });
-    const json = await response.json();
-    return json;
-  } catch (error) {
-    console.error(error);
-  }
-};
+export async function sendSettingsDataToBackend(data) {
+  var requestOptions = {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+    mode: 'no-cors',
+  };
+
+  fetch('/api/v1/notification/', requestOptions)
+    .then((response) => response.json())
+    .catch((error) => console.log('error', error));
+}

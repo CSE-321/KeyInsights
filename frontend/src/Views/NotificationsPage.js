@@ -56,6 +56,11 @@ const NotificationsPage = () => {
     'http://jira.cloud-stm.com:8080/rest/api/2/user?username=ucm-cse-321';
   //const server = useSelector((state) => state.server.name);
 
+  const dropDownOptions = [
+    { value: 14, label: '2 Weeks' },
+    { value: 30, label: '1 Month' },
+  ];
+
   // Create JSON object for backend
   const createJSON = () => {
     let obj = {
