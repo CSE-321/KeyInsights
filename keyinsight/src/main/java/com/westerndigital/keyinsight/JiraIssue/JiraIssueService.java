@@ -109,6 +109,10 @@ public class JiraIssueService {
         return issueRepository.assigneeTotalCompleteInformation(projectName, teamType, status1, status2, priority);
     }
 
+    public Integer unfinishedJiraIssuesByToday(String projectName){
+        return issueRepository.unfinishedJiraIssuesByToday(projectName);
+    }
+
     public void deleteAll(){
         issueRepository.deleteAll();
     }
