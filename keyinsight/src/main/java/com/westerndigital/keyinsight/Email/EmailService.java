@@ -14,6 +14,6 @@ public interface EmailService {
     
     void sendMessageWithAttatchment(String to, String subject, String text, String pathToAttatchment);
 
-    void sendEmailNotification(List<String> nameOfIssues) throws MessagingException;
+    void sendEmailNotification(String to, String name, String projectName, Integer issueCount, Integer limitNumber, List<String> nameOfIssues) throws MessagingException;
     void sendNotificationUnfinished(String to, int numberofissues, String name, String projectName, List<String> nameofissues);
 }

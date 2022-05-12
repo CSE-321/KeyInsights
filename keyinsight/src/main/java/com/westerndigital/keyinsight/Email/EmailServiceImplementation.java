@@ -18,6 +18,7 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 
 @Component
@@ -52,18 +53,25 @@ public class EmailServiceImplementation implements EmailService{
     //     System.out.print("sent message");
     // }
 
-    public void sendEmailNotification(List<String> nameOfIssues) throws MessagingException {
+    public void sendEmailNotification(String to, String name, String projectName, Integer issueCount, Integer limitCount, List<String> nameOfIssues) throws MessagingException {
         Context context = new Context();
-        context.setVariable("userName", "Jim");
-        context.setVariable("projectName", "B8X4");
-        context.setVariable("issueCount", 1850);
+        context.setVariable("userName", name);
+        context.setVariable("projectName", projectName);
+        context.setVariable("issueCount", issueCount);
+        context.setVariable("limitCount", limitCount);
         context.setVariable("listOfIssueNames", nameOfIssues);
-        String process = templateEngine.process("emails/unfinishedIssuesNotification", context);
+        context.setVariable("westernDigitalLogo", "westernDigitalLogo");
+
         MimeMessage message = mailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message, "UTF-8");
-        helper.setSubject("Unfinished Jira Issues for " + "B8X4");
+        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+        String process = templateEngine.process("emails/html/unfinishedIssuesNotification.html", context);
+
+        helper.setSubject("Unfinished Jira Issues for " + projectName);
         helper.setText(process, true);
-        helper.setTo("dragonoath123@gmail.com");
+        helper.setTo(to);
+
+        ClassPathResource westernDigitalLogoLocation = new ClassPathResource("templates/emails/images/westerndigitallogosmall.png");
+        helper.addInline("westernDigitalLogo", westernDigitalLogoLocation);
         mailSender.send(message);
     }
 

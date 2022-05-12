@@ -57,19 +57,20 @@ public class LoadDatabase implements CommandLineRunner {
         int numberofissues = 4;
         String name = "Alexander Holt";
         String projectName = "B8X4";
-        int randome = issueService.unfinishedJiraIssuesByToday(projectName);
-        System.out.print(randome);
-        List<Object[]> tmp = issueService.topXUnfinishedJiraIssuesByToday(projectName, 10);
+        int issueCount = issueService.unfinishedJiraIssuesByToday(projectName);
+        int limitNumber = 10;
+        System.out.print(issueCount);
+        List<Object[]> tmp = issueService.topXUnfinishedJiraIssuesByToday(projectName, limitNumber);
         List<String> issueName = new ArrayList<String>();
         List<String> dueDate = new ArrayList<String>();
 
         for(Object[] element : tmp){
-            issueName.add(element[0].toString());
+            issueName.add(String.format("Issue Name: %s\nDue Date: %s", element[0].toString(), element[1].toString()));
         }
 
         //emailService.sendNotificationUnfinished(to, randome, name, projectName, issueName);
-        emailService.sendEmailNotification(issueName);
-
+        emailService.sendEmailNotification(to, name, projectName, issueCount, limitNumber, issueName);
+        System.out.println("Sent the email");
         // springEmailService.sendEmailNotification();
 
         // This block of code underneath just deletes every entry in the database during
