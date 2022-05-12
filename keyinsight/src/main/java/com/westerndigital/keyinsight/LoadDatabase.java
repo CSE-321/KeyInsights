@@ -20,6 +20,7 @@ import com.westerndigital.keyinsight.JiraRestAPIsPOJO.UserPOJO.UserJson;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.List;
 
 import io.github.cdimascio.dotenv.Dotenv;
@@ -52,14 +53,22 @@ public class LoadDatabase implements CommandLineRunner {
         // String to = "jrosales530@gmail.com";
         // String subject = "Subjects";
         // String text = "hi";
-        String to = "jrosales530@gmail.com";
+        String to = "alexholt54@gmail.com";
         int numberofissues = 4;
-        String name = "Carlos";
-        String projectName = "Generic Name";
-        int randome = issueService.unfinishedJiraIssuesByToday("B8X4");
+        String name = "Alexander Holt";
+        String projectName = "B8X4";
+        int randome = issueService.unfinishedJiraIssuesByToday(projectName);
         System.out.print(randome);
-        emailService.sendNotificationUnfinished(to, randome, name, projectName);
-        // springEmailService.sendEmailNotification();
+        List<Object[]> tmp = issueService.topXUnfinishedJiraIssuesByToday(projectName, 10);
+        List<String> issueName = new ArrayList<String>();
+        List<String> dueDate = new ArrayList<String>();
+
+        for(Object[] element : tmp){
+            issueName.add(element[0].toString());
+        }
+
+        //emailService.sendNotificationUnfinished(to, randome, name, projectName, issueName);
+        emailService.sendEmailNotification(issueName);
 
         // springEmailService.sendEmailNotification();
 

@@ -2,6 +2,8 @@ package com.westerndigital.keyinsight.Email;
 
 import java.util.List;
 
+import javax.mail.MessagingException;
+
 public interface EmailService {
 
     // send email
@@ -12,6 +14,6 @@ public interface EmailService {
     
     void sendMessageWithAttatchment(String to, String subject, String text, String pathToAttatchment);
 
-    //void sendEmailNotification();
-    void sendNotificationUnfinished(String to, int numberofissues, String name, String projectName, List<Object> nameofissues);
+    void sendEmailNotification(List<String> nameOfIssues) throws MessagingException;
+    void sendNotificationUnfinished(String to, int numberofissues, String name, String projectName, List<String> nameofissues);
 }
