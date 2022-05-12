@@ -53,6 +53,7 @@ public class EmailServiceImplementation implements EmailService{
     //     System.out.print("sent message");
     // }
 
+    //https://www.baeldung.com/spring-email
     //https://www.thymeleaf.org/doc/articles/springmail.html
     //https://javabydeveloper.com/spring-boot-email-template/
     public void sendUnfinishedJiraIssuePastDueDateEmailNotification(String to, String name, String projectName, Integer issueCount, Integer limitCount, List<String> nameOfIssues) throws MessagingException {
