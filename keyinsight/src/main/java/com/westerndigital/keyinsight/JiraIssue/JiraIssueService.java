@@ -125,6 +125,14 @@ public class JiraIssueService {
         return issueRepository.criticalIssuesNotUpdatedInfo(projectName, priority, interval, limitNumber);
     }
 
+    public List<Object[]> resourceWorkloadDigestCreated(String projectName, String teamType, Integer interval){
+        return issueRepository.resourceWorkloadDigestCreated(projectName, teamType, interval);
+    }
+
+    public List<Object[]> resourceWorkloadDigestClosed(String projectName, String teamType, Integer interval){
+        return issueRepository.resourceWorkloadDigestClosed(projectName, teamType, interval);
+    }
+
     public void deleteAll(){
         issueRepository.deleteAll();
     }
