@@ -13,17 +13,23 @@ import java.util.List;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.westerndigital.keyinsight.JiraTicket.UnfinishedSprintStatus.UnfinishedSprintStatusTicketJob;
 import com.westerndigital.keyinsight.Notification.Settings.ProjectDigestReportSetting;
 import com.westerndigital.keyinsight.Notification.Settings.SprintStatusSetting;
 import com.westerndigital.keyinsight.Notification.Settings.TicketStatusSetting;
 import com.westerndigital.keyinsight.Notification.Settings.UnfinishedTicketSetting;
 import com.westerndigital.keyinsight.Notification.Settings.WorkloadDigestReportSetting;
+import com.westerndigital.keyinsight.Scheduler.SchedulerJob;
+import com.westerndigital.keyinsight.Scheduler.SchedulerJobService;
 
 @Controller
 @RequestMapping("/api/v1/notification")
 public class NotificationController {
     @Autowired
     private NotificationService notificationService;
+
+    @Autowired
+    private SchedulerJobService schedulerJobService;
 
     public NotificationController(NotificationService notificationService){
         this.notificationService = notificationService;
