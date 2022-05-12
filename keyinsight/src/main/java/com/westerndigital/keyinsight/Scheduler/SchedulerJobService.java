@@ -8,6 +8,8 @@ import org.quartz.SchedulerException;
 import static org.quartz.SimpleTrigger.MISFIRE_INSTRUCTION_FIRE_NOW;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 import org.quartz.Trigger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,9 @@ import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.stereotype.Service;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class SchedulerJobService {
 
@@ -79,14 +84,9 @@ public class SchedulerJobService {
 
                 // save the job in the database
                 schedulerJobRepository.save(schedulerJob);
-            } else {
-                // delete the job
-                deleteJob(jobName, jobKey);
-            }
-
+            } 
         } catch (Exception e) {
-            // TODO: handle exception
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
     }
 
@@ -97,21 +97,40 @@ public class SchedulerJobService {
 
     // delete job
     public void deleteJob(SchedulerJob schedulerJob) {
+        try {
+            String jobName = schedulerJob.getJobName();
+            String jobGroup = schedulerJob.getJobGroup();
 
-        // try {
-        //     String jobName = schedulerJob.getJobName();
-        //     String jobGroup = schedulerJob.getJobGroup();
+            SchedulerJob job = schedulerJobRepository.findByJobName(jobName);
+            schedulerJobRepository.delete(job);
 
-        //     SchedulerJob job = schedulerJobRepository.findByJobName(jobName);
-        //     schedulerJobRepository.delete(job);
+            JobKey jobKey = new JobKey(jobName, jobGroup);
 
-        //     JobKey jobKey = new JobKey(jobName, jobGroup);
+            scheduler.deleteJob(jobKey);
 
-        //     scheduler.deleteJob(jobKey);
+        } catch (SchedulerException e) {
+            log.error(e.getMessage(), e);
+        }
+    }
 
-        // } catch (SchedulerException e) {
+    // delete all jobs (e.g., when the server restarts)
+    public void deleteAllJobs() {
+        // get all the scheduled jobs from the database
+        List<SchedulerJob> jobs = schedulerJobRepository.findAll();
 
-        // }
+        // only delete if there is at least one job in the database
+        if (jobs.isEmpty() == false) {
+            jobs.forEach(job -> {
+                try {
+                    scheduler.deleteJob(
+                        new JobKey(job.getJobName(), job.getJobGroup()));
+                } catch (SchedulerException e) {
+                    log.error(e.getMessage(), e);
+                }
+            });
+        }
+
+        return;
     }
 
     // pause job

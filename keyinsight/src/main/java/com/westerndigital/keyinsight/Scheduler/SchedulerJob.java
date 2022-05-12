@@ -27,6 +27,8 @@ public class SchedulerJob {
 
     private String jobCronExpression;
 
+    public SchedulerJob() {}
+
     public SchedulerJob(String jobName, String jobGroup, String jobStatus, 
         Class<? extends QuartzJobBean> jobClass, String jobCronExpression) {
 

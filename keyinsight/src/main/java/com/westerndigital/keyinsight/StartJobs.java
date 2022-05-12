@@ -19,7 +19,10 @@ public class StartJobs implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         final String INITIAL_STATUS = "UNSCHEDULED";
-        final String EVERY_MINUTE_CRON = "0 0/1 0 ? * * *";
+        final String EVERY_MINUTE_CRON = "* * * ? * *";
+
+        // delete all scheduled jobs upon restart
+        schedulerJobService.deleteAllJobs();
 
         // scan the database for stale Jira tickets
         String staleJiraJobName = "staleJiraDbScan";
@@ -41,6 +44,10 @@ public class StartJobs implements CommandLineRunner {
         String unfinishedJiraJobStatus = INITIAL_STATUS;
         Class<? extends QuartzJobBean> unfinishedJiraJobClass = UnfinishedSprintStatusTicketJob.class;
         String unfinishedJiraCronExpression = EVERY_MINUTE_CRON;
-        
+
+        SchedulerJob unfinishedJiraJob = new SchedulerJob(unfinishedJiraJobName, unfinishedJiraJobGroup, unfinishedJiraJobStatus,
+            unfinishedJiraJobClass, unfinishedJiraCronExpression);
+       
+        schedulerJobService.scheduleJob(unfinishedJiraJob);
     }
 }
