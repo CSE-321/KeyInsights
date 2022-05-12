@@ -54,9 +54,9 @@ public class NotificationController {
         // extract the user data from the request body
         String jsonString = requestEntity.getBody();
 
-        final String USERNAME_FIELD = "username";
-        final String SERVER_URL_FIELD = "serverUrl";
-        final String PROJECT_NAME_FIELD = "projectName";
+        final String USERNAME_FIELD = "userId";
+        final String SERVER_URL_FIELD = "serverId";
+        final String PROJECT_NAME_FIELD = "projectId";
         final String TICKET_STATUS_FIELD = "ticketStatusSetting";
         final String SPRINT_STATUS_FIELD = "sprintStatusSetting";
         final String UNFINISHED_TICKET_FIELD = "unfinishedTicketSetting";
@@ -83,6 +83,7 @@ public class NotificationController {
 
         String jiraUser = objectMapper.convertValue(
             username, String.class);
+        System.out.println(jiraUser);
 
         String jiraServerUrl = objectMapper.convertValue(
             serverUrl, String.class);

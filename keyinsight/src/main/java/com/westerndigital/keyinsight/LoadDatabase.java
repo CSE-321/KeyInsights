@@ -53,34 +53,34 @@ public class LoadDatabase implements CommandLineRunner {
         // String to = "jrosales530@gmail.com";
         // String subject = "Subjects";
         // String text = "hi";
-        String to = "dragonoath123@gmail.com";
-        String name = "ucm-cse-321";
-        String projectName = "B8X4";
-        int issueCount = issueService.unfinishedJiraIssuesByToday(projectName);
-        int limitNumber = 10;
-        List<Object[]> tmp = issueService.topXUnfinishedJiraIssuesByToday(projectName, limitNumber);
-        List<String> issueName = new ArrayList<String>();
+        // String to = "dragonoath123@gmail.com";
+        // String name = "ucm-cse-321";
+        // String projectName = "B8X4";
+        // int issueCount = issueService.unfinishedJiraIssuesByToday(projectName);
+        // int limitNumber = 10;
+        // List<Object[]> tmp = issueService.topXUnfinishedJiraIssuesByToday(projectName, limitNumber);
+        // List<String> issueName = new ArrayList<String>();
 
-        for(Object[] element : tmp){
-            issueName.add(String.format("Issue Name: %s\nDue Date: %s", element[0].toString(), element[1].toString()));
-        }
+        // for(Object[] element : tmp){
+        //     issueName.add(String.format("Issue Name: %s\nDue Date: %s", element[0].toString(), element[1].toString()));
+        // }
 
-        emailService.sendUnfinishedJiraIssuePastDueDateEmailNotification(to, name, projectName, issueCount, issueName, limitNumber);
-        System.out.println("Sent the first email");
+        // emailService.sendUnfinishedJiraIssuePastDueDateEmailNotification(to, name, projectName, issueCount, issueName, limitNumber);
+        // System.out.println("Sent the first email");
 
-        String priority = "Critical";
-        int interval = 7;
-        int issueCount2 = issueService.criticalIssuesNotUpdatedCount(projectName, priority, interval);
-        System.out.println("got the count");
-        List<Object[]> tmp2 = issueService.criticalIssuesNotUpdatedInfo(projectName, priority, interval, limitNumber);
-        List<String> issueInfo = new ArrayList<String>();
+        // String priority = "Critical";
+        // int interval = 7;
+        // int issueCount2 = issueService.criticalIssuesNotUpdatedCount(projectName, priority, interval);
+        // System.out.println("got the count");
+        // List<Object[]> tmp2 = issueService.criticalIssuesNotUpdatedInfo(projectName, priority, interval, limitNumber);
+        // List<String> issueInfo = new ArrayList<String>();
 
-        for(Object[] element2 : tmp2){
-            issueInfo.add(String.format("Issue Name: %s\nUpdated Date: %s", element2[0].toString(), element2[1].toString()));
-        }
+        // for(Object[] element2 : tmp2){
+        //     issueInfo.add(String.format("Issue Name: %s\nUpdated Date: %s", element2[0].toString(), element2[1].toString()));
+        // }
 
-        emailService.sendCriticalJiraIssueNotUpdatedEmailNotification(to, name, projectName, interval, issueCount2, issueInfo, limitNumber);
-        System.out.println("Sent the second email");
+        // emailService.sendCriticalJiraIssueNotUpdatedEmailNotification(to, name, projectName, interval, issueCount2, issueInfo, limitNumber);
+        // System.out.println("Sent the second email");
         // This block of code underneath just deletes every entry in the database during
         // startup
         // ------------------------------------------

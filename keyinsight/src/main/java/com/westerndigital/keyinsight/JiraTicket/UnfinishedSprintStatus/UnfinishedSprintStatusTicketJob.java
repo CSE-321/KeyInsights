@@ -36,6 +36,7 @@ public class UnfinishedSprintStatusTicketJob extends QuartzJobBean {
         throws JobExecutionException {
 
         final int ISSUE_LIMIT = 10;
+        System.out.println("UnfinishedJiraTicketJob");
         
         // filter the Notification table for users who enabled the notification
         notificationRepository.findAll()
@@ -63,15 +64,15 @@ public class UnfinishedSprintStatusTicketJob extends QuartzJobBean {
                 System.out.println("Sending the email"); 
 
                 // send the email
-                final String EMAIL = "";
+                final String EMAIL = "dragonoath123@gmail.com";
                 try {
                     emailService.sendUnfinishedJiraIssuePastDueDateEmailNotification(
                         EMAIL,
                         user.getJiraUsername(), 
                         projectName, 
                         unfinishedTicketCount, 
-                        ISSUE_LIMIT, 
-                        unfinishedTicketInfo);
+                        unfinishedTicketInfo,
+                        ISSUE_LIMIT);
                 } catch (MessagingException e) {
                     log.error(e.getMessage(), e);
                     e.printStackTrace();
