@@ -16,9 +16,13 @@
       <li th:each="nameofissue : ${listOfIssueNames}" th:text="${nameofissue}"></li>
     </ul>
     <p>
+      You were notified because you have selected the "Notify me if ticket(s) unfinished by due date" notification option on the KeySight web application.
+      If you would do not want to receive this notification any more, please go to the KeySight web application and uncheck the "Notify me if ticket(s) unfinished by due date" setting from the Notification page.
+    </p>
+    <p>
       Best Regards, <br />
       <em>The KeyInsight Team</em>
     </p>
-    <img src="sample.png" th:src="|cid:${westernDigitalLogo}|"/>
+    <img style='float:left'src="sample.png" th:src="|cid:${westernDigitalLogo}|"/>
   </body>
 </html>

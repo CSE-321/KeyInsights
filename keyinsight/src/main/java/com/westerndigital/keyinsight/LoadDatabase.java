@@ -55,7 +55,7 @@ public class LoadDatabase implements CommandLineRunner {
         // String text = "hi";
         String to = "alexholt54@gmail.com";
         int numberofissues = 4;
-        String name = "Alexander Holt";
+        String name = "ucm-cse-321";
         String projectName = "B8X4";
         int issueCount = issueService.unfinishedJiraIssuesByToday(projectName);
         int limitNumber = 10;
