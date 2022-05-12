@@ -109,6 +109,19 @@ public interface JiraIssueRepository extends JpaRepository<JiraIssue, String> {
     "COALESCE(criticalnotstarted.storypoint,0) AS criticalnotstartedStoryPoint FROM total LEFT JOIN completed on total.assignee = completed.assignee "+ 
     "LEFT JOIN wip on total.assignee = wip.assignee LEFT JOIN notstarted on total.assignee = notstarted.assignee LEFT JOIN criticalnotstarted on total.assignee = criticalnotstarted.assignee ",nativeQuery = true)
     List<Object[]> assigneeTotalCompleteInformation(@Param("projectName") String projectName, @Param("teamType") String teamType, @Param("status1") String status1, @Param("status2") String status2, @Param("priority") String priority);
+
+    @Query(value = "SELECT COUNT(id), SUM(story_point) FROM issues WHERE project_name = ?1 AND team_type = ?2 AND created_date_time > NOW() - (INTERVAL'1 DAYS') * ?3", nativeQuery = true)
+    List<Object[]> resourceWorkloadDigestCreated(@Param("projectName") String projectName, @Param("teamType") String teamType, @Param("interval") Integer interval);
+
+    @Query(value = "SELECT COUNT(id), SUM(story_point) FROM issues WHERE project_name = ?1 AND team_type = ?2 AND resolution_date_time > NOW() - (INTERVAL'1 DAYS') * ?3", nativeQuery = true)
+    List<Object[]> resourceWorkloadDigestClosed(@Param("projectName") String projectName, @Param("teamType") String teamType, @Param("interval") Integer interval);
 }
 
+
 //https://www.baeldung.com/spring-data-jpa-query
+
+/*
+
+
+
+*/
