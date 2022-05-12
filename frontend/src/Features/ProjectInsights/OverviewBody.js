@@ -96,7 +96,7 @@ const OverviewBody = ({ projectName }) => {
         </div>
         <div className="col-span-6 sm:col-start-1 sm:col-end-4">
           <OverviewCard
-            cardTitle="Top Issue Type Completion"
+            cardTitle="Top Teams by Issue Completion"
             cardText={
               <>
                 {(topTeamsList.length > 0 && (
@@ -120,7 +120,7 @@ const OverviewBody = ({ projectName }) => {
         </div>
         <div className="col-span-6 sm:col-start-4 sm:col-end-7">
           <OverviewCard
-            cardTitle="Top Percentage of Critical Issues Not Completed"
+            cardTitle="Top Teams by Crtitical Issues Not Completed"
             cardText={
               <>
                 {(needsAttentionList.length > 0 && (
@@ -179,7 +179,7 @@ const OverviewBody = ({ projectName }) => {
         </div>
         <div className="col-span-6">
           <OverviewCard
-            cardTitle="Percentage of bugs"
+            cardTitle="Percentage of Bugs"
             cardText={
               <>
                 <p>
