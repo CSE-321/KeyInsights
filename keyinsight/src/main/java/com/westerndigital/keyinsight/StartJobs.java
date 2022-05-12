@@ -19,7 +19,7 @@ public class StartJobs implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         final String INITIAL_STATUS = "UNSCHEDULED";
-        final String EVERY_MINUTE_CRON = "* * * ? * *";
+        final String EVERY_MINUTE_CRON = "0 * * ? * *";
 
         // delete all scheduled jobs upon restart
         schedulerJobService.deleteAllJobs();

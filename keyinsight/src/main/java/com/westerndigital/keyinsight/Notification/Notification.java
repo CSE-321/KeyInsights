@@ -49,6 +49,7 @@ public class Notification {
     // private JiraUser jiraUser;
 
     private String jiraUsername;
+    private String email;
     private String serverUrl;
     private String projectName;
 
@@ -74,10 +75,11 @@ public class Notification {
 
     public Notification() {}
 
-    public Notification(String jiraUsername, String serverUrl, 
+    public Notification(String jiraUsername, String email, String serverUrl, 
         String projectName) {
 
         this.jiraUsername = jiraUsername;
+        this.email = email;
         this.serverUrl = serverUrl;
         this.projectName = projectName;
 
@@ -89,7 +91,8 @@ public class Notification {
         workloadDigestReportSetting = new WorkloadDigestReportSetting();
     }
 
-    public Notification(String jiraUsername, String serverUrl, String projectName,
+    public Notification(String jiraUsername, String email, String serverUrl, 
+        String projectName,
         TicketStatusSetting ticketStatusSetting,
         SprintStatusSetting sprintStatusSetting,
         UnfinishedTicketSetting unfinishedTicketSetting,
@@ -97,6 +100,7 @@ public class Notification {
         WorkloadDigestReportSetting workloadDigestReportSetting) {
 
         this.jiraUsername = jiraUsername;
+        this.email = email;
         this.serverUrl = serverUrl;
         this.projectName = projectName;
         this.ticketStatusSetting = ticketStatusSetting;

@@ -14,6 +14,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.westerndigital.keyinsight.JiraTicket.UnfinishedSprintStatus.UnfinishedSprintStatusTicketJob;
+import com.westerndigital.keyinsight.JiraUser.JiraUserService;
 import com.westerndigital.keyinsight.Notification.Settings.ProjectDigestReportSetting;
 import com.westerndigital.keyinsight.Notification.Settings.SprintStatusSetting;
 import com.westerndigital.keyinsight.Notification.Settings.TicketStatusSetting;
@@ -27,6 +28,9 @@ import com.westerndigital.keyinsight.Scheduler.SchedulerJobService;
 public class NotificationController {
     @Autowired
     private NotificationService notificationService;
+
+    @Autowired
+    private JiraUserService jiraUserService;
 
     @Autowired
     private SchedulerJobService schedulerJobService;
@@ -86,6 +90,10 @@ public class NotificationController {
         String jiraProjectName = objectMapper.convertValue(
             projectName, String.class);
 
+        String jiraEmail = jiraUserService
+            .loadUserByUsername(jiraUser)
+            .getEmail();
+
         // convert each notification setting field in the JSON to its
         // corresponding Java object 
         TicketStatusSetting ticketStatusSetting = objectMapper
@@ -106,10 +114,10 @@ public class NotificationController {
             .convertValue(workloadDigestReport, 
                 WorkloadDigestReportSetting.class);
 
-        Notification notification = new Notification(jiraUser, jiraServerUrl,
-            jiraProjectName, ticketStatusSetting, sprintStatusSetting,
-            unfinishedTicketSetting, projectDigestReportSetting,
-            workloadDigestReportSetting);
+        Notification notification = new Notification(jiraUser, jiraEmail, 
+            jiraServerUrl, jiraProjectName, ticketStatusSetting, 
+            sprintStatusSetting, unfinishedTicketSetting, 
+            projectDigestReportSetting, workloadDigestReportSetting);
 
         notificationService.updateNotificationSettings(notification);
 
