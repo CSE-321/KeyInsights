@@ -3,7 +3,7 @@ package com.westerndigital.keyinsight.KPI2;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.westerndigital.keyinsight.JiraIssue.JiraIssueRepository;
+import com.westerndigital.keyinsight.JiraIssue.JiraIssueService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,24 +11,18 @@ import org.springframework.stereotype.Service;
 @Service
 public class KPI2Service {
     @Autowired
-    private final JiraIssueRepository issueRepository;
+    private JiraIssueService issueService;
 
     @Autowired
-    private final KPI2Repository kpi2Repository;
-
-    public KPI2Service(JiraIssueRepository issueRepository, KPI2Repository kpi2Repository) {
-        this.issueRepository = issueRepository;
-        this.kpi2Repository = kpi2Repository;
-    }
+    private KPI2Repository kpi2Repository;
 
     public List<KPI2> getKPI2PerTeam(String projectName) {
-        ArrayList<KPI2> listofKPI2 = new ArrayList<KPI2>();
-        // String projectName = "B8X4";
-        List<String> teamTypes = issueRepository.getAllTeamType(projectName);
+        List<KPI2> listofKPI2 = new ArrayList<>();
+        List<String> teamTypes = issueService.getAllTeamType(projectName);
         System.out.print(teamTypes);
 
         KPI2 daysToCompleteIssueKPI2 = kpi2Repository.findByTeamType("All Jira Issues").orElse(new KPI2());
-        ArrayList<Integer> daysNeedToCompleteTotal = issueRepository.daysNeededToCompleteTotalJiraIssues(projectName);
+        List<Integer> daysNeedToCompleteTotal = issueService.daysNeededToCompleteTotalJiraIssues(projectName);
 
         double median = -1.0;
         int size = daysNeedToCompleteTotal.size();
@@ -38,8 +32,6 @@ public class KPI2Service {
         }else{
             median = daysNeedToCompleteTotal.get(middle);
         }
-
-        System.out.println("Median day needed for this team is " + median);
 
         daysToCompleteIssueKPI2.setTeamType("All Jira Issues");
         daysToCompleteIssueKPI2.setAverageDayToCompleteIssue(daysNeedToCompleteTotal.stream().mapToInt(val -> val).average().orElse(0.0));
@@ -52,7 +44,7 @@ public class KPI2Service {
 
         for(String teamType : teamTypes){
             daysToCompleteIssueKPI2 = kpi2Repository.findByTeamType(teamType).orElse(new KPI2());
-            ArrayList<Integer> daysNeedToCompleteTeamType = issueRepository.daysNeededToCompleteTeamTypeJiraIssues(projectName, teamType);
+            List<Integer> daysNeedToCompleteTeamType = issueService.daysNeededToCompleteTeamTypeJiraIssues(projectName, teamType);
             median = -1.0;
             size = daysNeedToCompleteTeamType.size();
             middle = size / 2;
@@ -61,8 +53,6 @@ public class KPI2Service {
             }else{
                 median = daysNeedToCompleteTeamType.get(middle);
             }
-
-            System.out.println("Median day needed for this team is " + median);
 
             daysToCompleteIssueKPI2.setTeamType(teamType);
             daysToCompleteIssueKPI2.setAverageDayToCompleteIssue(daysNeedToCompleteTeamType.stream().mapToInt(val -> val).average().orElse(0.0));

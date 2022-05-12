@@ -3,7 +3,7 @@ package com.westerndigital.keyinsight.KPI3;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.westerndigital.keyinsight.JiraIssue.JiraIssueRepository;
+import com.westerndigital.keyinsight.JiraIssue.JiraIssueService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,31 +11,20 @@ import org.springframework.stereotype.Service;
 @Service
 public class KPI3Service {
     @Autowired
-    private final JiraIssueRepository issueRepository;
+    private JiraIssueService issueService;
 
     @Autowired
-    private final KPI3Repository kpi3Repository;
-
-    public KPI3Service(JiraIssueRepository issueRepository, KPI3Repository kpi3Repository) {
-        this.issueRepository = issueRepository;
-        this.kpi3Repository = kpi3Repository;
-    }
+    private KPI3Repository kpi3Repository;
 
     public List<KPI3> getKPI3PerTeam(String projectName) {
 
         kpi3Repository.deleteAll();
-        ArrayList<KPI3> listofKPI3 = new ArrayList<KPI3>();
-        ArrayList<Object[]> numOfCreatedResolvedIssuesByMonth = issueRepository
+        List<KPI3> listofKPI3 = new ArrayList<>();
+        List<Object[]> numOfCreatedResolvedIssuesByMonth = issueService
                 .numberOfIssuesCreatedAndResolvedInAMonth(projectName);
         for (Object[] numOfCreatedResolvedIssue : numOfCreatedResolvedIssuesByMonth) {
             KPI3 numberOfIssuesCreatedResolvedInMonth = new KPI3();
-            System.out.println(numOfCreatedResolvedIssue[0]);
-            System.out.println(numOfCreatedResolvedIssue[1]);
-            System.out.println(numOfCreatedResolvedIssue[2]);
-            System.out.println(numOfCreatedResolvedIssue[3]);
-            System.out.println(numOfCreatedResolvedIssue[4]);
-            System.out.println(numOfCreatedResolvedIssue[5]);
-
+            
             String createdMonth = null;
             if (numOfCreatedResolvedIssue[0] != null) {
                 createdMonth = numOfCreatedResolvedIssue[0].toString();
@@ -46,22 +35,22 @@ public class KPI3Service {
                 resolvedMonth = numOfCreatedResolvedIssue[1].toString();
             }
 
-            Integer createdJiraCount = null;
+            Integer createdJiraCount = 0;
             if (numOfCreatedResolvedIssue[2] != null) {
                 createdJiraCount = Integer.parseInt(numOfCreatedResolvedIssue[2].toString());
             }
 
-            Float createdJiraStoryPoints = null;
+            Float createdJiraStoryPoints = 0f;
             if (numOfCreatedResolvedIssue[3] != null) {
                 createdJiraStoryPoints = Float.parseFloat(numOfCreatedResolvedIssue[3].toString());
             }
 
-            Integer resolvedJiraCount = null;
+            Integer resolvedJiraCount = 0;
             if (numOfCreatedResolvedIssue[4] != null) {
                 resolvedJiraCount = Integer.parseInt(numOfCreatedResolvedIssue[4].toString());
             }
 
-            Float resolvedJiraStoryPoints = null;
+            Float resolvedJiraStoryPoints = 0f;
             if (numOfCreatedResolvedIssue[5] != null) {
                 resolvedJiraStoryPoints = Float.parseFloat(numOfCreatedResolvedIssue[5].toString());
             }
@@ -78,19 +67,13 @@ public class KPI3Service {
 
         }
 
-        List<String> teamTypes = issueRepository.getAllTeamType(projectName);
+        List<String> teamTypes = issueService.getAllTeamType(projectName);
 
         for (String teamType : teamTypes) {
-            ArrayList<Object[]> numOfCreatedResolvedIssuesByMonthAndTeamType = issueRepository
+            List<Object[]> numOfCreatedResolvedIssuesByMonthAndTeamType = issueService
                     .numberOfIssuesCreatedAndResolvedInAMonthByTeamType(projectName, teamType);
             for (Object[] numOfCreatedResolvedIssue : numOfCreatedResolvedIssuesByMonthAndTeamType) {
                 KPI3 numberOfIssuesCreatedResolvedInMonth = new KPI3();
-                System.out.println(numOfCreatedResolvedIssue[0]);
-                System.out.println(numOfCreatedResolvedIssue[1]);
-                System.out.println(numOfCreatedResolvedIssue[2]);
-                System.out.println(numOfCreatedResolvedIssue[3]);
-                System.out.println(numOfCreatedResolvedIssue[4]);
-                System.out.println(numOfCreatedResolvedIssue[5]);
 
                 String createdMonth = null;
                 if (numOfCreatedResolvedIssue[0] != null) {

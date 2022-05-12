@@ -6,14 +6,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import lombok.ToString;
-
-@Getter
-@Setter
-@ToString
 @Entity
+@Data
+@ToString
 public class KPI2 {
     @Id
     @SequenceGenerator(name = "kpi2_sequence", sequenceName = "kpi2_sequence", allocationSize = 1)

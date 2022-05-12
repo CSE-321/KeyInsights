@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import ToggleSwitch from '../Components/ToggleSwitch';
 import BodyHeader from '../Components/BodyHeader';
 import Modal from '../Components/Modal';
+import DropDown from '../Components/Dropdown';
 import { getAllProjects } from '../Features/Projects/Networking';
 import {
   getNotificationsFromApiAsync,
@@ -39,6 +40,12 @@ const NotificationsPage = () => {
   // Determine if changes have been made to settings
   const [isSettingsChanged, setIsSettingsChanged] = useState(false);
 
+  // Text to place in dropdown menus for notification options 4 and 5
+  const [defaultTextDropdown4, setDefaultTextDropdown4] =
+    useState('Select Time');
+  const [defaultTextDropdown5, setDefaultTextDropdown5] =
+    useState('Select Time');
+
   // List of projects for testing
   useEffect(() => {
     getAllProjects().then((data) => {
@@ -48,7 +55,7 @@ const NotificationsPage = () => {
   }, []);
 
   // Variable to hold current user
-  const user = useSelector((state) => state.user.user.name);
+  const user = useSelector((state) => state.user.user);
 
   // Variabble to hold current server
   const server =
@@ -58,54 +65,75 @@ const NotificationsPage = () => {
   // Create JSON object for backend
   const createJSON = () => {
     let obj = {
-      userId: user,
+      userId: 'user',
       serverId: server,
       projectId: project,
       ticketStatusSetting: {
         notifyUser: toggled,
-        notificationFrequency: val,
+        notifyFrequency: val,
       },
       sprintStatusSetting: {
         notifyUser: toggled2,
-        notificationFrequency: val2,
+        notifyFrequency: val2,
       },
       unfinishedTicketSetting: {
         notifyUser: toggled3,
       },
       projectDigestReportSetting: {
         notifyUser: toggled4,
-        notificationFrequency: val4,
+        notifyFrequency: val4,
       },
       workloadDigestReportSetting: {
         notifyUser: toggled5,
-        notificationFrequency: val5,
+        notifyFrequency: val5,
       },
     };
 
-    console.log(JSON.stringify(obj));
     return obj;
   };
-
-  // fetch api/v1/NotificationSettings
-
-  /*useEffect(() => {
-    createJSON();
-  }),
-    [toggled, toggled2, toggled3, toggled4, toggled5];*/
 
   // Change toggle switches and textbox values after project is selected
   // This will read in value from the backend to show previous notification settings
   const setDefaultValues = () => {
-    const prevSettings = getNotificationsFromApiAsync(createJSON());
-    setToggled();
-    setToggled2();
-    setToggled3();
-    setToggled4();
-    setToggled5();
-    setVal();
-    setVal2();
-    setVal4();
-    setVal5();
+    getNotificationsFromApiAsync().then((data) => {
+      const settings = data[0];
+      for (const setting in settings) {
+        if (setting === 'ticketStatusSetting') {
+          let temp = settings[setting];
+          setToggled(temp['notifyUser']);
+          setVal(temp['notifyFrequency']);
+        } else if (setting === 'sprintStatusSetting') {
+          let temp = settings[setting];
+          setToggled2(temp['notifyUser']);
+          setVal2(temp['notifyFrequency']);
+        } else if (setting === 'unfinishedTicketSetting') {
+          let temp = settings[setting];
+          setToggled3(temp['notifyUser']);
+        } else if (setting === 'projectDigestReportSetting') {
+          let temp = settings[setting];
+          setToggled4(temp['notifyUser']);
+          setVal4(temp['notifyFrequency']);
+          if (val4 === 14) {
+            setDefaultTextDropdown4('2 Weeks');
+          } else if (val4 === 30) {
+            setDefaultTextDropdown4('1 Month');
+          } else {
+            setDefaultTextDropdown4('Select Time');
+          }
+        } else if (setting === 'workloadDigestReportSetting') {
+          let temp = settings[setting];
+          setToggled5(temp['notifyUser']);
+          setVal5(temp['notifyFrequency']);
+          if (val5 === 14) {
+            setDefaultTextDropdown5('2 Weeks');
+          } else if (val5 === 30) {
+            setDefaultTextDropdown5('1 Month');
+          } else {
+            setDefaultTextDropdown5('Select Time');
+          }
+        }
+      }
+    });
   };
 
   return (
@@ -171,20 +199,22 @@ const NotificationsPage = () => {
             checked={toggled}
             isProjectSelected={isProjectSelected}
           />
-          <h1 className="inline text-md sm:text-lg md:text-xl lg:text-2xl">
-            Notify me if ticket status critical/unchanged after{' '}
+          <h1 className="inline-block text-md align-top pt-1 pr-2 sm:text-lg md:text-xl lg:text-2xl">
+            Notify me if ticket status critical/unchanged after{''}
           </h1>
-          <input
-            type="text"
-            className="borer-solid border border-black w-4 rounded-sm sm:w-8 md:w-12 lg:w-16"
-            disabled={!toggled}
-            pattern="[0-9]*"
-            value={val}
-            onChange={(e) => {
-              setVal((v) => (e.target.validity.valid ? e.target.value : v));
-              setIsSettingsChanged(true);
-            }}></input>
-          <h1 className="inline text-md sm:text-lg md:text-xl lg:text-2xl">
+          <div className="pb-6 align-middle inline-block">
+            <input
+              type="text"
+              className="borer-solid border inline-block border-black w-4 pr-2 align-top rounded-sm sm:w-8 md:w-12 lg:w-16"
+              disabled={!toggled}
+              pattern="[0-9]*"
+              value={val}
+              onChange={(e) => {
+                setVal((v) => (e.target.validity.valid ? e.target.value : v));
+                setIsSettingsChanged(true);
+              }}></input>
+          </div>
+          <h1 className="inline-block pt-1 pl-2 text-md align-top sm:text-lg md:text-xl lg:text-2xl">
             {' '}
             days.{' '}
           </h1>
@@ -200,21 +230,22 @@ const NotificationsPage = () => {
             checked={toggled2}
             isProjectSelected={isProjectSelected}
           />
-          <h1 className="inline text-md sm:text-lg md:text-xl lg:text-2xl">
+          <h1 className="inline-block text-md pt-1 pr-2 align-top sm:text-lg md:text-xl lg:text-2xl">
             Notify me if sprint status unchanged after{' '}
           </h1>
-          <input
-            type="text"
-            className="borer-solid border border-black w-4 rounded-sm sm:w-8 md:w-12 lg:w-16"
-            disabled={!toggled2}
-            pattern="[0-9]*"
-            value={val2}
-            onChange={(e) => {
-              setVal2((v) => (e.target.validity.valid ? e.target.value : v));
-              setIsSettingsChanged(true);
-            }}></input>
-
-          <h1 className="inline text-md sm:text-lg md:text-xl lg:text-2xl">
+          <div className="pb-6 align-middle inline-block">
+            <input
+              type="text"
+              className="border-solid border align-top border-black w-4 pr-2 rounded-sm sm:w-8 md:w-12 lg:w-16"
+              disabled={!toggled2}
+              pattern="[0-9]*"
+              value={val2}
+              onChange={(e) => {
+                setVal2((v) => (e.target.validity.valid ? e.target.value : v));
+                setIsSettingsChanged(true);
+              }}></input>
+          </div>
+          <h1 className="inline-block text-md align-top pt-1 pl-2 sm:text-lg md:text-xl lg:text-2xl">
             {' '}
             days.{' '}
           </h1>
@@ -231,8 +262,8 @@ const NotificationsPage = () => {
             isProjectSelected={isProjectSelected}
           />
 
-          <h1 className="inline text-md sm:text-lg md:text-xl lg:text-2xl">
-            Notify me if ticket(s) unfinished at end of sprint.{' '}
+          <h1 className="inline-block pt-1 pr-2 align-top text-md sm:text-lg md:text-xl lg:text-2xl">
+            Notify me if ticket(s) unfinished by due date.{' '}
           </h1>
           <br></br>
 
@@ -246,10 +277,18 @@ const NotificationsPage = () => {
             checked={toggled4}
             isProjectSelected={isProjectSelected}
           />
-          <h1 className="inline text-md sm:text-lg md:text-xl lg:text-2xl">
+          <h1 className="inline-block pt-1 pr-2 align-top text-md sm:text-lg md:text-xl lg:text-2xl">
             Send me a project digest report every{' '}
           </h1>
-          <input
+          <DropDown
+            id="dropdown4"
+            text={defaultTextDropdown4}
+            setVal={setVal4}
+            setText={setDefaultTextDropdown4}
+            setIsSettingsChanged={setIsSettingsChanged}
+            isToggleSwitched={toggled4}
+          />
+          {/* <input
             type="text"
             className="borer-solid border border-black w-4 rounded-sm sm:w-8 md:w-12 lg:w-16"
             disabled={!toggled4}
@@ -263,7 +302,7 @@ const NotificationsPage = () => {
           <h1 className="inline text-md sm:text-lg md:text-xl lg:text-2xl">
             {' '}
             days.{' '}
-          </h1>
+          </h1> */}
           <br></br>
 
           {/* Fifth Notification Option */}
@@ -276,12 +315,20 @@ const NotificationsPage = () => {
             checked={toggled5}
             isProjectSelected={isProjectSelected}
           />
-          <h1 className="inline text-md sm:text-lg md:text-xl lg:text-2xl">
+          <h1 className="inline-block align-top pr-2 pt-1 text-md sm:text-lg md:text-xl lg:text-2xl">
             Send me a workload digest report every{' '}
           </h1>
-          <input
+          <DropDown
+            id="dropdown5"
+            text={defaultTextDropdown5}
+            setVal={setVal5}
+            setText={setDefaultTextDropdown5}
+            setIsSettingsChanged={setIsSettingsChanged}
+            isToggleSwitched={toggled5}
+          />
+          {/* <input
             type="text"
-            className="borer-solid border border-black rounded-sm w-4 sm:w-8 md:w-12 lg:w-16"
+            className="border-solid border border-black rounded-sm w-4 sm:w-8 md:w-12 lg:w-16"
             disabled={!toggled5}
             pattern="[0-9]*"
             value={val5}
@@ -292,7 +339,7 @@ const NotificationsPage = () => {
           <h1 className="inline text-md sm:text-lg md:text-xl lg:text-2xl">
             {' '}
             days.{' '}
-          </h1>
+          </h1> */}
         </div>
       </div>
       <br></br>
