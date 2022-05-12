@@ -11,7 +11,7 @@
    <p>
        During a weekly scan of the  <b th:text="${projectName}"></b> database, we noticed that there were <b th:text="${issueCount}"></b> issues that were left unfinished past their due date.
    </p>
-    <p>The <b th:text="${limitCount}"></b> longest overdue Jira Issues with their Due Date:</p>
+    <p>The <b th:text="${limitCount}"></b> longest overdue Jira Issues with their Due Date are:</p>
     <ul th:remove="all-but-first">
       <li th:each="nameofissue : ${listOfIssueNames}" th:text="${nameofissue}"></li>
     </ul>

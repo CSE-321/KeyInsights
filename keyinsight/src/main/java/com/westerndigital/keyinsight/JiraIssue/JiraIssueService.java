@@ -117,6 +117,14 @@ public class JiraIssueService {
         return issueRepository.topXUnifinishedJiraIssuesByToday(projectName, limitNumber);
     }
 
+    public Integer criticalIssuesNotUpdatedCount(String projectName, String priority, Integer interval){
+        return issueRepository.criticalIssuesNotUpdatedCount(projectName, priority, interval);
+    }
+
+    public List<Object[]> criticalIssuesNotUpdatedInfo(String projectName, String priority, Integer interval, Integer limitNumber){
+        return issueRepository.criticalIssuesNotUpdatedInfo(projectName, priority, interval, limitNumber);
+    }
+
     public void deleteAll(){
         issueRepository.deleteAll();
     }

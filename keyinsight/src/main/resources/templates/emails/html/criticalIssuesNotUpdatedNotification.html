@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head> 
+    <title th:remove="all">Unfinished Jira Issues Notification</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  </head>
+  <body>
+   <div>
+       Hello <b th:text="${userName}"></b>,
+   </div>
+   <p>
+       During a daily scan of the  <b th:text="${projectName}"></b> database, we noticed that there were <b th:text="${issueCount}"></b> critical jira issues not being updated.
+   </p>
+    <p>The <b th:text="${limitCount}"></b> Critical Jira Issues with the oldest Updated Date are:</p>
+    <ul th:remove="all-but-first">
+      <li th:each="nameofissue : ${listOfIssueNames}" th:text="${nameofissue}"></li>
+    </ul>
+    <p>
+      You were notified because you have selected the "Notify me if ticket status critical/unchanged after 7 days" notification option on the KeySight web application.
+      If you would do not want to receive this notification any more, please go to the KeySight web application and uncheck the "Notify me if ticket status critical/unchanged after 7 days" setting from the Notification page.
+    </p>
+    <p>
+      Best Regards, <br />
+      <em>The KeyInsight Team</em>
+    </p>
+    <img style='float:left'src="sample.png" th:src="|cid:${westernDigitalLogo}|"/>
+  </body>
+</html>

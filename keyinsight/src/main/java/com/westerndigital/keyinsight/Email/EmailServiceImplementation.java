@@ -53,7 +53,7 @@ public class EmailServiceImplementation implements EmailService{
     //     System.out.print("sent message");
     // }
 
-    public void sendEmailNotification(String to, String name, String projectName, Integer issueCount, Integer limitCount, List<String> nameOfIssues) throws MessagingException {
+    public void sendUnfinishedJiraIssuePastDueDateEmailNotification(String to, String name, String projectName, Integer issueCount, Integer limitCount, List<String> nameOfIssues) throws MessagingException {
         Context context = new Context();
         context.setVariable("userName", name);
         context.setVariable("projectName", projectName);
@@ -66,7 +66,29 @@ public class EmailServiceImplementation implements EmailService{
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
         String process = templateEngine.process("emails/html/unfinishedIssuesNotification.html", context);
 
-        helper.setSubject("Unfinished Jira Issues for " + projectName);
+        helper.setSubject("Unfinished Jira Issues from " + projectName);
+        helper.setText(process, true);
+        helper.setTo(to);
+
+        ClassPathResource westernDigitalLogoLocation = new ClassPathResource("templates/emails/images/westerndigitallogosmall.png");
+        helper.addInline("westernDigitalLogo", westernDigitalLogoLocation);
+        mailSender.send(message);
+    }
+
+    public void sendCriticalJiraIssueNotUpdatedEmailNotification(String to, String name, String projectName, Integer issueCount, Integer limitCount, List<String> nameOfIssues) throws MessagingException {
+        Context context = new Context();
+        context.setVariable("userName", name);
+        context.setVariable("projectName", projectName);
+        context.setVariable("issueCount", issueCount);
+        context.setVariable("limitCount", limitCount);
+        context.setVariable("listOfIssueNames", nameOfIssues);
+        context.setVariable("westernDigitalLogo", "westernDigitalLogo");
+
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+        String process = templateEngine.process("emails/html/criticalIssuesNotUpdatedNotification.html", context);
+
+        helper.setSubject("Critical Jira Issues Not Updated from " + projectName);
         helper.setText(process, true);
         helper.setTo(to);
 
