@@ -53,6 +53,8 @@ public class EmailServiceImplementation implements EmailService{
     //     System.out.print("sent message");
     // }
 
+    //https://www.thymeleaf.org/doc/articles/springmail.html
+    //https://javabydeveloper.com/spring-boot-email-template/
     public void sendUnfinishedJiraIssuePastDueDateEmailNotification(String to, String name, String projectName, Integer issueCount, Integer limitCount, List<String> nameOfIssues) throws MessagingException {
         Context context = new Context();
         context.setVariable("userName", name);
@@ -75,13 +77,14 @@ public class EmailServiceImplementation implements EmailService{
         mailSender.send(message);
     }
 
-    public void sendCriticalJiraIssueNotUpdatedEmailNotification(String to, String name, String projectName, Integer issueCount, Integer limitCount, List<String> nameOfIssues) throws MessagingException {
+    public void sendCriticalJiraIssueNotUpdatedEmailNotification(String to, String name, String projectName, Integer interval, Integer issueCount, Integer limitCount, List<String> nameOfIssues) throws MessagingException {
         Context context = new Context();
         context.setVariable("userName", name);
         context.setVariable("projectName", projectName);
         context.setVariable("issueCount", issueCount);
         context.setVariable("limitCount", limitCount);
         context.setVariable("listOfIssueNames", nameOfIssues);
+        context.setVariable("interval", interval);
         context.setVariable("westernDigitalLogo", "westernDigitalLogo");
 
         MimeMessage message = mailSender.createMimeMessage();

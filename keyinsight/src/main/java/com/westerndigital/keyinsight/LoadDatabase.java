@@ -69,7 +69,7 @@ public class LoadDatabase implements CommandLineRunner {
         System.out.println("Sent the first email");
 
         String priority = "Critical";
-        int interval = 1;
+        int interval = 7;
         int issueCount2 = issueService.criticalIssuesNotUpdatedCount(projectName, priority, interval);
         System.out.println("got the count");
         List<Object[]> tmp2 = issueService.criticalIssuesNotUpdatedInfo(projectName, priority, interval, limitNumber);
@@ -79,7 +79,7 @@ public class LoadDatabase implements CommandLineRunner {
             issueInfo.add(String.format("Issue Name: %s\nUpdated Date: %s", element2[0].toString(), element2[1].toString()));
         }
 
-        emailService.sendCriticalJiraIssueNotUpdatedEmailNotification(to, name, projectName, issueCount2, limitNumber, issueInfo);
+        emailService.sendCriticalJiraIssueNotUpdatedEmailNotification(to, name, projectName, interval, issueCount2, limitNumber, issueInfo);
         System.out.println("Sent the second email");
         // This block of code underneath just deletes every entry in the database during
         // startup

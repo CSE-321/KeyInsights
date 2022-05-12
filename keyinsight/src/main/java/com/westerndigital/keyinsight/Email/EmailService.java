@@ -13,7 +13,7 @@ public interface EmailService {
 
     void sendUnfinishedJiraIssuePastDueDateEmailNotification(String to, String name, String projectName, Integer issueCount, Integer limitNumber, List<String> nameOfIssues) throws MessagingException;
     
-    void sendCriticalJiraIssueNotUpdatedEmailNotification(String to, String name, String projectName, Integer issueCount, Integer limitCount, List<String> nameOfIssues) throws MessagingException;
+    void sendCriticalJiraIssueNotUpdatedEmailNotification(String to, String name, String projectName, Integer interval, Integer issueCount, Integer limitCount, List<String> nameOfIssues) throws MessagingException;
 
     void sendNotificationUnfinished(String to, int numberofissues, String name, String projectName, List<String> nameofissues);
 }
