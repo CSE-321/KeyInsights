@@ -12,6 +12,7 @@ const OverviewCard = ({
   graphType,
   graphKeys,
   forIndexBy,
+  colors,
 }) => {
   const data = useMemo(() => graphData, [graphData]);
   const [isLoading, setIsLoading] = React.useState(false);
@@ -34,7 +35,7 @@ const OverviewCard = ({
             {graphType === 'Pie' && (
               <ResponsivePie
                 data={data}
-                colors={['#F3A582', '#5DD39E']}
+                colors={colors}
                 margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
                 innerRadius={0.5}
                 arcLinkLabelsStraightLength={10}
@@ -49,7 +50,7 @@ const OverviewCard = ({
                   indexBy={forIndexBy}
                   margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
                   padding={0.3}
-                  colors={['#F3A582', '#5DD39E']}
+                  colors={colors}
                   borderRadius={5}
                   enableGridX={false}
                   enableGridY={false}
@@ -72,6 +73,7 @@ OverviewCard.propTypes = {
   graphData: PropTypes.array,
   graphKeys: PropTypes.array,
   forIndexBy: PropTypes.string,
+  colors: PropTypes.array,
 };
 
 export default OverviewCard;
