@@ -175,7 +175,7 @@ const OverviewBody = ({ projectName }) => {
             graphData={convertToGraph(getCriticalNotCompleted(kpi1_List))}
             //graphKeys={convertToKeys(getTopTeamsByJiraClosed(kpi1_List))}
             forIndexBy={'teamType'}
-            colors={['#F3A582', '#5DD39E']}></OverviewCard>
+            colors={['#FF0000', '#F3A582', '#5DD39E']}></OverviewCard>
         </div>
         <div className="col-span-6">
           <OverviewCard
