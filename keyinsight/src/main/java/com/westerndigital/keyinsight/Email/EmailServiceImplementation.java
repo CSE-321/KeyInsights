@@ -29,34 +29,10 @@ public class EmailServiceImplementation implements EmailService{
     @Autowired
     public TemplateEngine templateEngine;
 
-    public void sendSimpleMessage(String to, String subject, String text){
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(to);
-        message.setSubject(subject);
-        message.setText(text);
-        mailSender.send(message);
-        
-    }
-    public void sendNotificationUnfinished(String to, int numberofissues, String name, String projectName, List<String> nameofissues){
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(to);
-        message.setSubject("Unfinished Jira Issues");
-        message.setText("Hello " + name + ", " + "\n" +"\n" + "During a daily scan of  " + projectName + "'s database, we noticed that the following " + numberofissues + " issues are incomplete: " + nameofissues + " Please be aware of these issues and complete them by their assigned date." +"\n" +"\n" + "Best Regards," +"\n" +"\n" +"KeySight Team");
-        mailSender.send(message);
-    }
-    // @Scheduled(initialDelay = 30 * 1000, fixedRate = 120000)
-    // public void sendEmailNotification(){
-    //     String to = "jrosales530@gmail.com" ;
-    //     String subject = "Subjects";
-    //     String text = "Hello Again";
-    //     sendSimpleMessage(to, subject, text);
-    //     System.out.print("sent message");
-    // }
-
     //https://www.baeldung.com/spring-email
     //https://www.thymeleaf.org/doc/articles/springmail.html
     //https://javabydeveloper.com/spring-boot-email-template/
-    public void sendUnfinishedJiraIssuePastDueDateEmailNotification(String to, String name, String projectName, Integer issueCount, Integer limitCount, List<String> nameOfIssues) throws MessagingException {
+    public void sendUnfinishedJiraIssuePastDueDateEmailNotification(String to, String name, String projectName, Integer issueCount, List<String> nameOfIssues, Integer limitCount) throws MessagingException {
         Context context = new Context();
         context.setVariable("userName", name);
         context.setVariable("projectName", projectName);
@@ -78,7 +54,7 @@ public class EmailServiceImplementation implements EmailService{
         mailSender.send(message);
     }
 
-    public void sendCriticalJiraIssueNotUpdatedEmailNotification(String to, String name, String projectName, Integer interval, Integer issueCount, Integer limitCount, List<String> nameOfIssues) throws MessagingException {
+    public void sendCriticalJiraIssueNotUpdatedEmailNotification(String to, String name, String projectName, Integer interval, Integer issueCount, List<String> nameOfIssues, Integer limitCount) throws MessagingException {
         Context context = new Context();
         context.setVariable("userName", name);
         context.setVariable("projectName", projectName);
@@ -100,31 +76,5 @@ public class EmailServiceImplementation implements EmailService{
         helper.addInline("westernDigitalLogo", westernDigitalLogoLocation);
         mailSender.send(message);
     }
-
-
-
-    @Override
-    public void sendMessageWithAttatchment(String to, String subject, String text, String pathToAttatchment){
-        try {
-            MimeMessage message = mailSender.createMimeMessage();
-
-            MimeMessageHelper helper = new MimeMessageHelper(message, true);
-            
-            helper.setTo(to);
-            helper.setSubject(subject);
-            helper.setText(text);
-
-            FileSystemResource file = new FileSystemResource(new File(pathToAttatchment));
-            helper.addAttachment("Invoice", file);
-
-            mailSender.send(message);
-        } catch (Exception e) {
-            //TODO: handle exception
-            e.printStackTrace();
-        }
-           
-            
-        }
-
 }
 
