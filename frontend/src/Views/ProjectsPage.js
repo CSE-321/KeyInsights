@@ -85,7 +85,12 @@ const ProjectsPage = () => {
         showButton={false}></BodyHeader>
       <div className="flex flex-col mx-7 my-5">
         <div className="flex flex-row justify-between items-center ">
-          <p className="text-gray-600"> Home/Server/Projects</p>
+          <p className="text-gray-600">
+            <a href="/">Home</a>
+            <a href="/projects" className="text-black">
+              /Projects
+            </a>
+          </p>
 
           <SwitchButton isViewGrid={isViewGrid} updateLayout={updateLayout} />
         </div>
