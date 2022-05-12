@@ -53,7 +53,7 @@ public class LoadDatabase implements CommandLineRunner {
         // String to = "jrosales530@gmail.com";
         // String subject = "Subjects";
         // String text = "hi";
-        String to = "alexholt54@gmail.com";
+        String to = "dragonoath123@gmail.com";
         String name = "ucm-cse-321";
         String projectName = "B8X4";
         int issueCount = issueService.unfinishedJiraIssuesByToday(projectName);
@@ -65,7 +65,7 @@ public class LoadDatabase implements CommandLineRunner {
             issueName.add(String.format("Issue Name: %s\nDue Date: %s", element[0].toString(), element[1].toString()));
         }
 
-        emailService.sendUnfinishedJiraIssuePastDueDateEmailNotification(to, name, projectName, issueCount, limitNumber, issueName);
+        emailService.sendUnfinishedJiraIssuePastDueDateEmailNotification(to, name, projectName, issueCount, issueName, limitNumber);
         System.out.println("Sent the first email");
 
         String priority = "Critical";
@@ -79,7 +79,7 @@ public class LoadDatabase implements CommandLineRunner {
             issueInfo.add(String.format("Issue Name: %s\nUpdated Date: %s", element2[0].toString(), element2[1].toString()));
         }
 
-        emailService.sendCriticalJiraIssueNotUpdatedEmailNotification(to, name, projectName, interval, issueCount2, limitNumber, issueInfo);
+        emailService.sendCriticalJiraIssueNotUpdatedEmailNotification(to, name, projectName, interval, issueCount2, issueInfo, limitNumber);
         System.out.println("Sent the second email");
         // This block of code underneath just deletes every entry in the database during
         // startup
