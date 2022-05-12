@@ -1,20 +1,14 @@
-package com.westerndigital.keyinsight.ScheduledJob;
+package com.westerndigital.keyinsight.DigestReport.ProjectDigest;
 
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
-public class CompileProjectDigestJob extends QuartzJobBean {
+public class ProjectDigestJob extends QuartzJobBean {
     
-    // public void execute(JobExecutionContext context) 
-    //     throws JobExecutionException {
-
-    // }
-
         @Override
         protected void executeInternal(JobExecutionContext context) throws JobExecutionException{
 
         }
 }
-// just here to make the commit work
