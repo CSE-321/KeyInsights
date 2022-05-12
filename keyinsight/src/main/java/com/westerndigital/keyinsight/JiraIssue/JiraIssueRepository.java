@@ -110,3 +110,5 @@ public interface JiraIssueRepository extends JpaRepository<JiraIssue, String> {
     "LEFT JOIN wip on total.assignee = wip.assignee LEFT JOIN notstarted on total.assignee = notstarted.assignee LEFT JOIN criticalnotstarted on total.assignee = criticalnotstarted.assignee ",nativeQuery = true)
     List<Object[]> assigneeTotalCompleteInformation(@Param("projectName") String projectName, @Param("teamType") String teamType, @Param("status1") String status1, @Param("status2") String status2, @Param("priority") String priority);
 }
+
+//https://www.baeldung.com/spring-data-jpa-query
