@@ -3,6 +3,8 @@ import { useSelector } from 'react-redux';
 import ToggleSwitch from '../Components/ToggleSwitch';
 import BodyHeader from '../Components/BodyHeader';
 import Modal from '../Components/Modal';
+import DropDown from '../Components/Dropdown';
+import { getAllProjects } from '../Features/Projects/Networking';
 import {
   getNotificationsFromApiAsync,
   sendSettingsDataToBackend,
@@ -29,59 +31,109 @@ const NotificationsPage = () => {
   // Stores name of selected project
   const [project, setProject] = useState('');
 
+  // List of all projects on server
+  const [projects, setProjects] = useState([]);
+
   // Determine if modal should be displayed or not
   const [modalOn, setModalOn] = useState(false);
 
   // Determine if changes have been made to settings
   const [isSettingsChanged, setIsSettingsChanged] = useState(false);
 
+  // Text to place in dropdown menus for notification options 4 and 5
+  const [defaultTextDropdown4, setDefaultTextDropdown4] =
+    useState('Select Time');
+  const [defaultTextDropdown5, setDefaultTextDropdown5] =
+    useState('Select Time');
+
   // List of projects for testing
-  const projects = ['B8X4'];
+  useEffect(() => {
+    getAllProjects().then((data) => {
+      console.log(data);
+      setProjects(data);
+    });
+  }, []);
 
   // Variable to hold current user
-  const user = useSelector((state) => state.user.user.name);
+  const user = useSelector((state) => state.user.user);
 
   // Variabble to hold current server
-  const server = 'server';
+  const server =
+    'http://jira.cloud-stm.com:8080/rest/api/2/user?username=ucm-cse-321';
   //const server = useSelector((state) => state.server.name);
 
   // Create JSON object for backend
   const createJSON = () => {
     let obj = {
-      server: server,
-      user: user,
-      project: project,
-      toggle1: [toggled, val],
-      toggle2: [toggled2, val2],
-      toggle3: [toggled3],
-      toggle4: [toggled4, val4],
-      toggled5: [toggled5, val5],
+      userId: 'user',
+      serverId: server,
+      projectId: project,
+      ticketStatusSetting: {
+        notifyUser: toggled,
+        notifyFrequency: val,
+      },
+      sprintStatusSetting: {
+        notifyUser: toggled2,
+        notifyFrequency: val2,
+      },
+      unfinishedTicketSetting: {
+        notifyUser: toggled3,
+      },
+      projectDigestReportSetting: {
+        notifyUser: toggled4,
+        notifyFrequency: val4,
+      },
+      workloadDigestReportSetting: {
+        notifyUser: toggled5,
+        notifyFrequency: val5,
+      },
     };
 
-    console.log(obj);
     return obj;
   };
-
-  // fetch api/v1/NotificationSettings
-
-  /*useEffect(() => {
-    createJSON();
-  }),
-    [toggled, toggled2, toggled3, toggled4, toggled5];*/
 
   // Change toggle switches and textbox values after project is selected
   // This will read in value from the backend to show previous notification settings
   const setDefaultValues = () => {
-    const prevSettings = getNotificationsFromApiAsync(createJSON());
-    setToggled(true);
-    setToggled2(true);
-    setToggled3();
-    setToggled4();
-    setToggled5();
-    setVal();
-    setVal2();
-    setVal4();
-    setVal5();
+    getNotificationsFromApiAsync().then((data) => {
+      const settings = data[0];
+      for (const setting in settings) {
+        if (setting === 'ticketStatusSetting') {
+          let temp = settings[setting];
+          setToggled(temp['notifyUser']);
+          setVal(temp['notifyFrequency']);
+        } else if (setting === 'sprintStatusSetting') {
+          let temp = settings[setting];
+          setToggled2(temp['notifyUser']);
+          setVal2(temp['notifyFrequency']);
+        } else if (setting === 'unfinishedTicketSetting') {
+          let temp = settings[setting];
+          setToggled3(temp['notifyUser']);
+        } else if (setting === 'projectDigestReportSetting') {
+          let temp = settings[setting];
+          setToggled4(temp['notifyUser']);
+          setVal4(temp['notifyFrequency']);
+          if (val4 === 14) {
+            setDefaultTextDropdown4('2 Weeks');
+          } else if (val4 === 30) {
+            setDefaultTextDropdown4('1 Month');
+          } else {
+            setDefaultTextDropdown4('Select Time');
+          }
+        } else if (setting === 'workloadDigestReportSetting') {
+          let temp = settings[setting];
+          setToggled5(temp['notifyUser']);
+          setVal5(temp['notifyFrequency']);
+          if (val5 === 14) {
+            setDefaultTextDropdown5('2 Weeks');
+          } else if (val5 === 30) {
+            setDefaultTextDropdown5('1 Month');
+          } else {
+            setDefaultTextDropdown5('Select Time');
+          }
+        }
+      }
+    });
   };
 
   return (
@@ -208,7 +260,7 @@ const NotificationsPage = () => {
           />
 
           <h1 className="inline text-md sm:text-lg md:text-xl lg:text-2xl">
-            Notify me if ticket(s) unfinished at end of sprint.{' '}
+            Notify me if ticket(s) unfinished by due date.{' '}
           </h1>
           <br></br>
 
@@ -225,7 +277,14 @@ const NotificationsPage = () => {
           <h1 className="inline text-md sm:text-lg md:text-xl lg:text-2xl">
             Send me a project digest report every{' '}
           </h1>
-          <input
+          <DropDown
+            id="dropdown4"
+            text={defaultTextDropdown4}
+            setVal={setVal4}
+            setText={setDefaultTextDropdown4}
+            setIsSettingsChanged={setIsSettingsChanged}
+          />
+          {/* <input
             type="text"
             className="borer-solid border border-black w-4 rounded-sm sm:w-8 md:w-12 lg:w-16"
             disabled={!toggled4}
@@ -239,7 +298,7 @@ const NotificationsPage = () => {
           <h1 className="inline text-md sm:text-lg md:text-xl lg:text-2xl">
             {' '}
             days.{' '}
-          </h1>
+          </h1> */}
           <br></br>
 
           {/* Fifth Notification Option */}
@@ -255,9 +314,16 @@ const NotificationsPage = () => {
           <h1 className="inline text-md sm:text-lg md:text-xl lg:text-2xl">
             Send me a workload digest report every{' '}
           </h1>
-          <input
+          <DropDown
+            id="dropdown5"
+            text={defaultTextDropdown5}
+            setVal={setVal5}
+            setText={setDefaultTextDropdown5}
+            setIsSettingsChanged={setIsSettingsChanged}
+          />
+          {/* <input
             type="text"
-            className="borer-solid border border-black rounded-sm w-4 sm:w-8 md:w-12 lg:w-16"
+            className="border-solid border border-black rounded-sm w-4 sm:w-8 md:w-12 lg:w-16"
             disabled={!toggled5}
             pattern="[0-9]*"
             value={val5}
@@ -268,7 +334,7 @@ const NotificationsPage = () => {
           <h1 className="inline text-md sm:text-lg md:text-xl lg:text-2xl">
             {' '}
             days.{' '}
-          </h1>
+          </h1> */}
         </div>
       </div>
       <br></br>

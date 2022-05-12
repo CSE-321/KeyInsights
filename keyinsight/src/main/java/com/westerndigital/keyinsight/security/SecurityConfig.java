@@ -7,13 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders
-    .AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration
-    .EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration
-    .WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -42,14 +39,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     // get the authentication manager to authenticate in the controller
-    @Override @Bean
+    @Override
+    @Bean
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
 
     @Override
-    protected void configure(AuthenticationManagerBuilder auth) 
-        throws Exception {
+    protected void configure(AuthenticationManagerBuilder auth)
+            throws Exception {
 
         auth.authenticationProvider(customAuthenticationProvider);
     }
@@ -57,26 +55,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        CustomAuthenticationFilter customAuthenticationFilter = new 
-            CustomAuthenticationFilter();
+        CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter();
 
         customAuthenticationFilter
-            .setAuthenticationManager(authenticationManager());
+                .setAuthenticationManager(authenticationManager());
 
         // enable CORS and disable CSRF
         http = http.cors().and().csrf().disable();
 
         // set session management to stateless
         http = http
-            .sessionManagement()
-            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            .and();
-        
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and();
+
         // add the custom authentication filter to the list of filters
         // that the login request goes through
         http
-            .addFilterAt(customAuthenticationFilter, 
-                UsernamePasswordAuthenticationFilter.class);
+                .addFilterAt(customAuthenticationFilter,
+                        UsernamePasswordAuthenticationFilter.class);
 
         // add the custom authorization filter to validate the JWT tokens
         // before the custom authentication filter
@@ -89,7 +86,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .authorizeRequests()
             .anyRequest()
             // temporarily disable authentication for all back-end endpoints
-            // .permitAll();
-            .authenticated();
+            .permitAll();
+            //.authenticated();
     }
 }

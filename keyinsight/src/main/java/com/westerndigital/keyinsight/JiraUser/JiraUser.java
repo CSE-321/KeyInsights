@@ -31,6 +31,7 @@ public class JiraUser implements UserDetails {
     private String username;
     private String password;
     private String serverUrl;
+    private String email;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn
@@ -41,12 +42,13 @@ public class JiraUser implements UserDetails {
 
     public JiraUser() {}
 
-    public JiraUser(String username, String password, 
+    public JiraUser(String username, String password, String email,
         String serverUrl) {
 
         this.username = username;
         this.password = password;
         this.serverUrl = serverUrl;
+        this.email = email;
 
         notification = new Notification(username, serverUrl, null);
     }

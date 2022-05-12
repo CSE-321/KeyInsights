@@ -18,7 +18,7 @@ import {
  * @param {Array} data
  * @returns {JSX} react-table
  */
-function Table({ columns, data }) {
+function Table({ columns, data, onRowClick }) {
   // UseTable returns props that can be used to build the table UI
   const {
     getTableProps,
@@ -52,27 +52,27 @@ function Table({ columns, data }) {
   return (
     <>
       <div
+        id="Filter-options-root"
+        className="flex flex-row justify-center items-baseline space-x-20 shadow-lg drop-shadow-xl border-1 border-gray-400">
+        <GlobalFilter
+          preGlobalFilteredRows={preGlobalFilteredRows}
+          globalFilter={state.globalFilter}
+          setGlobalFilter={setGlobalFilter}
+        />
+        {headerGroups.map((headerGroup) =>
+          headerGroup.headers.map((column) =>
+            column.Filter ? (
+              <div key={column.id}>
+                <label htmlFor={column.id}>{column.render('Header')}: </label>
+                {column.render('Filter')}
+              </div>
+            ) : null,
+          ),
+        )}
+      </div>
+      <div
         id="table-root"
-        className="bg-white shadow drop-shadow-md text-xl sm:rounded-lg my-5 border-b border-gray-500">
-        <div
-          id="Filter-options-root"
-          className="flex flex-row justify-start b-0 space-x-3">
-          <GlobalFilter
-            preGlobalFilteredRows={preGlobalFilteredRows}
-            globalFilter={state.globalFilter}
-            setGlobalFilter={setGlobalFilter}
-          />
-          {headerGroups.map((headerGroup) =>
-            headerGroup.headers.map((column) =>
-              column.Filter ? (
-                <div key={column.id}>
-                  <label htmlFor={column.id}>{column.render('Header')}: </label>
-                  {column.render('Filter')}
-                </div>
-              ) : null,
-            ),
-          )}
-        </div>
+        className="bg-white shadow drop-shadow-md text-xl sm:rounded-lg border-b border-gray-500 block overflow-auto">
         <table
           {...getTableProps()}
           border="1"
@@ -137,8 +137,11 @@ function Table({ columns, data }) {
               prepareRow(row);
               return (
                 <tr
+                  onClick={() =>
+                    onRowClick(row.original.name, row.original.numIssues)
+                  }
                   {...row.getRowProps()}
-                  className=" border-2 border-b-slate-100">
+                  className=" border-2 border-b-slate-100 hover:cursor-pointer">
                   {row.cells.map((cell) => {
                     return (
                       <td
@@ -159,39 +162,36 @@ function Table({ columns, data }) {
             })}
           </tbody>
         </table>
-
-        <div className="pagination flex flex-row justify-center items-center">
-          <button
-            onClick={() => previousPage()}
-            disabled={!canPreviousPage}
-            className="hover:bg-gray-100 shadow drop-shadow-lg border border-gray-300 rounded-lg">
-            <div className="flex h-10 w-10 text-gray-500 space-x-0">
-              <ChevronLeftIcon className=""></ChevronLeftIcon>
-            </div>
-          </button>
-          <div className="w-32 shadow drop-shadow-md rounded-lg">
-            <input
-              type="number"
-              className="w-full h-full outline-none appearance-none text-center text-gray-500 rounded-lg "
-              placeholder={`Page ${state.pageIndex + 1} of ${
-                pageOptions.length
-              }`}
-              onChange={(e) => {
-                gotoPage(parseInt(e.target.value) - 1);
-              }}
-              onBlur={(e) => {
-                e.target.value = '';
-              }}></input>
+      </div>
+      <div className="pagination flex flex-row justify-center items-center shadow-lg drop-shadow-lg">
+        <button
+          onClick={() => previousPage()}
+          disabled={!canPreviousPage}
+          className="hover:bg-gray-100 shadow drop-shadow-lg border border-gray-300 rounded-lg">
+          <div className="flex h-10 w-10 text-gray-500 space-x-0">
+            <ChevronLeftIcon className=""></ChevronLeftIcon>
           </div>
-          <button
-            onClick={() => nextPage()}
-            disabled={!canNextPage}
-            className="hover:bg-gray-100 shadow drop-shadow-lg border border-gray-300 rounded-lg">
-            <div className="flex h-10 w-10 text-gray-500 space-x-0">
-              <ChevronRightIcon></ChevronRightIcon>
-            </div>
-          </button>
+        </button>
+        <div className="w-32 shadow drop-shadow-md rounded-lg">
+          <input
+            type="number"
+            className="w-full h-full outline-none appearance-none text-center text-gray-500 rounded-lg "
+            placeholder={`Page ${state.pageIndex + 1} of ${pageOptions.length}`}
+            onChange={(e) => {
+              gotoPage(parseInt(e.target.value) - 1);
+            }}
+            onBlur={(e) => {
+              e.target.value = '';
+            }}></input>
         </div>
+        <button
+          onClick={() => nextPage()}
+          disabled={!canNextPage}
+          className="hover:bg-gray-100 shadow drop-shadow-lg border border-gray-300 rounded-lg">
+          <div className="flex h-10 w-10 text-gray-500 space-x-0">
+            <ChevronRightIcon></ChevronRightIcon>
+          </div>
+        </button>
       </div>
     </>
   );
@@ -200,6 +200,7 @@ function Table({ columns, data }) {
 Table.propTypes = {
   columns: propType.array,
   data: propType.array,
+  onRowClick: propType.func,
 };
 
 export default Table;
