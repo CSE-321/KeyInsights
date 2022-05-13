@@ -141,7 +141,7 @@ function Table({ columns, data, onRowClick }) {
                     onRowClick(row.original.name, row.original.numIssues)
                   }
                   {...row.getRowProps()}
-                  className=" border-2 border-b-slate-100 hover:cursor-pointer">
+                  className=" border-2 border-b-slate-100 hover:cursor-pointer hover:bg-gray-100 transform transition duration-200">
                   {row.cells.map((cell) => {
                     return (
                       <td

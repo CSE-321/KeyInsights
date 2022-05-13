@@ -30,7 +30,7 @@ const GlobalFilter = ({
           setValue(e.target.value);
           onChange(e.target.value);
         }}
-        placeholder={`Search ${count} Projects...`}></input>
+        placeholder={`Search ${count} items...`}></input>
     </span>
   );
 };

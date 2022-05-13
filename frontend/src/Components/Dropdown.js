@@ -9,7 +9,14 @@ import '../CSS/Dropdown.css';
  * A dropdown component that displays a list of servers.
  * @returns
  */
-const Dropdown = ({ id, text, setVal, setText, setIsSettingsChanged }) => {
+const Dropdown = ({
+  id,
+  text,
+  setVal,
+  setText,
+  setIsSettingsChanged,
+  isToggleSwitched,
+}) => {
   //TODO: Make API call to get server list, and update server state
   const [showDropdown, setShowDropdown] = React.useState(false);
 
@@ -17,7 +24,9 @@ const Dropdown = ({ id, text, setVal, setText, setIsSettingsChanged }) => {
   // const serverList = useSelector((state) => state.server.servers);
 
   const enableDropdown = () => {
-    setShowDropdown(true);
+    if (isToggleSwitched) {
+      setShowDropdown(true);
+    }
   };
 
   const disableDropdown = () => {
@@ -56,14 +65,16 @@ const Dropdown = ({ id, text, setVal, setText, setIsSettingsChanged }) => {
     <>
       <div
         id={id}
-        className="inline flex-col w-48 h-20 border-solid border border-black rounded-sm text-lg sm:text-xl md:text-2xl"
+        className="inline-block align-top mb-1 flex-col w-48 h-9 border-solid border border-black rounded-sm text-lg sm:text-xl md:text-2xl"
         onMouseEnter={enableDropdown}
         onMouseLeave={disableDropdown}>
-        <button id="dropdown-button" className="h-20 w-48">
+        <button id="dropdown-button" className="h-9 w-48">
           <div
             id="dropdown-inner-button"
             className="flex flex-row justify-between items-center ">
-            <p className="text-black text-left text-xl flex-grow">{text}</p>
+            <p className="text-black text-left text-xl flex-grow ml-1">
+              {text}
+            </p>
             <p className="text-black text-right flex-grow">&#9662;</p>
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -83,7 +94,7 @@ const Dropdown = ({ id, text, setVal, setText, setIsSettingsChanged }) => {
             <Fragment>
               <div
                 id="dropdown-content"
-                className="text-white bg-black text-base  xl:text-lg z-50 relative"
+                className="text-white align-top bg-black text-base xl:text-lg z-50 relative"
                 onMouseLeave={disableDropdown}>
                 <ul>
                   <li
@@ -112,6 +123,7 @@ Dropdown.propTypes = {
   setVal: PropTypes.func,
   setText: PropTypes.func,
   setIsSettingsChanged: PropTypes.func,
+  isToggleSwitched: PropTypes.bool,
 };
 
 export default Dropdown;
