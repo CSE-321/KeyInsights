@@ -30,54 +30,55 @@ public class UnfinishedSprintStatusTicketJob extends QuartzJobBean {
 
     @Autowired
     private EmailService emailService;
-    
+
     @Override
-    protected void executeInternal(JobExecutionContext context) 
-        throws JobExecutionException {
+    protected void executeInternal(JobExecutionContext context)
+            throws JobExecutionException {
 
         final int ISSUE_LIMIT = 10;
         System.out.println("UnfinishedJiraTicketJob");
-        
+
         // filter the Notification table for users who enabled the notification
         notificationRepository.findAll()
-            .stream()
-            .filter(notification -> notification.getUnfinishedTicketSetting().isNotifyUser())
-            .forEach(user -> {
-                String projectName = user.getProjectName();
-                // query for unfinished ticket count
-                int unfinishedTicketCount = jiraIssueRepository.unfinishedJiraIssuesByToday(projectName);
+                .stream()
+                .filter(notification -> notification.getUnfinishedTicketSetting().isNotifyUser())
+                .forEach(user -> {
+                    String projectName = user.getProjectName();
+                    // query for unfinished ticket count
+                    int unfinishedTicketCount = jiraIssueRepository.unfinishedJiraIssuesByToday(projectName);
 
-                System.out.println("Unfinished tickets: " + unfinishedTicketCount);
+                    System.out.println("Unfinished tickets: " + unfinishedTicketCount);
 
-                List<Object[]> unfinishedTickets = jiraIssueRepository.topXUnifinishedJiraIssuesByToday(projectName, ISSUE_LIMIT);
+                    List<Object[]> unfinishedTickets = jiraIssueRepository.topXUnifinishedJiraIssuesByToday(projectName,
+                            ISSUE_LIMIT);
 
-                // format the Jira issues for the email
-                List<String> unfinishedTicketInfo = new ArrayList<>();
-                unfinishedTickets.forEach(unfinishedTicket -> {
-                    String info = String.format("Issue name: %s, Due date: %s", 
-                        unfinishedTicket[0].toString(), 
-                        unfinishedTicket[1].toString());
+                    // format the Jira issues for the email
+                    List<String> unfinishedTicketInfo = new ArrayList<>();
+                    unfinishedTickets.forEach(unfinishedTicket -> {
+                        String info = String.format("Issue name: %s, Due date: %s",
+                                unfinishedTicket[0].toString(),
+                                unfinishedTicket[1].toString());
 
-                    unfinishedTicketInfo.add(info);
+                        unfinishedTicketInfo.add(info);
+                    });
+
+                    System.out.println("Sending the email");
+
+                    // send the email
+                    final String EMAIL = "KeysightTESTMAIL@gmail.com";
+                    try {
+                        emailService.sendUnfinishedJiraIssuePastDueDateEmailNotification(
+                                EMAIL,
+                                user.getJiraUsername(),
+                                projectName,
+                                unfinishedTicketCount,
+                                unfinishedTicketInfo,
+                                ISSUE_LIMIT);
+                        System.out.println("Sent the issue");
+                    } catch (MessagingException e) {
+                        log.error(e.getMessage(), e);
+                        e.printStackTrace();
+                    }
                 });
-
-                System.out.println("Sending the email"); 
-
-                // send the email
-                final String EMAIL = "dragonoath123@gmail.com";
-                try {
-                    emailService.sendUnfinishedJiraIssuePastDueDateEmailNotification(
-                        EMAIL,
-                        user.getJiraUsername(), 
-                        projectName, 
-                        unfinishedTicketCount, 
-                        unfinishedTicketInfo,
-                        ISSUE_LIMIT);
-                    System.out.println("Sent the issue");
-                } catch (MessagingException e) {
-                    log.error(e.getMessage(), e);
-                    e.printStackTrace();
-                }
-            });
     }
 }

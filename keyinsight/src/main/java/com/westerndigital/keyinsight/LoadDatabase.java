@@ -174,7 +174,7 @@ public class LoadDatabase implements CommandLineRunner {
                                                 // finds an issue in the database with that issueNumber
                                                 // if it doesn't exist, create a new Java Issue Object
                                                 JiraIssue issue = issueService.findById(singleIssue.getKey());
-                                                System.out.println(singleIssue.getKey());
+                                                // System.out.println(singleIssue.getKey());
                                                 issue.setId(singleIssue.getKey());
                                                 issue.setIssueNumber(Integer.parseInt(
                                                                 singleIssue.getKey().trim().substring(
@@ -266,93 +266,76 @@ public class LoadDatabase implements CommandLineRunner {
                                                 + OffsetDateTime.now()
                                                 + ". The next Update is at " + OffsetDateTime.now().plusMinutes(30));
 
-        }}
+        }
+}
 
-        /*
-         * List of Resources
-         * https://stackoverflow.com/questions/20832015/how-do-i-iterate-over-a-json-
-         * response-using-jackson-api-of-a-list-inside-a-list
-         * 
-         * http://makeseleniumeasy.com/2020/06/11/rest-assured-tutorial-30-how-to-create
-         * -pojo-classes-of-a-json-array-payload/
-         * 
-         * https://stackoverflow.com/questions/58539657/com-fasterxml-jackson-databind-
-         * exc-mismatchedinputexception-cannot-deserialize
-         * 
-         * https://stackoverflow.com/questions/7421474/how-can-i-tell-jackson-to-ignore-
-         * a-property-for-which-i-dont-have-control-over
-         * 
-         * https://stackoverflow.com/questions/20837856/can-not-deserialize-instance-of-
-         * java-util-arraylist-out-of-start-object-token
-         * 
-         * https://docs.atlassian.com/software/jira/docs/api/REST/8.13.10/
-         * 
-         * https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-
-         * projects/#api-rest-api-3-project-search-get
-         */
-         
-        //  
-        // 
-        // 
-        // 
-        //  
-        // 
-        // 
+/*
+ * List of Resources
+ * https://stackoverflow.com/questions/20832015/how-do-i-iterate-over-a-json-
+ * response-using-jackson-api-of-a-list-inside-a-list
+ * 
+ * http://makeseleniumeasy.com/2020/06/11/rest-assured-tutorial-30-how-to-create
+ * -pojo-classes-of-a-json-array-payload/
+ * 
+ * https://stackoverflow.com/questions/58539657/com-fasterxml-jackson-databind-
+ * exc-mismatchedinputexception-cannot-deserialize
+ * 
+ * https://stackoverflow.com/questions/7421474/how-can-i-tell-jackson-to-ignore-
+ * a-property-for-which-i-dont-have-control-over
+ * 
+ * https://stackoverflow.com/questions/20837856/can-not-deserialize-instance-of-
+ * java-util-arraylist-out-of-start-object-token
+ * 
+ * https://docs.atlassian.com/software/jira/docs/api/REST/8.13.10/
+ * 
+ * https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-
+ * projects/#api-rest-api-3-project-search-get
+ */
 
-         
-        //  
-        //   
-        // 
-        // 
-        // 
-                 
-        // 
-        
-        
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-        // 
-        // 
-        // 
-        // 
-        //  
-        // 
-        //   
-        //      
-        //    
-        //  
-        //    
-        //  
-        //         
-        //             
-        //           
-        //     
-        //   
-        //     
-        //        
-        //         
-        //             
-        //      
-        //          
-        //   
-        //                                     
-        //  
-        //  
-        //        
-        //      
-        //  
-        //  
+//
+//
+//
+//
+//
+//
+//
 
+//
+//
+//
+//
+//
+
+//
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
