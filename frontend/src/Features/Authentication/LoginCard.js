@@ -15,9 +15,9 @@ import { setActiveServer } from '../../App/Slices/serverSlice';
 const LoginCard = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [serverURL, setServerURL] = useState('jira.cloud-stm.com:8080');
-  const [usernameText, setUsernameText] = useState('ucm-cse-321');
-  const [passwordText, setPasswordText] = useState('Merced321');
+  const [serverURL, setServerURL] = useState('');
+  const [usernameText, setUsernameText] = useState('');
+  const [passwordText, setPasswordText] = useState('');
   const [invalidUsername, setInvalidUsername] = useState(false);
   const [signInRejected, setSignInRejected] = useState(false);
   const [signInError, setSignInError] = useState('');
@@ -78,7 +78,7 @@ const LoginCard = () => {
             <input
               className="w-full h-10 rounded-lg drop-shadow-md"
               type="url"
-              placeholder="http://jira.yourserver.com:port"
+              placeholder="jira.cloud-stm.com:8080"
               value={serverURL}
               onChange={(e) => setServerURL(e.target.value)}></input>
           </form>
@@ -93,7 +93,6 @@ const LoginCard = () => {
               className="w-full h-10 rounded-lg drop-shadow-md"
               type="text"
               placeholder="WdJiraUser"
-              value={usernameText}
               onInput={(e) => setUsernameText(e.target.value)}
               onBlur={(e) => validateUsername(e.target.value)}
             />
@@ -104,7 +103,6 @@ const LoginCard = () => {
               className="w-full h-10 rounded-lg drop-shadow-md"
               type="password"
               placeholder="   ****"
-              value={passwordText}
               onInput={(e) => setPasswordText(e.target.value)}
             />
             <p className="text-rose-500">
