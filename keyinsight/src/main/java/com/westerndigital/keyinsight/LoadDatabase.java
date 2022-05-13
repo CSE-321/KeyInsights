@@ -81,7 +81,7 @@ public class LoadDatabase implements CommandLineRunner {
         // emailService.sendCriticalJiraIssueNotUpdatedEmailNotification(to, name, projectName, interval, issueCount2, issueInfo, limitNumber);
         // System.out.println("Sent the second email");
 
-        List<String> teamTypes = issueService.getAllTeamType(projectName);
+        // List<String> teamTypes = issueService.getAllTeamType(projectName);
         // List<String> issueInfo2 = new ArrayList<String>();
         // List<ResourceDigest> resourceDigestList = new ArrayList<ResourceDigest>();
         // for(String teamType : teamTypes){
@@ -93,9 +93,9 @@ public class LoadDatabase implements CommandLineRunner {
         //     teamType, tmp3.get(0)[0], tmp3.get(0)[1], tmp4.get(0)[0], tmp4.get(0)[1]);
         //     resourceDigest.setTeamType(teamType);
         //     resourceDigest.setNewJiraCount(tmp3.get(0)[0].toString());
-        //     resourceDigest.setNewJiraStoryPoint(tmp3.get(0)[1].toString());
+        //     resourceDigest.setNewJiraStoryPoint(Math.round(Double.valueOf(tmp3.get(0)[1].toString()) * 100)/100D);
         //     resourceDigest.setClosedJiraCount(tmp4.get(0)[0].toString());
-        //     resourceDigest.setClosedJiraStoryPoint(tmp4.get(0)[1].toString());
+        //     resourceDigest.setClosedJiraStoryPoint(Math.round(Double.valueOf(tmp4.get(0)[1].toString()) * 100)/100D);
         //     resourceDigestList.add(resourceDigest);
         //     issueInfo2.add(issueInfo4);
         //     System.out.println(issueInfo4);
@@ -103,27 +103,27 @@ public class LoadDatabase implements CommandLineRunner {
         // }
         // emailService.sendResourceDigestNotification(to, name, projectName, interval, resourceDigestList);
         // System.out.println("Sent the third email");
-        String subType = "Bug";
-        List<ProjectDigest> projectDigestList = new ArrayList<ProjectDigest>();
-        for(String teamType : teamTypes){
-            List<Object[]> tmp5 = issueService.projectDigestCreated(projectName, teamType, interval);
-            Integer tmp9 = issueService.projectDigestAssigneeCount(projectName, teamType, interval);
-            List<Object[]> tmp6 = issueService.projectDigestClosed(projectName, teamType, interval);
-            Integer tmp7 = issueService.projectDigestBugsCreated(projectName, teamType, subType, interval);
-            Integer tmp8 = issueService.projectDigestBugsClosed(projectName, teamType, subType, interval);
-            ProjectDigest projectDigest = new ProjectDigest();
-            projectDigest.setTeamType(teamType);
-            projectDigest.setNewJiraCount(tmp5.get(0)[0].toString());
-            projectDigest.setNewJiraStoryPoint(tmp5.get(0)[1].toString());
-            projectDigest.setAssigneeCount(tmp9.toString());
-            projectDigest.setClosedJiraCount(tmp6.get(0)[0].toString());
-            projectDigest.setClosedJiraStoryPoint(tmp6.get(0)[1].toString());
-            projectDigest.setNewJiraBugCount(tmp7.toString());
-            projectDigest.setClosedJiraBugCount(tmp8.toString());
-            projectDigestList.add(projectDigest);
-        }
-        emailService.sendProjectDigestNotification(to, name, projectName, interval, projectDigestList);
-        System.out.println("Sent the fourth email");
+        // String subType = "Bug";
+        // List<ProjectDigest> projectDigestList = new ArrayList<ProjectDigest>();
+        // for(String teamType : teamTypes){
+        //     List<Object[]> tmp5 = issueService.projectDigestCreated(projectName, teamType, interval);
+        //     Integer tmp9 = issueService.projectDigestAssigneeCount(projectName, teamType, interval);
+        //     List<Object[]> tmp6 = issueService.projectDigestClosed(projectName, teamType, interval);
+        //     Integer tmp7 = issueService.projectDigestBugsCreated(projectName, teamType, subType, interval);
+        //     Integer tmp8 = issueService.projectDigestBugsClosed(projectName, teamType, subType, interval);
+        //     ProjectDigest projectDigest = new ProjectDigest();
+        //     projectDigest.setTeamType(teamType);
+        //     projectDigest.setNewJiraCount(tmp5.get(0)[0].toString());
+        //     projectDigest.setNewJiraStoryPoint(Math.round(Double.valueOf(tmp5.get(0)[1].toString()) * 100)/100D);
+        //     projectDigest.setAssigneeCount(tmp9.toString());
+        //     projectDigest.setClosedJiraCount(tmp6.get(0)[0].toString());
+        //     projectDigest.setClosedJiraStoryPoint(Math.round(Double.valueOf(tmp6.get(0)[1].toString()) * 100)/100D);
+        //     projectDigest.setNewJiraBugCount(tmp7.toString());
+        //     projectDigest.setClosedJiraBugCount(tmp8.toString());
+        //     projectDigestList.add(projectDigest);
+        // }
+        // emailService.sendProjectDigestNotification(to, name, projectName, interval, projectDigestList);
+        // System.out.println("Sent the fourth email");
 
         // This block of code underneath just deletes every entry in the database during
         // startup

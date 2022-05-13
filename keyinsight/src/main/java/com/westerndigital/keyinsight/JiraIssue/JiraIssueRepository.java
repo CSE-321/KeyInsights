@@ -137,23 +137,5 @@ public interface JiraIssueRepository extends JpaRepository<JiraIssue, String> {
 //https://www.baeldung.com/spring-data-jpa-query
 
 /*
-Jira# added,story points added,assignee count
-SELECT COUNT(id), COALESCE(SUM(story_point),0), COUNT(assignee)
-FROM issues 
-WHERE project_name = ?1 AND team_type = ?2 
-AND created_date_time > NOW() - (INTERVAL'1 DAYS') * ?3
-
-Jira# closed,story points closed
-SELECT COUNT(id), COALESCE(SUM(story_point),0)
-FROM issues 
-WHERE project_name = ?1 AND team_type = ?2 
-AND resolution_date_time > NOW() - (INTERVAL'1 DAYS') * ?3
-
-Jira# bug closed,
-SELECT COUNT(id)
-FROM issues 
-WHERE project_name = ?1 AND team_type = ?2 AND sub_type = ?3
-AND resolution_date_time > NOW() - (INTERVAL'1 DAYS') * ?4
-
 
 */

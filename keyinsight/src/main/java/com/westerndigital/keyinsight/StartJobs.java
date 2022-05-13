@@ -24,30 +24,30 @@ public class StartJobs implements CommandLineRunner {
         // delete all scheduled jobs upon restart
         schedulerJobService.deleteAllJobs();
 
-        // // scan the database for stale Jira tickets
-        // String staleJiraJobName = "staleJiraDbScan";
-        // String staleJiraJobGroup = "dbTicketScan";
-        // String staleJiraJobStatus = INITIAL_STATUS;
-        // Class<? extends QuartzJobBean> staleJiraJobClass = StaleJiraTicketJob.class;
-        // String staleJiraJobRepeat = EVERY_MINUTE_CRON;
+        // scan the database for stale Jira tickets
+        String staleJiraJobName = "staleJiraDbScan";
+        String staleJiraJobGroup = "dbTicketScan";
+        String staleJiraJobStatus = INITIAL_STATUS;
+        Class<? extends QuartzJobBean> staleJiraJobClass = StaleJiraTicketJob.class;
+        String staleJiraJobRepeat = EVERY_MINUTE_CRON;
 
-        // // create the job
-        // SchedulerJob staleJiraJob = new SchedulerJob(staleJiraJobName,
-        //     staleJiraJobGroup, staleJiraJobStatus, staleJiraJobClass,
-        //     staleJiraJobRepeat);
+        // create the job
+        SchedulerJob staleJiraJob = new SchedulerJob(staleJiraJobName,
+            staleJiraJobGroup, staleJiraJobStatus, staleJiraJobClass,
+            staleJiraJobRepeat);
 
-        // schedulerJobService.scheduleJob(staleJiraJob);
+        schedulerJobService.scheduleJob(staleJiraJob);
 
-        // // scan the database for unfinished Jira tickets
-        // String unfinishedJiraJobName = "unfinishedJiraDbScan";
-        // String unfinishedJiraJobGroup = "dbTicketScan";
-        // String unfinishedJiraJobStatus = INITIAL_STATUS;
-        // Class<? extends QuartzJobBean> unfinishedJiraJobClass = UnfinishedSprintStatusTicketJob.class;
-        // String unfinishedJiraCronExpression = EVERY_MINUTE_CRON;
+        // scan the database for unfinished Jira tickets
+        String unfinishedJiraJobName = "unfinishedJiraDbScan";
+        String unfinishedJiraJobGroup = "dbTicketScan";
+        String unfinishedJiraJobStatus = INITIAL_STATUS;
+        Class<? extends QuartzJobBean> unfinishedJiraJobClass = UnfinishedSprintStatusTicketJob.class;
+        String unfinishedJiraCronExpression = EVERY_MINUTE_CRON;
 
-        // SchedulerJob unfinishedJiraJob = new SchedulerJob(unfinishedJiraJobName, unfinishedJiraJobGroup, unfinishedJiraJobStatus,
-        //     unfinishedJiraJobClass, unfinishedJiraCronExpression);
+        SchedulerJob unfinishedJiraJob = new SchedulerJob(unfinishedJiraJobName, unfinishedJiraJobGroup, unfinishedJiraJobStatus,
+            unfinishedJiraJobClass, unfinishedJiraCronExpression);
        
-        // schedulerJobService.scheduleJob(unfinishedJiraJob);
+        schedulerJobService.scheduleJob(unfinishedJiraJob);
     }
 }

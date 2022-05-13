@@ -64,7 +64,7 @@ public class UnfinishedSprintStatusTicketJob extends QuartzJobBean {
                 System.out.println("Sending the email"); 
 
                 // send the email
-                final String EMAIL = "dragonoath123@gmail.com";
+                final String EMAIL = "dragonoath@gmail.com";
                 try {
                     emailService.sendUnfinishedJiraIssuePastDueDateEmailNotification(
                         EMAIL,

@@ -9,9 +9,9 @@ public class ProjectDigest {
     private String teamType;
     private String assigneeCount;
     private String newJiraCount;
-    private String newJiraStoryPoint;
+    private Double newJiraStoryPoint;
     private String closedJiraCount;
-    private String closedJiraStoryPoint;
+    private Double closedJiraStoryPoint;
     private String newJiraBugCount;
     private String closedJiraBugCount;
     
