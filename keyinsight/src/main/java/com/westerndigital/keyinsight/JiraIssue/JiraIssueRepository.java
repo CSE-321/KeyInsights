@@ -1,5 +1,7 @@
 package com.westerndigital.keyinsight.JiraIssue;
 
+import java.util.Optional;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -72,8 +74,14 @@ public interface JiraIssueRepository extends JpaRepository<JiraIssue, String> {
     @Query(value = "SELECT COUNT(j.id) FROM JiraIssue j WHERE j.projectName = :projectName AND dueDateTime <= CURRENT_TIMESTAMP and j.resolution is null")
     Integer unfinishedJiraIssuesByToday(@Param("projectName") String projectName);
 
-    @Query(value = "SELECT id, due_date_time FROM issues WHERE project_name =?1 AND due_date_time <= CURRENT_TIMESTAMP and resolution is null ORDER BY due_date_time ASC LIMIT ?2", nativeQuery = true)
+    @Query(value = "SELECT id, DATE(due_date_time) FROM issues WHERE project_name =?1 AND due_date_time <= CURRENT_TIMESTAMP and resolution is null ORDER BY due_date_time ASC LIMIT ?2", nativeQuery = true)
     List<Object[]> topXUnifinishedJiraIssuesByToday(@Param("projectName") String projectName, @Param("limitNumber") Integer limitNumber);
+
+    @Query(value = "SELECT COUNT(id) FROM issues WHERE project_name = ?1 AND priority = ?2 AND updated_date_time <= NOW() - (INTERVAL '1 DAYS') * ?3", nativeQuery = true)
+    Integer criticalIssuesNotUpdatedCount(@Param("projectName") String projectName, @Param("priority") String priority, @Param("interval") Integer interval);
+
+    @Query(value = "SELECT id, DATE(updated_date_time) FROM issues WHERE project_name = ?1 AND priority = ?2 AND updated_date_time <= NOW() - (INTERVAL '1 DAYS') * ?3 ORDER BY updated_date_time ASC LIMIT ?4", nativeQuery = true)
+    List<Object[]> criticalIssuesNotUpdatedInfo(@Param("projectName") String projectName, @Param("priority") String priority, @Param("interval") Integer interval, @Param("limitNumber") Integer limitNumber);
 
     @Query(value = "WITH created AS(SELECT TO_CHAR(created_date_time, 'YYYY-MM') AS created_month, COUNT(id) AS createdJiraCount, SUM(story_point) AS createdJiraStoryPoints FROM issues WHERE project_name =?1 GROUP BY created_month ORDER BY created_month),"+
         "resolved AS(SELECT TO_CHAR(resolution_date_time, 'YYYY-MM') AS resolved_month,  COUNT(id) AS resolvedJiraCount, SUM(story_point) AS resolvedJiraStoryPoints FROM issues WHERE project_name =?1 AND resolution_date_time is not null GROUP BY resolved_month ORDER BY resolved_month)" +
@@ -101,4 +109,51 @@ public interface JiraIssueRepository extends JpaRepository<JiraIssue, String> {
     "COALESCE(criticalnotstarted.storypoint,0) AS criticalnotstartedStoryPoint FROM total LEFT JOIN completed on total.assignee = completed.assignee "+ 
     "LEFT JOIN wip on total.assignee = wip.assignee LEFT JOIN notstarted on total.assignee = notstarted.assignee LEFT JOIN criticalnotstarted on total.assignee = criticalnotstarted.assignee ",nativeQuery = true)
     List<Object[]> assigneeTotalCompleteInformation(@Param("projectName") String projectName, @Param("teamType") String teamType, @Param("status1") String status1, @Param("status2") String status2, @Param("priority") String priority);
+
+    @Query(value = "SELECT COUNT(id), COALESCE(SUM(story_point),0) FROM issues WHERE project_name = ?1 AND team_type = ?2 AND assignee is not null AND created_date_time > NOW() - (INTERVAL'1 DAYS') * ?3", nativeQuery = true)
+    List<Object[]> resourceWorkloadDigestCreated(@Param("projectName") String projectName, @Param("teamType") String teamType, @Param("interval") Integer interval);
+
+    @Query(value = "SELECT COUNT(id), COALESCE(SUM(story_point),0) FROM issues WHERE project_name = ?1 AND team_type = ?2 AND assignee is not null AND resolution_date_time > NOW() - (INTERVAL'1 DAYS') * ?3", nativeQuery = true)
+    List<Object[]> resourceWorkloadDigestClosed(@Param("projectName") String projectName, @Param("teamType") String teamType, @Param("interval") Integer interval);
+
+    @Query(value = "SELECT COUNT(id), COALESCE(SUM(story_point),0) FROM issues WHERE project_name = ?1 AND team_type = ?2 AND created_date_time > NOW() - (INTERVAL'1 DAYS') * ?3",nativeQuery = true)
+    List<Object[]> projectDigestCreated(@Param("projectName") String projectName, @Param("teamType") String teamType, @Param("interval") Integer interval);
+
+    @Query(value = "SELECT COUNT(id), COALESCE(SUM(story_point),0) FROM issues WHERE project_name = ?1 AND team_type = ?2 AND resolution_date_time > NOW() - (INTERVAL'1 DAYS') * ?3", nativeQuery = true)
+    List<Object[]> projectDigestClosed(@Param("projectName") String projectName, @Param("teamType") String teamType, @Param("interval") Integer interval);
+
+    @Query(value = "SELECT COUNT(id) FROM issues WHERE project_name = ?1 AND team_type = ?2 AND sub_type = ?3 AND created_date_time > NOW() - (INTERVAL'1 DAYS') * ?4",nativeQuery = true)
+    Integer projectDigestBugsCreated(@Param("projectName") String projectName, @Param("teamType") String teamType, @Param("subType") String subType, @Param("interval") Integer interval);
+
+    @Query(value = "SELECT COUNT(id) FROM issues WHERE project_name = ?1 AND team_type = ?2 AND sub_type = ?3 AND resolution_date_time > NOW() - (INTERVAL'1 DAYS') * ?4",nativeQuery = true)
+    Integer projectDigestBugsClosed(@Param("projectName") String projectName, @Param("teamType") String teamType, @Param("subType") String subType, @Param("interval") Integer interval);
+
+    @Query(value = "SELECT COUNT(DISTINCT(assignee)) FROM issues WHERE project_name = ?1 AND team_type = ?2 AND created_date_time > NOW() - (INTERVAL'1 DAYS') * ?3",nativeQuery = true)
+    Integer projectDigestAssigneeCount(@Param("projectName") String projectName, @Param("teamType") String teamType, @Param("interval") Integer interval);
+
 }
+
+
+//https://www.baeldung.com/spring-data-jpa-query
+
+/*
+Jira# added,story points added,assignee count
+SELECT COUNT(id), COALESCE(SUM(story_point),0), COUNT(assignee)
+FROM issues 
+WHERE project_name = ?1 AND team_type = ?2 
+AND created_date_time > NOW() - (INTERVAL'1 DAYS') * ?3
+
+Jira# closed,story points closed
+SELECT COUNT(id), COALESCE(SUM(story_point),0)
+FROM issues 
+WHERE project_name = ?1 AND team_type = ?2 
+AND resolution_date_time > NOW() - (INTERVAL'1 DAYS') * ?3
+
+Jira# bug closed,
+SELECT COUNT(id)
+FROM issues 
+WHERE project_name = ?1 AND team_type = ?2 AND sub_type = ?3
+AND resolution_date_time > NOW() - (INTERVAL'1 DAYS') * ?4
+
+
+*/

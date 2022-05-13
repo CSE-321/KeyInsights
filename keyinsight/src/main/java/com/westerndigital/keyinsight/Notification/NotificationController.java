@@ -13,17 +13,27 @@ import java.util.List;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.westerndigital.keyinsight.JiraTicket.UnfinishedSprintStatus.UnfinishedSprintStatusTicketJob;
+import com.westerndigital.keyinsight.JiraUser.JiraUserService;
 import com.westerndigital.keyinsight.Notification.Settings.ProjectDigestReportSetting;
 import com.westerndigital.keyinsight.Notification.Settings.SprintStatusSetting;
 import com.westerndigital.keyinsight.Notification.Settings.TicketStatusSetting;
 import com.westerndigital.keyinsight.Notification.Settings.UnfinishedTicketSetting;
 import com.westerndigital.keyinsight.Notification.Settings.WorkloadDigestReportSetting;
+import com.westerndigital.keyinsight.Scheduler.SchedulerJob;
+import com.westerndigital.keyinsight.Scheduler.SchedulerJobService;
 
 @Controller
 @RequestMapping("/api/v1/notification")
 public class NotificationController {
     @Autowired
     private NotificationService notificationService;
+
+    @Autowired
+    private JiraUserService jiraUserService;
+
+    @Autowired
+    private SchedulerJobService schedulerJobService;
 
     public NotificationController(NotificationService notificationService){
         this.notificationService = notificationService;
@@ -44,9 +54,9 @@ public class NotificationController {
         // extract the user data from the request body
         String jsonString = requestEntity.getBody();
 
-        final String USERNAME_FIELD = "username";
-        final String SERVER_URL_FIELD = "serverUrl";
-        final String PROJECT_NAME_FIELD = "projectName";
+        final String USERNAME_FIELD = "userId";
+        final String SERVER_URL_FIELD = "serverId";
+        final String PROJECT_NAME_FIELD = "projectId";
         final String TICKET_STATUS_FIELD = "ticketStatusSetting";
         final String SPRINT_STATUS_FIELD = "sprintStatusSetting";
         final String UNFINISHED_TICKET_FIELD = "unfinishedTicketSetting";
@@ -73,12 +83,17 @@ public class NotificationController {
 
         String jiraUser = objectMapper.convertValue(
             username, String.class);
+        System.out.println(jiraUser);
 
         String jiraServerUrl = objectMapper.convertValue(
             serverUrl, String.class);
 
         String jiraProjectName = objectMapper.convertValue(
             projectName, String.class);
+
+        String jiraEmail = jiraUserService
+            .loadUserByUsername(jiraUser)
+            .getEmail();
 
         // convert each notification setting field in the JSON to its
         // corresponding Java object 
@@ -100,10 +115,10 @@ public class NotificationController {
             .convertValue(workloadDigestReport, 
                 WorkloadDigestReportSetting.class);
 
-        Notification notification = new Notification(jiraUser, jiraServerUrl,
-            jiraProjectName, ticketStatusSetting, sprintStatusSetting,
-            unfinishedTicketSetting, projectDigestReportSetting,
-            workloadDigestReportSetting);
+        Notification notification = new Notification(jiraUser, jiraEmail, 
+            jiraServerUrl, jiraProjectName, ticketStatusSetting, 
+            sprintStatusSetting, unfinishedTicketSetting, 
+            projectDigestReportSetting, workloadDigestReportSetting);
 
         notificationService.updateNotificationSettings(notification);
 
