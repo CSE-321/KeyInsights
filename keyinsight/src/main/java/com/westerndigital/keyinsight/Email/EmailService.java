@@ -4,6 +4,9 @@ import java.util.List;
 
 import javax.mail.MessagingException;
 
+import com.westerndigital.keyinsight.Email.DAOs.ProjectDigest;
+import com.westerndigital.keyinsight.Email.DAOs.ResourceDigest;
+
 public interface EmailService {
 
     // send email
@@ -11,4 +14,7 @@ public interface EmailService {
     
     void sendCriticalJiraIssueNotUpdatedEmailNotification(String to, String name, String projectName, Integer interval, Integer issueCount, List<String> nameOfIssues, Integer limitCount) throws MessagingException;
 
+    void sendResourceDigestNotification(String to, String name, String projectName, Integer interval, List<ResourceDigest> nameOfIssues) throws MessagingException;
+
+    void sendProjectDigestNotification(String to, String name, String projectName, Integer interval, List<ProjectDigest> nameOfIssues) throws MessagingException;
 }

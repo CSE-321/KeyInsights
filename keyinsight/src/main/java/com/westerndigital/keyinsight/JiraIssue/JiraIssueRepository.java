@@ -110,18 +110,50 @@ public interface JiraIssueRepository extends JpaRepository<JiraIssue, String> {
     "LEFT JOIN wip on total.assignee = wip.assignee LEFT JOIN notstarted on total.assignee = notstarted.assignee LEFT JOIN criticalnotstarted on total.assignee = criticalnotstarted.assignee ",nativeQuery = true)
     List<Object[]> assigneeTotalCompleteInformation(@Param("projectName") String projectName, @Param("teamType") String teamType, @Param("status1") String status1, @Param("status2") String status2, @Param("priority") String priority);
 
-    @Query(value = "SELECT COUNT(id), SUM(story_point) FROM issues WHERE project_name = ?1 AND team_type = ?2 AND created_date_time > NOW() - (INTERVAL'1 DAYS') * ?3", nativeQuery = true)
+    @Query(value = "SELECT COUNT(id), COALESCE(SUM(story_point),0) FROM issues WHERE project_name = ?1 AND team_type = ?2 AND assignee is not null AND created_date_time > NOW() - (INTERVAL'1 DAYS') * ?3", nativeQuery = true)
     List<Object[]> resourceWorkloadDigestCreated(@Param("projectName") String projectName, @Param("teamType") String teamType, @Param("interval") Integer interval);
 
-    @Query(value = "SELECT COUNT(id), SUM(story_point) FROM issues WHERE project_name = ?1 AND team_type = ?2 AND resolution_date_time > NOW() - (INTERVAL'1 DAYS') * ?3", nativeQuery = true)
+    @Query(value = "SELECT COUNT(id), COALESCE(SUM(story_point),0) FROM issues WHERE project_name = ?1 AND team_type = ?2 AND assignee is not null AND resolution_date_time > NOW() - (INTERVAL'1 DAYS') * ?3", nativeQuery = true)
     List<Object[]> resourceWorkloadDigestClosed(@Param("projectName") String projectName, @Param("teamType") String teamType, @Param("interval") Integer interval);
+
+    @Query(value = "SELECT COUNT(id), COALESCE(SUM(story_point),0) FROM issues WHERE project_name = ?1 AND team_type = ?2 AND created_date_time > NOW() - (INTERVAL'1 DAYS') * ?3",nativeQuery = true)
+    List<Object[]> projectDigestCreated(@Param("projectName") String projectName, @Param("teamType") String teamType, @Param("interval") Integer interval);
+
+    @Query(value = "SELECT COUNT(id), COALESCE(SUM(story_point),0) FROM issues WHERE project_name = ?1 AND team_type = ?2 AND resolution_date_time > NOW() - (INTERVAL'1 DAYS') * ?3", nativeQuery = true)
+    List<Object[]> projectDigestClosed(@Param("projectName") String projectName, @Param("teamType") String teamType, @Param("interval") Integer interval);
+
+    @Query(value = "SELECT COUNT(id) FROM issues WHERE project_name = ?1 AND team_type = ?2 AND sub_type = ?3 AND created_date_time > NOW() - (INTERVAL'1 DAYS') * ?4",nativeQuery = true)
+    Integer projectDigestBugsCreated(@Param("projectName") String projectName, @Param("teamType") String teamType, @Param("subType") String subType, @Param("interval") Integer interval);
+
+    @Query(value = "SELECT COUNT(id) FROM issues WHERE project_name = ?1 AND team_type = ?2 AND sub_type = ?3 AND resolution_date_time > NOW() - (INTERVAL'1 DAYS') * ?4",nativeQuery = true)
+    Integer projectDigestBugsClosed(@Param("projectName") String projectName, @Param("teamType") String teamType, @Param("subType") String subType, @Param("interval") Integer interval);
+
+    @Query(value = "SELECT COUNT(DISTINCT(assignee)) FROM issues WHERE project_name = ?1 AND team_type = ?2 AND created_date_time > NOW() - (INTERVAL'1 DAYS') * ?3",nativeQuery = true)
+    Integer projectDigestAssigneeCount(@Param("projectName") String projectName, @Param("teamType") String teamType, @Param("interval") Integer interval);
+
 }
 
 
 //https://www.baeldung.com/spring-data-jpa-query
 
 /*
+Jira# added,story points added,assignee count
+SELECT COUNT(id), COALESCE(SUM(story_point),0), COUNT(assignee)
+FROM issues 
+WHERE project_name = ?1 AND team_type = ?2 
+AND created_date_time > NOW() - (INTERVAL'1 DAYS') * ?3
 
+Jira# closed,story points closed
+SELECT COUNT(id), COALESCE(SUM(story_point),0)
+FROM issues 
+WHERE project_name = ?1 AND team_type = ?2 
+AND resolution_date_time > NOW() - (INTERVAL'1 DAYS') * ?3
+
+Jira# bug closed,
+SELECT COUNT(id)
+FROM issues 
+WHERE project_name = ?1 AND team_type = ?2 AND sub_type = ?3
+AND resolution_date_time > NOW() - (INTERVAL'1 DAYS') * ?4
 
 
 */

@@ -73,6 +73,7 @@ public class UnfinishedSprintStatusTicketJob extends QuartzJobBean {
                         unfinishedTicketCount, 
                         unfinishedTicketInfo,
                         ISSUE_LIMIT);
+                    System.out.println("Sent the issue");
                 } catch (MessagingException e) {
                     log.error(e.getMessage(), e);
                     e.printStackTrace();

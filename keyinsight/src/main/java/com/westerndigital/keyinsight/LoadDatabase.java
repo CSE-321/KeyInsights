@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Component;
 
 import com.westerndigital.keyinsight.JiraIssue.JiraIssue;
@@ -31,8 +32,9 @@ import kong.unirest.JsonNode;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-
 import com.westerndigital.keyinsight.Email.EmailService;
+import com.westerndigital.keyinsight.Email.DAOs.ResourceDigest;
+import com.westerndigital.keyinsight.Email.DAOs.ProjectDigest;
 
 @Component
 public class LoadDatabase implements CommandLineRunner {
@@ -50,14 +52,11 @@ public class LoadDatabase implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        // String to = "jrosales530@gmail.com";
-        // String subject = "Subjects";
-        // String text = "hi";
-        // String to = "dragonoath123@gmail.com";
-        // String name = "ucm-cse-321";
-        // String projectName = "B8X4";
-        // int issueCount = issueService.unfinishedJiraIssuesByToday(projectName);
-        // int limitNumber = 10;
+        String to = "dragonoath123@gmail.com";
+        String name = "ucm-cse-321";
+        String projectName = "B8X4";
+        //int issueCount = issueService.unfinishedJiraIssuesByToday(projectName);
+        int limitNumber = 10;
         // List<Object[]> tmp = issueService.topXUnfinishedJiraIssuesByToday(projectName, limitNumber);
         // List<String> issueName = new ArrayList<String>();
 
@@ -68,8 +67,8 @@ public class LoadDatabase implements CommandLineRunner {
         // emailService.sendUnfinishedJiraIssuePastDueDateEmailNotification(to, name, projectName, issueCount, issueName, limitNumber);
         // System.out.println("Sent the first email");
 
-        // String priority = "Critical";
-        // int interval = 7;
+        String priority = "Critical";
+        int interval = 150;
         // int issueCount2 = issueService.criticalIssuesNotUpdatedCount(projectName, priority, interval);
         // System.out.println("got the count");
         // List<Object[]> tmp2 = issueService.criticalIssuesNotUpdatedInfo(projectName, priority, interval, limitNumber);
@@ -81,6 +80,51 @@ public class LoadDatabase implements CommandLineRunner {
 
         // emailService.sendCriticalJiraIssueNotUpdatedEmailNotification(to, name, projectName, interval, issueCount2, issueInfo, limitNumber);
         // System.out.println("Sent the second email");
+
+        List<String> teamTypes = issueService.getAllTeamType(projectName);
+        // List<String> issueInfo2 = new ArrayList<String>();
+        // List<ResourceDigest> resourceDigestList = new ArrayList<ResourceDigest>();
+        // for(String teamType : teamTypes){
+            
+        //     List<Object[]> tmp3 = issueService.resourceWorkloadDigestCreated(projectName, teamType, interval);
+        //     List<Object[]> tmp4 = issueService.resourceWorkloadDigestClosed(projectName, teamType, interval);
+        //     ResourceDigest resourceDigest = new ResourceDigest();
+        //     String issueInfo4 = String.format("Team Type: %s, New Jira Count Assigned Since Last Digest: %s, New Story Points Assigned Since Last Digest: %s, Jira Count Closed Since Last Digest: %s, Total Story Points Closed Since Last Digest: %s", 
+        //     teamType, tmp3.get(0)[0], tmp3.get(0)[1], tmp4.get(0)[0], tmp4.get(0)[1]);
+        //     resourceDigest.setTeamType(teamType);
+        //     resourceDigest.setNewJiraCount(tmp3.get(0)[0].toString());
+        //     resourceDigest.setNewJiraStoryPoint(tmp3.get(0)[1].toString());
+        //     resourceDigest.setClosedJiraCount(tmp4.get(0)[0].toString());
+        //     resourceDigest.setClosedJiraStoryPoint(tmp4.get(0)[1].toString());
+        //     resourceDigestList.add(resourceDigest);
+        //     issueInfo2.add(issueInfo4);
+        //     System.out.println(issueInfo4);
+
+        // }
+        // emailService.sendResourceDigestNotification(to, name, projectName, interval, resourceDigestList);
+        // System.out.println("Sent the third email");
+        String subType = "Bug";
+        List<ProjectDigest> projectDigestList = new ArrayList<ProjectDigest>();
+        for(String teamType : teamTypes){
+            List<Object[]> tmp5 = issueService.projectDigestCreated(projectName, teamType, interval);
+            Integer tmp9 = issueService.projectDigestAssigneeCount(projectName, teamType, interval);
+            List<Object[]> tmp6 = issueService.projectDigestClosed(projectName, teamType, interval);
+            Integer tmp7 = issueService.projectDigestBugsCreated(projectName, teamType, subType, interval);
+            Integer tmp8 = issueService.projectDigestBugsClosed(projectName, teamType, subType, interval);
+            ProjectDigest projectDigest = new ProjectDigest();
+            projectDigest.setTeamType(teamType);
+            projectDigest.setNewJiraCount(tmp5.get(0)[0].toString());
+            projectDigest.setNewJiraStoryPoint(tmp5.get(0)[1].toString());
+            projectDigest.setAssigneeCount(tmp9.toString());
+            projectDigest.setClosedJiraCount(tmp6.get(0)[0].toString());
+            projectDigest.setClosedJiraStoryPoint(tmp6.get(0)[1].toString());
+            projectDigest.setNewJiraBugCount(tmp7.toString());
+            projectDigest.setClosedJiraBugCount(tmp8.toString());
+            projectDigestList.add(projectDigest);
+        }
+        emailService.sendProjectDigestNotification(to, name, projectName, interval, projectDigestList);
+        System.out.println("Sent the fourth email");
+
         // This block of code underneath just deletes every entry in the database during
         // startup
         // ------------------------------------------
