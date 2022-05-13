@@ -4,6 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -24,6 +25,7 @@ public class ProjectDigestReportSetting {
 
     @Getter(value = AccessLevel.NONE)
     @OneToOne
+    @JoinColumn(name = "notification_id")
     private Notification notification;
 
     private boolean notifyUser = false;

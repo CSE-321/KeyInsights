@@ -2,6 +2,9 @@ package com.westerndigital.keyinsight;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Component;
 
 import com.westerndigital.keyinsight.JiraIssue.JiraIssue;
@@ -18,6 +21,7 @@ import com.westerndigital.keyinsight.JiraRestAPIsPOJO.UserPOJO.UserJson;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.List;
 
 import io.github.cdimascio.dotenv.Dotenv;
@@ -28,6 +32,9 @@ import kong.unirest.JsonNode;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.westerndigital.keyinsight.Email.EmailService;
+import com.westerndigital.keyinsight.Email.DAOs.ResourceDigest;
+import com.westerndigital.keyinsight.Email.DAOs.ProjectDigest;
 
 @Component
 public class LoadDatabase implements CommandLineRunner {
@@ -259,28 +266,93 @@ public class LoadDatabase implements CommandLineRunner {
                                                 + OffsetDateTime.now()
                                                 + ". The next Update is at " + OffsetDateTime.now().plusMinutes(30));
 
-        }
-}
+        }}
 
-/*
- * List of Resources
- * https://stackoverflow.com/questions/20832015/how-do-i-iterate-over-a-json-
- * response-using-jackson-api-of-a-list-inside-a-list
- * 
- * http://makeseleniumeasy.com/2020/06/11/rest-assured-tutorial-30-how-to-create
- * -pojo-classes-of-a-json-array-payload/
- * 
- * https://stackoverflow.com/questions/58539657/com-fasterxml-jackson-databind-
- * exc-mismatchedinputexception-cannot-deserialize
- * 
- * https://stackoverflow.com/questions/7421474/how-can-i-tell-jackson-to-ignore-
- * a-property-for-which-i-dont-have-control-over
- * 
- * https://stackoverflow.com/questions/20837856/can-not-deserialize-instance-of-
- * java-util-arraylist-out-of-start-object-token
- * 
- * https://docs.atlassian.com/software/jira/docs/api/REST/8.13.10/
- * 
- * https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-
- * projects/#api-rest-api-3-project-search-get
- */
+        /*
+         * List of Resources
+         * https://stackoverflow.com/questions/20832015/how-do-i-iterate-over-a-json-
+         * response-using-jackson-api-of-a-list-inside-a-list
+         * 
+         * http://makeseleniumeasy.com/2020/06/11/rest-assured-tutorial-30-how-to-create
+         * -pojo-classes-of-a-json-array-payload/
+         * 
+         * https://stackoverflow.com/questions/58539657/com-fasterxml-jackson-databind-
+         * exc-mismatchedinputexception-cannot-deserialize
+         * 
+         * https://stackoverflow.com/questions/7421474/how-can-i-tell-jackson-to-ignore-
+         * a-property-for-which-i-dont-have-control-over
+         * 
+         * https://stackoverflow.com/questions/20837856/can-not-deserialize-instance-of-
+         * java-util-arraylist-out-of-start-object-token
+         * 
+         * https://docs.atlassian.com/software/jira/docs/api/REST/8.13.10/
+         * 
+         * https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-
+         * projects/#api-rest-api-3-project-search-get
+         */
+         
+        //  
+        // 
+        // 
+        // 
+        //  
+        // 
+        // 
+
+         
+        //  
+        //   
+        // 
+        // 
+        // 
+                 
+        // 
+        
+        
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+        // 
+        // 
+        // 
+        // 
+        //  
+        // 
+        //   
+        //      
+        //    
+        //  
+        //    
+        //  
+        //         
+        //             
+        //           
+        //     
+        //   
+        //     
+        //        
+        //         
+        //             
+        //      
+        //          
+        //   
+        //                                     
+        //  
+        //  
+        //        
+        //      
+        //  
+        //  
+

@@ -65,7 +65,7 @@ const NotificationsPage = () => {
   // Create JSON object for backend
   const createJSON = () => {
     let obj = {
-      userId: 'user',
+      userId: user,
       serverId: server,
       projectId: project,
       ticketStatusSetting: {

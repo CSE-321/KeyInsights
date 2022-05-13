@@ -9,6 +9,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+import javax.transaction.Transactional;
 
 import com.westerndigital.keyinsight.JiraUser.JiraUser;
 import com.westerndigital.keyinsight.Notification.Settings
@@ -27,6 +29,7 @@ import lombok.Getter;
 @Entity
 @Data
 @Table(name = "notification")
+@Transactional
 public class Notification {
     
     @Id
@@ -41,40 +44,42 @@ public class Notification {
 
     // remove the auto generated getter otherwise there will be a loop in the
     // query result
-    @Getter(value = AccessLevel.NONE)
-    @OneToOne
-    private JiraUser jiraUser;
+    // @Getter(value = AccessLevel.NONE)
+    // @OneToOne
+    // private JiraUser jiraUser;
 
     private String jiraUsername;
+    private String email;
     private String serverUrl;
     private String projectName;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn
+    @JoinColumn(name = "ticket_status_setting_id")
     private TicketStatusSetting ticketStatusSetting;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn
+    @JoinColumn(name = "sprint_status_setting_id")
     private SprintStatusSetting sprintStatusSetting;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn
+    @JoinColumn(name = "unfinished_ticket_setting_id")
     private UnfinishedTicketSetting unfinishedTicketSetting;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn
+    @JoinColumn(name = "project_digest_report_setting_id")
     private ProjectDigestReportSetting projectDigestReportSetting;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn
+    @JoinColumn(name = "workload_digest_report_setting_id")
     private WorkloadDigestReportSetting workloadDigestReportSetting;
 
     public Notification() {}
 
-    public Notification(JiraUser jiraUser, String serverUrl, 
+    public Notification(String jiraUsername, String email, String serverUrl, 
         String projectName) {
 
-        this.jiraUser = jiraUser;
+        this.jiraUsername = jiraUsername;
+        this.email = email;
         this.serverUrl = serverUrl;
         this.projectName = projectName;
 
@@ -86,7 +91,8 @@ public class Notification {
         workloadDigestReportSetting = new WorkloadDigestReportSetting();
     }
 
-    public Notification(String jiraUsername, String serverUrl, String projectName,
+    public Notification(String jiraUsername, String email, String serverUrl, 
+        String projectName,
         TicketStatusSetting ticketStatusSetting,
         SprintStatusSetting sprintStatusSetting,
         UnfinishedTicketSetting unfinishedTicketSetting,
@@ -94,6 +100,7 @@ public class Notification {
         WorkloadDigestReportSetting workloadDigestReportSetting) {
 
         this.jiraUsername = jiraUsername;
+        this.email = email;
         this.serverUrl = serverUrl;
         this.projectName = projectName;
         this.ticketStatusSetting = ticketStatusSetting;

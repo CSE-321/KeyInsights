@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head> 
+    <title th:remove="all">Project Digest</b> </title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  </head>
+  <body>
+   <div>
+       Hello <b th:text="${userName}"></b>,
+   </div>
+   <p>
+       Here is the interval project digest report for the <b th:text="${projectName}"></b> database.
+   </p>
+    <p>The Project Digest will be shown in the table below:</p>
+    <table>
+      <thead>
+          <tr>
+              <th> Team Type </th>
+              <th> Assignee Count </th>
+              <th> New Assigned Jira Count </th>
+              <th> New Assigned Jira Story Points </th>
+              <th> Closed Jira Count </th>
+              <th> Closed Jira Story Points </th>
+              <th> New Jira Bug Count </th>
+              <th> Closed Jira Bug Count </th>
+          </tr>
+      </thead>
+      <tbody>
+        <tr th:each="projectDigest : ${projectDigestInfo}">
+            <td><span th:text="${projectDigest.teamType}"> Team Type </span></td>
+            <td><span th:text="${projectDigest.assigneeCount}"> Assignee Count </span></td>
+            <td><span th:text="${projectDigest.newJiraCount}"> New Assigned Jira Count </span></td>
+            <td><span th:text="${projectDigest.newJiraStoryPoint}"> New Assigned Jira Story Points </span></td>
+            <td><span th:text="${projectDigest.closedJiraCount}"> Closed Jira Count </span></td>
+            <td><span th:text="${projectDigest.closedJiraStoryPoint}"> Closed Jira Story Points </span></td>
+            <td><span th:text="${projectDigest.newJiraBugCount}"> New Jira Bug Count </span></td>
+            <td><span th:text="${projectDigest.closedJiraBugCount}"> Closed Jira Bug Count  </span></td>
+        </tr>
+      </tbody>
+  </table>
+    <p>
+      You were notified because you have selected the "Send me a project digest report every <b th:text="${interval}"></b> days" notification option on the KeySight web application.
+      If you would do not want to receive this notification any more, please go to the KeySight web application and uncheck the "Send me a project digest report every <b th:text="${interval}"></b> days" setting from the Notification page.
+    </p>
+    <p>
+      Best Regards, <br />
+      <em>The KeyInsight Team</em>
+    </p>
+    <img style='float:left'src="sample.png" th:src="|cid:${westernDigitalLogo}|"/>
+  </body>
+</html>

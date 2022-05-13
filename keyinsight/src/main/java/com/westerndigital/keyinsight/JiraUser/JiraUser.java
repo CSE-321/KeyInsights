@@ -50,7 +50,7 @@ public class JiraUser implements UserDetails {
         this.serverUrl = serverUrl;
         this.email = email;
 
-        notification = new Notification(this, serverUrl, null);
+        notification = new Notification(username, email, serverUrl, null);
     }
 
     public void addRole(String role) {

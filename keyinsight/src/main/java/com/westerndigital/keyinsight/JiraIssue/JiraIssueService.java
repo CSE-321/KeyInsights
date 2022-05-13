@@ -117,6 +117,42 @@ public class JiraIssueService {
         return issueRepository.topXUnifinishedJiraIssuesByToday(projectName, limitNumber);
     }
 
+    public Integer criticalIssuesNotUpdatedCount(String projectName, String priority, Integer interval){
+        return issueRepository.criticalIssuesNotUpdatedCount(projectName, priority, interval);
+    }
+
+    public List<Object[]> criticalIssuesNotUpdatedInfo(String projectName, String priority, Integer interval, Integer limitNumber){
+        return issueRepository.criticalIssuesNotUpdatedInfo(projectName, priority, interval, limitNumber);
+    }
+
+    public List<Object[]> resourceWorkloadDigestCreated(String projectName, String teamType, Integer interval){
+        return issueRepository.resourceWorkloadDigestCreated(projectName, teamType, interval);
+    }
+
+    public List<Object[]> resourceWorkloadDigestClosed(String projectName, String teamType, Integer interval){
+        return issueRepository.resourceWorkloadDigestClosed(projectName, teamType, interval);
+    }
+
+    public List<Object[]> projectDigestCreated(String projectName, String teamType, Integer interval){
+        return issueRepository.projectDigestCreated(projectName, teamType, interval);
+    }
+
+    public List<Object[]> projectDigestClosed(String projectName, String teamType, Integer interval){
+        return issueRepository.projectDigestClosed(projectName, teamType, interval);
+    }
+
+    public Integer projectDigestBugsCreated(String projectName, String teamType, String subType, Integer interval){
+        return issueRepository.projectDigestBugsCreated(projectName, teamType, subType, interval);
+    }
+
+    public Integer projectDigestBugsClosed(String projectName, String teamType, String subType, Integer interval){
+        return issueRepository.projectDigestBugsClosed(projectName, teamType, subType, interval);
+    }
+
+    public Integer projectDigestAssigneeCount(String projectName, String teamType, Integer interval){
+        return issueRepository.projectDigestAssigneeCount(projectName, teamType, interval);
+    }
+
     public void deleteAll(){
         issueRepository.deleteAll();
     }
