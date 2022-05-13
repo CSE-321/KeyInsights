@@ -5,7 +5,7 @@ const KpiNavBar = ({ completionHandler }) => {
   const barRef = useRef();
   const rowOneRef = useRef();
   const rowTwoRef = useRef();
-  const rowThreeRef = useRef();
+  //const rowThreeRef = useRef();
   const rowFourRef = useRef();
   const rowFiveRef = useRef();
 
@@ -76,27 +76,7 @@ const KpiNavBar = ({ completionHandler }) => {
             </>
           )}
         </div>
-        <div
-          className="flex flex-row items-center"
-          ref={rowThreeRef}
-          onClick={() => {
-            handleRowSelected(rowThreeRef);
-            completionHandler(2);
-          }}>
-          {rowSelectedForRef === rowThreeRef ? (
-            <>
-              <h1 className="ml-5 text-[#5DD39E] cursor-pointer">
-                Request Overview{' '}
-              </h1>
-            </>
-          ) : (
-            <>
-              <h1 className="ml-5 hover:text-[#5DD39E] cursor-pointer">
-                Request Overview{' '}
-              </h1>
-            </>
-          )}
-        </div>
+
         <div
           className="flex flex-row items-center"
           ref={rowFourRef}

@@ -199,20 +199,22 @@ const NotificationsPage = () => {
             checked={toggled}
             isProjectSelected={isProjectSelected}
           />
-          <h1 className="inline text-md sm:text-lg md:text-xl lg:text-2xl">
-            Notify me if ticket status critical/unchanged after{' '}
+          <h1 className="inline-block text-md align-top pt-1 pr-2 sm:text-lg md:text-xl lg:text-2xl">
+            Notify me if ticket status critical/unchanged after{''}
           </h1>
-          <input
-            type="text"
-            className="borer-solid border border-black w-4 rounded-sm sm:w-8 md:w-12 lg:w-16"
-            disabled={!toggled}
-            pattern="[0-9]*"
-            value={val}
-            onChange={(e) => {
-              setVal((v) => (e.target.validity.valid ? e.target.value : v));
-              setIsSettingsChanged(true);
-            }}></input>
-          <h1 className="inline text-md sm:text-lg md:text-xl lg:text-2xl">
+          <div className="pb-6 align-middle inline-block">
+            <input
+              type="text"
+              className="borer-solid border inline-block border-black w-4 pr-2 align-top rounded-sm sm:w-8 md:w-12 lg:w-16"
+              disabled={!toggled}
+              pattern="[0-9]*"
+              value={val}
+              onChange={(e) => {
+                setVal((v) => (e.target.validity.valid ? e.target.value : v));
+                setIsSettingsChanged(true);
+              }}></input>
+          </div>
+          <h1 className="inline-block pt-1 pl-2 text-md align-top sm:text-lg md:text-xl lg:text-2xl">
             {' '}
             days.{' '}
           </h1>
@@ -228,21 +230,22 @@ const NotificationsPage = () => {
             checked={toggled2}
             isProjectSelected={isProjectSelected}
           />
-          <h1 className="inline text-md sm:text-lg md:text-xl lg:text-2xl">
+          <h1 className="inline-block text-md pt-1 pr-2 align-top sm:text-lg md:text-xl lg:text-2xl">
             Notify me if sprint status unchanged after{' '}
           </h1>
-          <input
-            type="text"
-            className="borer-solid border border-black w-4 rounded-sm sm:w-8 md:w-12 lg:w-16"
-            disabled={!toggled2}
-            pattern="[0-9]*"
-            value={val2}
-            onChange={(e) => {
-              setVal2((v) => (e.target.validity.valid ? e.target.value : v));
-              setIsSettingsChanged(true);
-            }}></input>
-
-          <h1 className="inline text-md sm:text-lg md:text-xl lg:text-2xl">
+          <div className="pb-6 align-middle inline-block">
+            <input
+              type="text"
+              className="border-solid border align-top border-black w-4 pr-2 rounded-sm sm:w-8 md:w-12 lg:w-16"
+              disabled={!toggled2}
+              pattern="[0-9]*"
+              value={val2}
+              onChange={(e) => {
+                setVal2((v) => (e.target.validity.valid ? e.target.value : v));
+                setIsSettingsChanged(true);
+              }}></input>
+          </div>
+          <h1 className="inline-block text-md align-top pt-1 pl-2 sm:text-lg md:text-xl lg:text-2xl">
             {' '}
             days.{' '}
           </h1>
@@ -259,7 +262,7 @@ const NotificationsPage = () => {
             isProjectSelected={isProjectSelected}
           />
 
-          <h1 className="inline text-md sm:text-lg md:text-xl lg:text-2xl">
+          <h1 className="inline-block pt-1 pr-2 align-top text-md sm:text-lg md:text-xl lg:text-2xl">
             Notify me if ticket(s) unfinished by due date.{' '}
           </h1>
           <br></br>
@@ -274,7 +277,7 @@ const NotificationsPage = () => {
             checked={toggled4}
             isProjectSelected={isProjectSelected}
           />
-          <h1 className="inline text-md sm:text-lg md:text-xl lg:text-2xl">
+          <h1 className="inline-block pt-1 pr-2 align-top text-md sm:text-lg md:text-xl lg:text-2xl">
             Send me a project digest report every{' '}
           </h1>
           <DropDown
@@ -283,6 +286,7 @@ const NotificationsPage = () => {
             setVal={setVal4}
             setText={setDefaultTextDropdown4}
             setIsSettingsChanged={setIsSettingsChanged}
+            isToggleSwitched={toggled4}
           />
           {/* <input
             type="text"
@@ -311,7 +315,7 @@ const NotificationsPage = () => {
             checked={toggled5}
             isProjectSelected={isProjectSelected}
           />
-          <h1 className="inline text-md sm:text-lg md:text-xl lg:text-2xl">
+          <h1 className="inline-block align-top pr-2 pt-1 text-md sm:text-lg md:text-xl lg:text-2xl">
             Send me a workload digest report every{' '}
           </h1>
           <DropDown
@@ -320,6 +324,7 @@ const NotificationsPage = () => {
             setVal={setVal5}
             setText={setDefaultTextDropdown5}
             setIsSettingsChanged={setIsSettingsChanged}
+            isToggleSwitched={toggled5}
           />
           {/* <input
             type="text"

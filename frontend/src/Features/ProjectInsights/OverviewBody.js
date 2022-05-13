@@ -91,11 +91,12 @@ const OverviewBody = ({ projectName }) => {
               </>
             }
             graphData={getTopJiraClosedTeam(kpi1_List)}
-            graphType={'Pie'}></OverviewCard>
+            graphType={'Pie'}
+            colors={['#F3A582', '#5DD39E']}></OverviewCard>
         </div>
         <div className="col-span-6 sm:col-start-1 sm:col-end-4">
           <OverviewCard
-            cardTitle="Top Issue Type Completion"
+            cardTitle="Top Teams by Issue Completion"
             cardText={
               <>
                 {(topTeamsList.length > 0 && (
@@ -114,11 +115,12 @@ const OverviewBody = ({ projectName }) => {
             graphType={'Bar'}
             graphData={convertToGraphData(getTopTeamsByJiraClosed(kpi1_List))}
             //graphKeys={convertToKeys(getTopTeamsByJiraClosed(kpi1_List))}
-            forIndexBy={'teamType'}></OverviewCard>
+            forIndexBy={'teamType'}
+            colors={['#5DD39E', '#5DD39E']}></OverviewCard>
         </div>
         <div className="col-span-6 sm:col-start-4 sm:col-end-7">
           <OverviewCard
-            cardTitle="Top Percentage of Critical Issues Not Completed"
+            cardTitle="Top Teams Percentage of Critical Issues Not Completed"
             cardText={
               <>
                 {(needsAttentionList.length > 0 && (
@@ -172,7 +174,8 @@ const OverviewBody = ({ projectName }) => {
             graphType={'Bar'}
             graphData={convertToGraph(getCriticalNotCompleted(kpi1_List))}
             //graphKeys={convertToKeys(getTopTeamsByJiraClosed(kpi1_List))}
-            forIndexBy={'teamType'}></OverviewCard>
+            forIndexBy={'teamType'}
+            colors={['#D94545']}></OverviewCard>
         </div>
         <div className="col-span-6">
           <OverviewCard
@@ -188,9 +191,8 @@ const OverviewBody = ({ projectName }) => {
               </>
             }
             graphType={'Pie'}
-            graphData={converPercentageBugsToGraphData(
-              kpi1_List,
-            )}></OverviewCard>
+            graphData={converPercentageBugsToGraphData(kpi1_List)}
+            colors={['#F3A582', '#5DD39E']}></OverviewCard>
         </div>
       </div>
       <div className="mt-5">
