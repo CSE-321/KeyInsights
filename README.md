@@ -1,7 +1,8 @@
 # KeyInsights
 
+![image](https://img001.prntscr.com/file/img001/FzRKeWXSQRaGaMu074i9PQ.png)
 
-Branch naming conventions
+## Branch naming conventions
 Branch  | Usage
 ------------- | -------------
 feature | Used for adding a new feature to the website(`/feature/membersPage`)
